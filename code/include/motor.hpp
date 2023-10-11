@@ -1,0 +1,37 @@
+#ifndef MOTOR_HPP_INCLUDED
+#define MOTOR_HPP_INCLUDED
+
+#include "pin.hpp"
+
+enum class MotorDirection
+{
+    Forward,
+    Backward
+};
+
+class MotorClass
+{
+public:
+    MotorClass() = delete;
+    MotorClass(PinClass& Enabled, PinClass& A1, PinClass& A2);
+
+    void setSpeed(unsigned int speed);
+    void setDirection(MotorDirection forward);
+    void set(MotorDirection direction, unsigned int speed);
+    void stop();
+
+    bool isValid() const;
+
+private:
+    bool valid;
+
+    PinClass& A1, A2, Enabled;
+
+#ifdef NATIVE
+    unsigned int speed;
+    MotorDirection direction;
+#endif
+
+};
+
+#endif // MOTOR_HPP_INCLUDED
