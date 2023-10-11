@@ -1,0 +1,82 @@
+\documentclass[a4paper, 12pt]{report}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{lipsum}
+
+% Mise en page
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{15pt}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\leftmark}
+\rhead{\thepage}
+\renewcommand{\chaptermark}[1]{\markboth{\MakeUppercase{#1}}{}}
+\titleformat{\chapter}[display]{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{20pt}{\Huge}
+
+% Informations du document
+\title{Rapport de projet d'électronique pour système embarqué}
+\author{Simon GIRARD - Dimitri TIMOZ - Mathis SAUNIER - Alix ANNERAUD}
+\date{\today}
+
+\begin{document}
+
+% Page de garde
+\begin{titlepage}
+\maketitle{}
+\end{titlepage}
+
+% Table des matières
+\tableofcontents
+
+% Chapitres
+\chapter{Introduction}
+\lipsum[1-2]
+
+\chapter{Contexte}
+\lipsum[3-4]
+
+\chapter{Conception}
+
+\section{Code}
+
+\section{Electronique}
+
+\section{Mécanique}
+
+\chapter{Méthodologie}
+\lipsum[5-6]
+
+\chapter{Résultats}
+\lipsum[7-8]
+
+\chapter{Conclusion}
+\lipsum[9-10]
+
+% Bibliographie
+\begin{thebibliography}{9}
+\bibitem{latexcompanion} 
+Michel Goossens, Frank Mittelbach, and Alexander Samarin. 
+\textit{The \LaTeX\ Companion}. 
+Addison-Wesley, Reading, Massachusetts, 1993.
+
+\bibitem{einstein} 
+Albert Einstein. 
+\textit{Zur Elektrodynamik bewegter K{\"o}rper}. (German) 
+[\textit{On the electrodynamics of moving bodies}]. 
+Annalen der Physik, 322(10):891–921, 1905.
+
+\bibitem{knuthwebsite} 
+Knuth: Computers and Typesetting,
+\\\texttt{http://www-cs-faculty.stanford.edu/\~{}uno/abcde.html}
+\end{thebibliography}
+
+\end{document}
