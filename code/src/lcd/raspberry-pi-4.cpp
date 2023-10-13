@@ -1,4 +1,4 @@
-#ifdef RASPBERRY_PI_4
+#ifdef RASPBERRY_PI
 
 #include "lcd.hpp"
 
