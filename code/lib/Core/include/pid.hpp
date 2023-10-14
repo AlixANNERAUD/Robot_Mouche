@@ -20,7 +20,8 @@ private:
     double tau;
     
     // time step
-    double dt[3] = {1, 1, 1};
+    double dt[3] = {1, 1, 1}; // can be 1 because associated errors are 0 and a 0 value will return an infinite value
+    int nRecords = 0;
     clock_t lastRecordClock = 0;
     
 

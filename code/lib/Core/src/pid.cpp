@@ -1,11 +1,14 @@
 #include "pid.hpp"
 #include <ctime>
 #include "log.hpp"
+#include <cmath>
 
+using namespace std;
 
 PidControlClass::PidControlClass(double Kp, double Ki, double Kd, double setpoint)
     : Kp(Kp), Ki(Ki), Kd(Kd), setpoint(setpoint) 
 {
+    this->lastRecordClock = clock();
     this->tau = this->Kd / (this->Kp * PID_N);
     this->A1 = -this->Kp;
 }
@@ -13,9 +16,9 @@ PidControlClass::PidControlClass(double Kp, double Ki, double Kd, double setpoin
 double PidControlClass::getSteeringAngle(double measuredValue, clock_t recordClock) {
     this->dt[2] = this->dt[1];
     this->dt[1] = this->dt[0];
-    this->dt[0] = (double) ((recordClock - this->lastRecordClock) / (CLOCKS_PER_SEC/1000000));
+    this->dt[0] =  ((double)(recordClock - this->lastRecordClock) / (CLOCKS_PER_SEC));
     this->lastRecordClock = recordClock;
-
+    
     this->errors[2] = this->errors[1];
     this->errors[1] = this->errors[0];
     this->errors[0] = setpoint - (double)measuredValue;
@@ -34,6 +37,11 @@ double PidControlClass::getSteeringAngle(double measuredValue, clock_t recordClo
     this->fd1 = this->fd0;
     this->fd0 = ((this->alpha) / (this->alpha + 1)) * (this->d0 + this->d1) - ((this->alpha - 1) / (this->alpha + 1)) * this->fd1;
     this->output += this->fd0;
+
+    if (isnan(this->output) || isinf(this->output)) {
+        LOG_ERROR("PID", "Output is NaN or Inf. Return steering to 0.");
+        this->output = 0.0;
+    }
 
     return this->output;
 }
