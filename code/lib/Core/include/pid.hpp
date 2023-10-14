@@ -8,28 +8,26 @@
 class PidControlClass
 {
 private:
-    long double errors[3] = {0.0, 0.0, 0.0};
-    long double A0, A1;
-    long double A0d, A1d, A2d;
-    long double d0, d1 = 0.0;
-    long double fd0, fd1 = 0.0;
-    long double Kp, Ki, Kd;
-    long double setpoint;
-    long double output;
-    long double alpha;
-    long double tau;
+    double errors[3] = {0.0, 0.0, 0.0};
+    double A0, A1;
+    double A0d, A1d, A2d;
+    double d0, d1 = 0.0;
+    double fd0, fd1 = 0.0;
+    double Kp, Ki, Kd;
+    double setpoint;
+    double output;
+    double alpha;
+    double tau;
     
     // time step
-    long double dt[3] = {0, 0, 0};
+    double dt[3] = {1, 1, 1};
     clock_t lastRecordClock = 0;
     
 
 public:
-    PidControlClass() = delete;
-    PidControlClass(long double Kp, long double Ki, long double Kd, long double setpoint);
-    ~PidControlClass();
-
-    long double getSteeringAngle(double measuredValue, clock_t recordClock);
+    PidControlClass(double Kp, double Ki, double Kd, double setpoint);
+    
+    double getSteeringAngle(double measuredValue, clock_t recordClock);
 };
 
 
