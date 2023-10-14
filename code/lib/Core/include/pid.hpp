@@ -28,7 +28,7 @@ private:
 public:
     PidControlClass(double Kp, double Ki, double Kd, double setpoint);
     
-    double getSteeringAngle(double measuredValue, clock_t recordClock);
+    double getSteering(double measuredValue, clock_t recordClock);
 };
 
 
