@@ -2,6 +2,9 @@
 #include "pid.hpp"
 #include <ctime>
 #include "log.hpp"
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 void test_init() {
     // Positive error -> negative steering angle
@@ -24,6 +27,8 @@ void test_init() {
 void test_with_strange_function() {
     // Save it to a file 
     // Create the file
+    fs::create_directories("test/.output");
+
     FILE *fp = fopen("test/.output/strange_func.csv", "w");
     if (fp == NULL) {
         LOG_ERROR("Test", "Failed to open file.");
