@@ -77,3 +77,12 @@ h3 {
 #irs-sensor-box-4 { background-color: rgba(0, 0, 0, 0.3); }
 #irs-sensor-box-5 { background-color: rgba(0, 0, 0, 0.04); }
 #irs-sensor-box-6 { background-color: rgba(0, 0, 0, 0.05); }
+
+/* Settings */
+
+input[type="text"] {
+    all: unset;
+    border: 1px solid black;
+    border-radius: 4px;
+    padding: 0.3rem;
+}
