@@ -12,6 +12,7 @@ body {
 .panel {
     min-height: 100%;
     width: calc((100% - 2px) / 2);
+    padding: 1rem 2rem;
 }
 
 #separator-line {
@@ -23,15 +24,16 @@ body {
 /* Controller display */
 
 #controller-display {
+    position: relative;
     width: 7rem;
     height: 7rem;
-    box-sizing: border-box;
     border: 2px solid #ddd;
     border-radius: 50%;
     background-color: #eee;
 }
 
 #controller-display>div {
+    position: absolute;
     width: 2rem;
     height: 2rem;
     background-color: #aaa;

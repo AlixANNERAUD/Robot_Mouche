@@ -26,6 +26,11 @@ function buttonPressed(b) {
     return b === 1.0;
 }
 
+let controller_display = document.querySelector("#controller-display");
+let cd_inner = controller_display.firstElementChild;
+let cd_bounding_rect = controller_display.getBoundingClientRect();
+let rem = cd_bounding_rect.width / 7;
+
 function gameLoop() {
     const gamepads = navigator.getGamepads();
     if (!gamepads) {
@@ -33,20 +38,12 @@ function gameLoop() {
     }
 
     const gp = gamepads[0];
-    console.log(gp.axes);
-    if (buttonPressed(gp.buttons[0])) {
-        console.log(b--);
-    } else if (buttonPressed(gp.buttons[2])) {
-        console.log(b++);
-    }
-    if (buttonPressed(gp.buttons[1])) {
-        console.log(a++);
-    } else if (buttonPressed(gp.buttons[3])) {
-        console.log(a--);
-    }
 
-    //ball.style.left = `${a * 2}px`;
-    //ball.style.top = `${b * 2}px`;
+    let gpx = gp.axes[0];
+    let gpy = gp.axes[1];
+    
+    cd_inner.style.left = `${gpx * rem * 3.5 + 2.5 * rem}px`;
+    cd_inner.style.top = `${gpy * rem * 3.5 + 2.5 * rem}px`;
 
     requestAnimationFrame(gameLoop);
 }
