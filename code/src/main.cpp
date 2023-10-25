@@ -2,23 +2,18 @@
 #include "log.hpp"
 #include "pin.hpp"
 #include "lcd.hpp"
+#include "settings.hpp"
+#include "server.hpp"
 
 #include <thread>
 
 #include "httplib.h"
 
-void executeServer()
-{
-    httplib::Server svr;
-
-    svr.Get("/hi", [](const httplib::Request &, httplib::Response &res)
-            { res.set_content("Hello World!", "text/plain"); });
-
-    svr.listen("0.0.0.0", 8080);
-}
 
 int main()
 {
+    SettingsClass settings = SettingsClass();
+
     if (!PinClass::initialize())
     {
         LOG_ERROR("Main", "Failed to initialize pin class.");
@@ -27,7 +22,8 @@ int main()
 
     LOG_INFORMATION("Main", "Initialized pin class.");
 
-    std::thread(executeServer).detach();
+    ServerClass server = ServerClass();
+    std::thread(&ServerClass::listen, server).detach();
 
     PinClass Pin(2);
 
