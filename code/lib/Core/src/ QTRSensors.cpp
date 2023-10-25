@@ -1,6 +1,9 @@
 #include "QTRSensors.hpp"
 
+#include <unistd.h>
 #include <cstdlib>
+#include <time.h>
+
 
 void QTRSensors::setTypeRC()
 {
@@ -117,7 +120,7 @@ void QTRSensors::emittersOff(QTREmitters emitters, bool wait)
     if ((_oddEmitterPin != QTRNoEmitterPin) &&
         (_oddEmitterPin.readDigital() == DigitalState::High))
     {
-      (_oddEmitterPin, LOW);
+      _oddEmitterPin.writeDigital(DigitalState::Low);
       pinChanged = true;
     }
   }
@@ -142,11 +145,11 @@ void QTRSensors::emittersOff(QTREmitters emitters, bool wait)
     if (_dimmable)
     {
       // driver min is 1 ms
-      delayMicroseconds(1200);
+      usleep(1200);
     }
     else
     {
-      delayMicroseconds(200);
+      usleep(200);
     }
   }
 }
@@ -168,7 +171,7 @@ void QTRSensors::emittersOn(QTREmitters emitters, bool wait)
     // we might be changing the dimming level (emittersOnWithPin() should take
     // care of this)
     if ((_oddEmitterPin.getPin() != QTRNoEmitterPin.getPin()) &&
-        ( _dimmable || (_oddEmitterPin.readDigital() == DigitalState::l)))
+        ( _dimmable || (_oddEmitterPin.readDigital() == DigitalState::Low)))
     {
       emittersOnStart = emittersOnWithPin(_oddEmitterPin);
       pinChanged = true;
@@ -186,7 +189,7 @@ void QTRSensors::emittersOn(QTREmitters emitters, bool wait)
     // we might be changing the dimming level (emittersOnWithPin() should take
     // care of this)
     if ((_evenEmitterPin != QTRNoEmitterPin) &&
-        (_dimmable || (digitalRead(_evenEmitterPin) == LOW)))
+        (_dimmable || (_evenEmitterPin.readDigital() == DigitalState::Low)))
     {
       emittersOnStart = emittersOnWithPin(_evenEmitterPin);
       pinChanged = true;
@@ -200,14 +203,14 @@ void QTRSensors::emittersOn(QTREmitters emitters, bool wait)
       // Make sure it's been at least 300 us since the emitter pin was first set
       // high before returning. (Driver min is 250 us.) Some time might have
       // already passed while we set the dimming level.
-      while ((uint16_t)(micros() - emittersOnStart) < 300)
+      while ((clock_t)(clock() - emittersOnStart) < 300)
       {
-        delayMicroseconds(10);
+        usleep(10);
       }
     }
     else
     {
-      delayMicroseconds(200);
+      usleep(200);
     }
   }
 }
@@ -216,35 +219,31 @@ void QTRSensors::emittersOn(QTREmitters emitters, bool wait)
 // returns time when pin was first set high (used by emittersSelect())
 uint16_t QTRSensors::emittersOnWithPin(PinClass pin)
 {
-  if (_dimmable && (pin.readDigital() == DigitalState::High)))
+  if (_dimmable && (pin.readDigital() == DigitalState::High))
   {
     // We are turning on dimmable emitters that are already on. To avoid messing
     // up the dimming level, we have to turn the emitters off and back on. This
     // means the turn-off delay will happen even if wait = false was passed to
     // emittersOn(). (Driver min is 1 ms.)
     pin.writeDigital(DigitalState::Low);
-    delayMicroseconds(1200);
+    usleep(1200);
   }
 
   pin.writeDigital(DigitalState::High);
-  uint16_t emittersOnStart = micros();
+  clock_t emittersOnStart = clock();
 
   if (_dimmable && (_dimmingLevel > 0))
   {
-    noInterrupts();
-
     for (uint8_t i = 0; i < _dimmingLevel; i++)
     {
-      delayMicroseconds(1);
+      usleep(1);
       pin.writeDigital(DigitalState::Low);
-      delayMicroseconds(1);
+      usleep(1);
       pin.writeDigital(DigitalState::High);
     }
-
-    interrupts();
   }
 
-  return emittersOnStart;
+  return (uint16_t)emittersOnStart;
 }
 
 void QTRSensors::emittersSelect(QTREmitters emitters)
@@ -275,7 +274,7 @@ void QTRSensors::emittersSelect(QTREmitters emitters)
 
   // Turn off the off-emitters; don't wait before proceeding, but record the time.
   emittersOff(offEmitters, false);
-  uint16_t turnOffStart = micros();
+  clock_t turnOffStart = clock();
 
   // Turn on the on-emitters and wait.
   emittersOn(emitters);
@@ -286,9 +285,9 @@ void QTRSensors::emittersSelect(QTREmitters emitters)
     // at least 1200 us since the off-emitters was turned off before returning.
     // (Driver min is 1 ms.) Some time has already passed while we waited for
     // the on-emitters to turn on.
-    while ((uint16_t)(micros() - turnOffStart) < 1200)
+    while ((uint16_t)(clock() - turnOffStart) < 1200)
     {
-      delayMicroseconds(10);
+      usleep(10);
     }
   }
 }
@@ -573,17 +572,13 @@ void QTRSensors::readPrivate(uint16_t * sensorValues, uint8_t start, uint8_t ste
         _sensorPins[i].writeDigital(DigitalState::High);
       }
 
-      delayMicroseconds(10); // charge lines for 10 us
+      usleep(10); // charge lines for 10 us
 
       {
-        // disable interrupts so we can switch all the pins as close to the same
-        // time as possible
-        noInterrupts();
-
         // record start time before the first sensor is switched to input
         // (similarly, time is checked before the first sensor is read in the
         // loop below)
-        uint32_t startTime = micros();
+        clock_t startTime = clock();
         uint16_t time = 0;
 
         for (uint8_t i = start; i < _sensorCount; i += step)
@@ -592,15 +587,10 @@ void QTRSensors::readPrivate(uint16_t * sensorValues, uint8_t start, uint8_t ste
           _sensorPins[i].setMode(PinMode::Input);
         }
 
-        interrupts(); // re-enable
-
         while (time < _maxValue)
         {
-          // disable interrupts so we can read all the pins as close to the same
-          // time as possible
-          noInterrupts();
 
-          time = micros() - startTime;
+          time = clock() - startTime;
           for (uint8_t i = start; i < _sensorCount; i += step)
           {
             if ((_sensorPins[i].readDigital() == DigitalState::Low) && (time < sensorValues[i]))
@@ -609,8 +599,6 @@ void QTRSensors::readPrivate(uint16_t * sensorValues, uint8_t start, uint8_t ste
               sensorValues[i] = time;
             }
           }
-
-          interrupts(); // re-enable
         }
       }
       return;

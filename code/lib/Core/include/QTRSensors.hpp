@@ -3,6 +3,8 @@
 #pragma once
 
 #include <stdint.h>
+#include <time.h>
+
 #include "pin.hpp"
 
 /// \brief Emitter behavior when taking readings.
