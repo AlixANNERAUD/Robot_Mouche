@@ -1,8 +1,9 @@
-/// \file QTRSensors.h
+/// \file QTRSensors.hpp
 
 #pragma once
 
 #include <stdint.h>
+#include "pin.hpp"
 
 /// \brief Emitter behavior when taking readings.
 ///
@@ -62,7 +63,7 @@ enum class QTREmitters : uint8_t {
 };
 
 /// Represents an undefined emitter control pin.
-const uint8_t QTRNoEmitterPin = 255;
+const PinClass QTRNoEmitterPin = PinClass(0xFF);
 
 /// Default timeout for RC sensors (in microseconds).
 const uint16_t QTRRCDefaultTimeout = 2500;
@@ -242,7 +243,7 @@ class QTRSensors
     /// instead when two are specified.
     ///
     /// See also setEmitterPin().
-    uint8_t getEmitterPin() { return _oddEmitterPin; }
+    PinClass getEmitterPin() { return _oddEmitterPin; }
 
     /// \brief Returns the odd emitter control pin.
     ///
@@ -254,7 +255,7 @@ class QTRSensors
     /// one is specified.
     ///
     /// See also getEvenEmitterPin() and setEmitterPins().
-    uint8_t getOddEmitterPin() { return _oddEmitterPin; }
+    PinClass getOddEmitterPin() { return _oddEmitterPin; }
 
     /// \brief Returns the even emitter control pin.
     ///
@@ -266,7 +267,7 @@ class QTRSensors
     /// one is specified.
     ///
     /// See also getOddEmitterPin() and setEmitterPins().
-    uint8_t getEvenEmitterPin()  { return _evenEmitterPin; }
+    PinClass getEvenEmitterPin()  { return _evenEmitterPin; }
 
     /// \brief Specifies that the sensors are dimmable.
     ///
@@ -549,7 +550,7 @@ class QTRSensors
 
   private:
 
-    uint16_t emittersOnWithPin(uint8_t pin);
+    uint16_t emittersOnWithPin(PinClass pin);
 
     // Handles the actual calibration, including (re)allocating and
     // initializing the storage for the calibration values if necessary.
@@ -561,15 +562,15 @@ class QTRSensors
 
     QTRType _type = QTRType::Undefined;
 
-    uint8_t * _sensorPins = nullptr;
+    PinClass * _sensorPins = nullptr;
     uint8_t _sensorCount = 0;
 
     uint16_t _timeout = QTRRCDefaultTimeout; // only used for RC sensors
     uint16_t _maxValue = QTRRCDefaultTimeout; // the maximum value returned by readPrivate()
     uint8_t _samplesPerSensor = 4; // only used for analog sensors
 
-    uint8_t _oddEmitterPin = QTRNoEmitterPin; // also used for single emitter pin
-    uint8_t _evenEmitterPin = QTRNoEmitterPin;
+    PinClass _oddEmitterPin = QTRNoEmitterPin; // also used for single emitter pin
+    PinClass _evenEmitterPin = QTRNoEmitterPin;
     uint8_t _emitterPinCount = 0;
 
     bool _dimmable = true;
