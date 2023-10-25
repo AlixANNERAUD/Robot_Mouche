@@ -41,9 +41,18 @@ function gameLoop() {
 
     let gpx = gp.axes[0];
     let gpy = gp.axes[1];
-    
-    cd_inner.style.left = `${gpx * rem * 3.5 + 2.5 * rem}px`;
-    cd_inner.style.top = `${gpy * rem * 3.5 + 2.5 * rem}px`;
+
+    // calculate x and y so that sqrt(x^2 + y^2) = 1
+    let x = gpx;
+    let y = gpy;
+    let r = Math.sqrt(x * x + y * y);
+    if (r > 1) {
+        x /= r;
+        y /= r;
+    }
+
+    cd_inner.style.left = `${x * rem * 3.5 + 2.5 * rem}px`;
+    cd_inner.style.top = `${y * rem * 3.5 + 2.5 * rem}px`;
 
     requestAnimationFrame(gameLoop);
 }
