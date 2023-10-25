@@ -5,7 +5,7 @@
 #include "settings.hpp"
 
 typedef void GamepadDirectionCallback(float, float);
-typedef void SettingsChangeCallback(float, float);
+typedef void SettingsChangeCallback(SettingsClass);
 
 class ServerClass
 {

@@ -6,7 +6,7 @@ ServerClass::ServerClass() {
     this->on_gamepad_direction = [](float, float) {
         LOG_WARNING("Server", "Unhandled gamepad direction!");
     };
-    this->on_settings_change = [](float, float) {
+    this->on_settings_change = [](SettingsClass) {
         LOG_WARNING("Server", "Unhandled settings change!");
     };
 }
@@ -17,6 +17,7 @@ void ServerClass::listen() {
     LOG_INFORMATION("Server", "Starting server");
 
     GamepadDirectionCallback *on_gamepad_direction = this->on_gamepad_direction;
+    SettingsChangeCallback *on_settings_change = this->on_settings_change;
 
     server.Post("/gamepad-direction", [on_gamepad_direction](const httplib::Request &req, httplib::Response &res)
     { 
@@ -39,7 +40,7 @@ void ServerClass::listen() {
         res.set_content("All good!", "text/plain"); 
     });
 
-    server.Post("/settings", [](const httplib::Request &req, httplib::Response &res)
+    server.Post("/settings", [on_settings_change](const httplib::Request &req, httplib::Response &res)
     { 
         // Body format: 1 byte for mode (0 = line follower, 1 = manual)
 
@@ -50,12 +51,15 @@ void ServerClass::listen() {
         }
 
         // Read body
+        RobotMode mode;
         switch (req.body[0]) {
             case 0:
                 LOG_DEBUG("Server", "Settings request received: Line follower");
+                mode = RobotMode::LineFollower;
                 break;
             case 1:
                 LOG_DEBUG("Server", "Settings request received: Manual");
+                mode = RobotMode::Manual;
                 break;
             default:
                 LOG_ERROR("Server", "Settings request received: Unknown mode");
@@ -65,6 +69,7 @@ void ServerClass::listen() {
 
         // Respond
         LOG_INFORMATION("Server", "Settings request received: All good!");
+        on_settings_change(SettingsClass(mode));
         res.set_content("All good!", "text/plain"); 
     });
 

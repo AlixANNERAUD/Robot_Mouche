@@ -13,6 +13,7 @@ class SettingsClass
 {
 public:
     SettingsClass();
+    SettingsClass(RobotMode mode);
 
     RobotMode mode;
 };
