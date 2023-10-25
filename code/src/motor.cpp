@@ -2,6 +2,10 @@
 
 #include "log.hpp"
 
+#ifdef RASPBERRY_PI
+    #include "wiringPi.h"
+#endif
+
 #include <string>
 
 MotorClass::MotorClass(PinClass &Enabled, PinClass &A1, PinClass &A2) : valid(false),
@@ -25,7 +29,7 @@ MotorClass::MotorClass(PinClass &Enabled, PinClass &A1, PinClass &A2) : valid(fa
 
 #ifdef RASPBERRY_PI
     pwmSetMode(PWM_MODE_MS);
-    pwmSetClock(192);
+    pwmSetClock(384);
 #endif
 }
 

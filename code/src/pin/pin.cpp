@@ -12,9 +12,12 @@ PinClass::PinClass(unsigned int pin) : pin(pin)
     if (convertToWiringPi(pin) == 0xFFFFFFFF)
     {
         LOG_ERROR("Pin", "Pin %i is not a valid pin.", pin);
+        this->wiringPiPin = 0xFFFFFFFF;
         this->valid = false;
         return;
     }
+    this->wiringPiPin = convertToWiringPi(pin);
+    LOG_INFORMATION("Pin", "Pin %i is valid : %i", this->pin, this->wiringPiPin);
     // Check if pin is already in use
     for (auto pin : PinClass::pins)
     {
@@ -102,6 +105,10 @@ unsigned int PinClass::convertToWiringPi(unsigned int pin)
         return 5;
     case 25:
         return 6;
+    case 26:
+        return 25;
+    case 27:
+        return 2;
     default:
         return 0xFFFFFFFF;
     }
