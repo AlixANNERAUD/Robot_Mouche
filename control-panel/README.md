@@ -1,5 +1,5 @@
 Web control panel for driving the robot.
-Connects to the robot using a websocket.
+Connects to the robot using an HTTP API.
 
 ## Running
 
