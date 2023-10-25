@@ -1,5 +1,11 @@
 console.log("Hello World!");
 
+let controller_title = document.getElementById("controller-title");
+let controller_display = document.getElementById("controller-display");
+let cd_inner = controller_display.firstElementChild;
+let cd_bounding_rect = controller_display.getBoundingClientRect();
+let rem = cd_bounding_rect.width / 7;
+
 window.addEventListener("gamepadconnected", (e) => {
     console.log(
         "Gamepad connected at index %d: %s. %d buttons, %d axes.",
@@ -8,7 +14,8 @@ window.addEventListener("gamepadconnected", (e) => {
         e.gamepad.buttons.length,
         e.gamepad.axes.length,
     );
-    gameLoop();    
+    controller_title.innerText = "Controller";
+    gameLoop();
 });
 
 window.addEventListener("gamepaddisconnected", (e) => {
@@ -17,6 +24,7 @@ window.addEventListener("gamepaddisconnected", (e) => {
         e.gamepad.index,
         e.gamepad.id,
     );
+    controller_title.innerText = "Controller (disconnected)";
 });
 
 function buttonPressed(b) {
@@ -25,11 +33,6 @@ function buttonPressed(b) {
     }
     return b === 1.0;
 }
-
-let controller_display = document.querySelector("#controller-display");
-let cd_inner = controller_display.firstElementChild;
-let cd_bounding_rect = controller_display.getBoundingClientRect();
-let rem = cd_bounding_rect.width / 7;
 
 function gameLoop() {
     const gamepads = navigator.getGamepads();
