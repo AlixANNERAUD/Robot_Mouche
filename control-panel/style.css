@@ -11,11 +11,29 @@ body {
 
 .panel {
     min-height: 100%;
-    flex-grow: 1;
+    width: calc((100% - 2px) / 2);
 }
 
 #separator-line {
     background-color: #ddd;
     width: 2px;
     min-height: 100%;
+}
+
+/* Controller display */
+
+#controller-display {
+    width: 7rem;
+    height: 7rem;
+    box-sizing: border-box;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    background-color: #eee;
+}
+
+#controller-display>div {
+    width: 2rem;
+    height: 2rem;
+    background-color: #aaa;
+    border-radius: 50%;
 }
