@@ -16,6 +16,10 @@ body {
     padding: 1rem 2rem;
 }
 
+h2 {
+    margin: 2.5rem 0 .5rem 0;
+}
+
 #separator-line {
     background-color: #ddd;
     width: 2px;
