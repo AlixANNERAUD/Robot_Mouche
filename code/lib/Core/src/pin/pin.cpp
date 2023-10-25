@@ -11,7 +11,6 @@ PinClass::PinClass(unsigned int pin) : pin(pin)
     // Check if pin is valid
     if (convertToWiringPi(pin) == 0xFFFFFFFF)
     {
-        LOG_ERROR("Pin", "Pin %i is not a valid pin.", pin);
         this->valid = false;
         return;
     }

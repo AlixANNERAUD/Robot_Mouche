@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <time.h>
 
+#include "log.hpp"
 
 void QTRSensors::setTypeRC()
 {
@@ -23,8 +24,7 @@ void QTRSensors::setSensorPins(const uint8_t * pins, uint8_t sensorCount)
 
   // (Re)allocate and initialize the array if necessary.
   PinClass * oldSensorPins = _sensorPins;
-  _sensorPins = (PinClass *)realloc(_sensorPins, sizeof(uint8_t) * sensorCount);
-
+  _sensorPins = (PinClass *)realloc(_sensorPins, sizeof(PinClass) * sensorCount);
   if (_sensorPins == nullptr)
   {
     // Memory allocation failed; don't continue.

@@ -57,8 +57,8 @@
 
 #if LOG_LEVEL >= 4
 #define LOG_DEBUG(Module_Name, Format, ...) LOG_ALL(Module_Name, LOG_WHITE, "Debug", Format, ##__VA_ARGS__)
-#define LOG_TRACE() LOG_ALL("Trace", "Debug", " - ");
-#define LOG_DUMP(Variable) LOG_ALL("Dump", "Debug", #Variable)
+#define LOG_TRACE() LOG_ALL("Trace", LOG_WHITE, "Debug", " - ");
+#define LOG_DUMP(Variable) LOG_ALL("Dump", LOG_WHITE, "Debug", #Variable)
 #else
 #define LOG_DEBUG(Module_Name, Format, ...)
 #define LOG_TRACE()
