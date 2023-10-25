@@ -64,6 +64,7 @@ void ServerClass::listen() {
         }
 
         // Respond
+        LOG_INFORMATION("Server", "Settings request received: All good!");
         res.set_content("All good!", "text/plain"); 
     });
 
