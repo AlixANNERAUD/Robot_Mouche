@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <cstdarg>
 
 #define AF_BASE 64
 #define AF_RS (AF_BASE + 0)
