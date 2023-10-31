@@ -1,0 +1,88 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-family: 'Roboto', sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: row;
+}
+
+.panel {
+    min-height: 100%;
+    width: calc((100% - 2px) / 2);
+    padding: 1rem 2rem;
+}
+
+h3 {
+    margin: 2.5rem 0 .5rem 0;
+}
+
+#separator-line {
+    background-color: #ddd;
+    width: 2px;
+    min-height: 100%;
+}
+
+/* Controller display */
+
+#controller-display {
+    position: relative;
+    width: 7rem;
+    height: 7rem;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    background-color: #eee;
+}
+
+#controller-display>div {
+    position: absolute;
+    width: 2rem;
+    height: 2rem;
+    background-color: #aaa;
+    border-radius: 50%;
+}
+
+/* IRS Sensors */
+
+#irs-sensors-display {
+    display: flex;
+    flex-direction: row;
+}
+
+
+#irs-sensors-display>div {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 2rem;
+    height: calc(1.618 * 2rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    margin-right: 1rem;
+}
+
+#irs-sensor-box-1, #irs-sensor-box-2, #irs-sensor-box-3, #irs-sensor-box-4, #irs-sensor-box-5, #irs-sensor-box-6 {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 4px;
+}
+
+#irs-sensor-box-1 { background-color: rgba(0, 0, 0, 0.2); }
+#irs-sensor-box-2 { background-color: rgba(0, 0, 0, 1.0); }
+#irs-sensor-box-3 { background-color: rgba(0, 0, 0, 1.0); }
+#irs-sensor-box-4 { background-color: rgba(0, 0, 0, 0.3); }
+#irs-sensor-box-5 { background-color: rgba(0, 0, 0, 0.04); }
+#irs-sensor-box-6 { background-color: rgba(0, 0, 0, 0.05); }
+
+/* Settings */
+
+input[type="text"] {
+    all: unset;
+    border: 1px solid black;
+    border-radius: 4px;
+    padding: 0.3rem;
+}
