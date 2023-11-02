@@ -8,7 +8,7 @@
 - 1620A : 16x2 LCD Display
 - PCF8574T : I2C to 8-bit GPIO expander (for 1620A).
 - [Benewake SJ-GU-TF-Luna](https://www.gotronic.fr/pj2-sj-pm-tf-luna-a03-product-manual-2195.pdf) : Short-range LiDAR distance sensor.
-- [ST Microelectronics L293D](file:///home/alix_anneraud/T%C3%A9l%C3%A9chargements/l293d-1.pdf) : Push-pull four channel driver with diodes. Used here as a motor driver.
+- [ST Microelectronics L293D](https://www.st.com/resource/en/datasheet/l293d.pdf) : Push-pull four channel driver with diodes. Used here as a motor driver.
 
 ### Wiring
 
