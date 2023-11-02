@@ -3,14 +3,21 @@
 
 #include "pin.hpp"
 
+#include <atomic>
+
+#include <string>
+
 class LCDClass
 {
 public:
     LCDClass() = delete;
     LCDClass(PinClass& SDA, PinClass& SCL);
+    LCDClass(const LCDClass&) = delete;
+    LCDClass& operator=(const LCDClass&) = delete;
 
     void clear();
     void setCursor(unsigned int x, unsigned int y);
+    void print(const char* text);
     void printFormatted(const char* format, ...);
 
     bool isValid() const;
