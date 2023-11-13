@@ -21,7 +21,7 @@ I2CClass::I2CClass(PinClass &SDA, PinClass &SCL, char address) : handle(-1), SDA
 #ifdef RASPBERRY_PI
     this->handle = wiringPiI2CSetup(address);
 #else
-    this->Handle = 0;
+    this->handle = 0;
 #endif
 
     if (!this->isValid())

@@ -73,5 +73,15 @@ void LCDClass::setCursor(unsigned int x, unsigned int y)
     lcdPosition(this->handle, x, y);
 }
 
+void LCDClass::printFormatted(const char* format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    int i = snprintf(NULL, 0, format, args);
+    char buffer[i + 1];
+    snprintf(buffer, sizeof(buffer), format, args);
+    this->print(buffer);
+    va_end(args);
+}
 
 #endif
