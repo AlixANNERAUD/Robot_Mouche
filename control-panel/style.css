@@ -80,9 +80,21 @@ h3 {
 
 /* Settings */
 
-input[type="text"] {
+input[type="text"], input[type="number"] {
     all: unset;
     border: 1px solid black;
     border-radius: 4px;
     padding: 0.3rem;
+}
+
+#kp-ki-kd-settings {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+}
+
+#kp-ki-kd-settings>input {
+    width: 100%;
+    flex-shrink: 1;
+    margin-right: .5rem;
 }
