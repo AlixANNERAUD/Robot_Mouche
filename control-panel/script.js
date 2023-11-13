@@ -45,11 +45,23 @@ function postSettings() {
     let kp_ints = new Uint8Array(kp_bytes);
     let kd_ints = new Uint8Array(kd_bytes);
 
+    // Send request
     fetch(`${addr}/settings`, {
         method: "POST",
         body: new Uint8Array([mode, ...ki_ints, ...kp_ints, ...kd_ints]),
-    });
+    })
+        .then((res) => {
+            if (res.ok) {
+                console.log("Settings sent");
+            } else {
+                console.log("Error sending settings");
+            }
+        })
+        .catch((err) => {
+            console.log("Error sending settings");
+        });
 }
+document.getElementById("submit-settings").onclick = postSettings;
 
 function buttonPressed(b) {
     if (typeof b === "object") {

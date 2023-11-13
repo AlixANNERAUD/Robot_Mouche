@@ -80,11 +80,18 @@ h3 {
 
 /* Settings */
 
-input[type="text"], input[type="number"] {
+input[type="text"], input[type="number"], input[type="submit"] {
     all: unset;
     border: 1px solid black;
     border-radius: 4px;
     padding: 0.3rem;
+}
+
+input[type="submit"] {
+    background-color: #eee;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    margin-top: 2.5rem;
 }
 
 #kp-ki-kd-settings {
