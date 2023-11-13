@@ -27,6 +27,30 @@ window.addEventListener("gamepaddisconnected", (e) => {
     controller_title.innerText = "Controller (disconnected)";
 });
 
+function postSettings() {
+    // API addr
+    let addr = document.getElementById("robot-address").value;
+
+    // Get mode
+    let mode = 0;
+
+    // KI, KP, KD
+    let ki = document.getElementById("ki-input").value;
+    let kp = document.getElementById("kp-input").value;
+    let kd = document.getElementById("kd-input").value;
+    let ki_bytes = new Float64Array([ki]).buffer;
+    let kp_bytes = new Float64Array([kp]).buffer;
+    let kd_bytes = new Float64Array([kd]).buffer;
+    let ki_ints = new Uint8Array(ki_bytes);
+    let kp_ints = new Uint8Array(kp_bytes);
+    let kd_ints = new Uint8Array(kd_bytes);
+
+    fetch(`${addr}/settings`, {
+        method: "POST",
+        body: new Uint8Array([mode, ...ki_ints, ...kp_ints, ...kd_ints]),
+    });
+}
+
 function buttonPressed(b) {
     if (typeof b === "object") {
         return b.pressed;
