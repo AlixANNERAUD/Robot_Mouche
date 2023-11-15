@@ -16,6 +16,7 @@ public:
     SettingsClass(RobotMode mode);
 
     RobotMode mode;
+    double KP, KI, KD;
 };
 
 #endif // SETTINGS_HPP_INCLUDED

@@ -37,6 +37,7 @@ void ServerClass::listen() {
         on_gamepad_direction(x, y);
 
         // Respond
+        res.set_header("Access-Control-Allow-Origin", "*");
         res.set_content("All good!", "text/plain"); 
     });
 
@@ -44,32 +45,36 @@ void ServerClass::listen() {
     { 
         // Body format: 1 byte for mode (0 = line follower, 1 = manual)
 
-        if (req.body.length() != 1) {
+        if (req.body.length() != 1+3*8) {
             LOG_ERROR("Server", "Settings request body wrong length!");
             res.set_content("Settings request body wrong length!", "text/plain");
             return;
         }
 
         // Read body
-        RobotMode mode;
+        SettingsClass settings = SettingsClass();
         switch (req.body[0]) {
             case 0:
                 LOG_DEBUG("Server", "Settings request received: Line follower");
-                mode = RobotMode::LineFollower;
+                settings.mode = RobotMode::LineFollower;
                 break;
             case 1:
                 LOG_DEBUG("Server", "Settings request received: Manual");
-                mode = RobotMode::Manual;
+                settings.mode = RobotMode::Manual;
                 break;
             default:
                 LOG_ERROR("Server", "Settings request received: Unknown mode");
                 res.set_content("Settings request received: Unknown mode", "text/plain");
                 return;
         }
+        settings.KP = *(double *)req.body.substr(1, 9).c_str();
+        settings.KI = *(double *)req.body.substr(9, 9).c_str();
+        settings.KD = *(double *)req.body.substr(17, 9).c_str();
 
         // Respond
         LOG_INFORMATION("Server", "Settings request received: All good!");
-        on_settings_change(SettingsClass(mode));
+        on_settings_change(settings);
+        res.set_header("Access-Control-Allow-Origin", "*");
         res.set_content("All good!", "text/plain"); 
     });
 
