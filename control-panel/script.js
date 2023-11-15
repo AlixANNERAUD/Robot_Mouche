@@ -34,21 +34,24 @@ function postSettings() {
     // Get mode
     let mode = 0;
 
-    // KI, KP, KD
-    let ki = document.getElementById("ki-input").value;
+    // KP, KI, KD
     let kp = document.getElementById("kp-input").value;
+    let ki = document.getElementById("ki-input").value;
     let kd = document.getElementById("kd-input").value;
-    let ki_bytes = new Float64Array([ki]).buffer;
-    let kp_bytes = new Float64Array([kp]).buffer;
-    let kd_bytes = new Float64Array([kd]).buffer;
-    let ki_ints = new Uint8Array(ki_bytes);
-    let kp_ints = new Uint8Array(kp_bytes);
-    let kd_ints = new Uint8Array(kd_bytes);
+    console.log(kp);
+    let kp_array = new Float64Array([kp]).buffer;
+    let ki_array = new Float64Array([ki]).buffer;
+    let kd_array = new Float64Array([kd]).buffer;
+    console.log(kp_array);
+    let kp_ints = new Uint8Array(kp_array);
+    let ki_ints = new Uint8Array(ki_array);
+    let kd_ints = new Uint8Array(kd_array);
+    console.log(kp_ints);
 
     // Send request
     fetch(`${addr}/settings`, {
         method: "POST",
-        body: new Uint8Array([mode, ...ki_ints, ...kp_ints, ...kd_ints]),
+        body: new Uint8Array([mode, ...kp_ints, ...ki_ints, ...kd_ints]),
     })
         .then((res) => {
             if (res.ok) {
