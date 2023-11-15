@@ -37,6 +37,7 @@ void ServerClass::listen() {
         on_gamepad_direction(x, y);
 
         // Respond
+        res.set_header("Access-Control-Allow-Origin", "*");
         res.set_content("All good!", "text/plain"); 
     });
 
@@ -73,6 +74,7 @@ void ServerClass::listen() {
         // Respond
         LOG_INFORMATION("Server", "Settings request received: All good!");
         on_settings_change(settings);
+        res.set_header("Access-Control-Allow-Origin", "*");
         res.set_content("All good!", "text/plain"); 
     });
 
