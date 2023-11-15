@@ -24,10 +24,18 @@ int main()
         return EXIT_FAILURE;
     }
 
-    //QTRSensors qtr;
+    QTRSensors qtr;
+    const uint8_t SensorCount = 3;
+    uint16_t sensorValues[SensorCount];
 
-    //const uint8_t SensorCount = 8;
-    //uint16_t sensorValues[SensorCount];
+    qtr.setTypeRC();
+    qtr.setSensorPins((const uint8_t[]){3, 4, 5, 6, 7, 8, 9, 10}, SensorCount);
+    qtr.setEmitterPin(2);
+    for (uint16_t i = 0; i < 400; i++)
+    {
+        qtr.calibrate();
+    }
+
 
     SettingsClass settings = SettingsClass();
 
@@ -45,9 +53,11 @@ int main()
 
     while (true)
     {
+        uint16_t position = qtr.readLineBlack(sensorValues);
         LOG_INFORMATION("Main", "Amplitude: %d", lidar.getAmplitude());
         LOG_INFORMATION("Main", "Distance: %d", lidar.getDistance());
         LOG_INFORMATION("Main", "Error: %d", lidar.getError());
+        LOG_INFORMATION("Main", "Position : %d", position);
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 
@@ -64,10 +74,6 @@ int main()
     MotorClass leftMotor(leftMotorEnabled, leftMotorA1, leftMotorA2);
 
     LOG_INFORMATION("Main", "Ir sensors");
-
-    //qtr.setTypeRC();
-    //qtr.setSensorPins((const uint8_t[]){3, 4, 5, 6, 7, 8, 9, 10}, SensorCount);
-    //qtr.setEmitterPin(2);
 
     LOG_INFORMATION("Main", "Starting program.");
 
