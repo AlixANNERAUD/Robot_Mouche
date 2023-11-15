@@ -2,6 +2,7 @@ console.log("Hello World!");
 
 let controller_title = document.getElementById("controller-title");
 let controller_display = document.getElementById("controller-display");
+let logs = document.getElementById("logs");
 let cd_inner = controller_display.firstElementChild;
 let cd_bounding_rect = controller_display.getBoundingClientRect();
 let rem = cd_bounding_rect.width / 7;
@@ -55,13 +56,13 @@ function postSettings() {
     })
         .then((res) => {
             if (res.ok) {
-                console.log("Settings sent");
+                logs.innerText += "Settings sent successfully\n";
             } else {
-                console.log("Error sending settings");
+                logs.innerText += "Error sending settings\n";
             }
         })
         .catch((err) => {
-            console.log("Error sending settings");
+            logs.innerText += `Error sending settings: ${err}\n`;
         });
 }
 document.getElementById("submit-settings").onclick = postSettings;

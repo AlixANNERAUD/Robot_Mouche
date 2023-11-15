@@ -91,7 +91,7 @@ input[type="submit"] {
     background-color: #eee;
     border: 1px solid #ddd;
     cursor: pointer;
-    margin-top: 2.5rem;
+    margin: 2.5rem 0;
 }
 
 #kp-ki-kd-settings {
