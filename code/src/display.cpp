@@ -53,14 +53,14 @@ void display(PinClass &SDA, PinClass &SCL)
 
                 
 
-                    for (size_t j = 16; j > 0; j--)
+                    for (size_t j = 16; j > 0; j-=2)
                     {
                         lcd.setCursor(j, 1);
                         lcd.printFormatted(currentLine.substr(0, 16 - j).c_str());
                         std::this_thread::sleep_for(std::chrono::milliseconds(250));
                     }
 
-                    for (size_t j = 0; j < currentLine.size(); j++)
+                    for (size_t j = 0; j < currentLine.size(); j+=2)
                     {
                         lcd.setCursor(0, 1);
                         lcd.printFormatted(currentLine.substr(j, 16).c_str());
@@ -69,7 +69,7 @@ void display(PinClass &SDA, PinClass &SCL)
 
                     // Outro
 
-                    for (size_t j = 16; j > 0; j--)
+                    for (size_t j = 16; j > 0; j-=2)
                     {
                         lcd.setCursor(j, 1);
                         lcd.printFormatted(currentLine.substr(0, 16 - j).c_str());
