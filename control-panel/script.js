@@ -39,20 +39,22 @@ function postSettings() {
     let kp = document.getElementById("kp-input").value;
     let ki = document.getElementById("ki-input").value;
     let kd = document.getElementById("kd-input").value;
-    console.log(kp);
     let kp_array = new Float64Array([kp]).buffer;
     let ki_array = new Float64Array([ki]).buffer;
     let kd_array = new Float64Array([kd]).buffer;
-    console.log(kp_array);
     let kp_ints = new Uint8Array(kp_array);
     let ki_ints = new Uint8Array(ki_array);
     let kd_ints = new Uint8Array(kd_array);
-    console.log(kp_ints);
+
+    // IRS threshold (integer)
+    let irs_threshold = document.getElementById("irs-threshold-input").value;
+    let irs_threshold_array = new Uint16Array([irs_threshold]).buffer;
+    let irs_threshold_ints = new Uint8Array(irs_threshold_array);
 
     // Send request
     fetch(`${addr}/settings`, {
         method: "POST",
-        body: new Uint8Array([mode, ...kp_ints, ...ki_ints, ...kd_ints]),
+        body: new Uint8Array([mode, ...kp_ints, ...ki_ints, ...kd_ints, ...irs_threshold_ints]),
     })
         .then((res) => {
             if (res.ok) {
