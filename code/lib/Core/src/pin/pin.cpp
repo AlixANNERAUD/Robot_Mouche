@@ -11,6 +11,8 @@ PinClass::PinClass(unsigned int pin) : pin(pin)
     // Check if pin is valid
     if (convertToWiringPi(pin) == 0xFFFFFFFF)
     {
+        LOG_ERROR("Pin", "Pin %i is not a valid pin.", pin);
+        this->wiringPiPin = 0xFFFFFFFF;
         this->valid = false;
         return;
     }
@@ -103,6 +105,10 @@ unsigned int PinClass::convertToWiringPi(unsigned int pin)
         return 5;
     case 25:
         return 6;
+    case 26:
+        return 25;
+    case 27:
+        return 2;
     default:
         return 0xFFFFFFFF;
     }

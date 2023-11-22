@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <cstdarg>
 
 #define AF_BASE 64
 #define AF_RS (AF_BASE + 0)
@@ -26,7 +27,7 @@
 #define AF_DB6 (AF_BASE + 6)
 #define AF_DB7 (AF_BASE + 7)
 
-LCDClass::LCDClass(PinClass& SDA, PinClass& SCL) : SDA(SDA), SCL(SCL), valid(true)
+LCDClass::LCDClass(PinClass& SDA, PinClass& SCL) : valid(true), SDA(SDA), SCL(SCL)
 {
     if (!SDA.isValid() || !SCL.isValid())
     {
@@ -35,7 +36,7 @@ LCDClass::LCDClass(PinClass& SDA, PinClass& SCL) : SDA(SDA), SCL(SCL), valid(tru
         return;
     }
 
-    if (pcf8574Setup(AF_BASE, 0x27) != 1)
+    if (pcf8574Setup(AF_BASE, 0x27) == -1)
     {
         LOG_ERROR("LCD", "Failed to setup PCF8574.");
         this->valid = false;
@@ -44,19 +45,22 @@ LCDClass::LCDClass(PinClass& SDA, PinClass& SCL) : SDA(SDA), SCL(SCL), valid(tru
 
     this->handle = lcdInit(2, 16, 4, AF_RS, AF_E, AF_DB4, AF_DB5, AF_DB6, AF_DB7, 0, 0, 0, 0);
 
-    if (this->handle == -1)
+    if (this->handle < 0)
     {
         LOG_ERROR("LCD", "Failed to initialize LCD.");
         this->valid = false;
         return;
     }
 
+    // Set all pins to output on the PCF8574
     for (int i = 0; i < 8; i++)
-    {
         pinMode(AF_BASE + i, OUTPUT);
-    }
+    
+
     digitalWrite(AF_LED, 1);
     digitalWrite(AF_RW, 0);
+
+    this->clear();
 }
 
 void LCDClass::clear()
@@ -73,9 +77,11 @@ void LCDClass::printFormatted(const char* format, ...)
 {
     va_list args;
     va_start(args, format);
-    lcdPrintf(this->handle, format, args);
+    int i = snprintf(NULL, 0, format, args);
+    char buffer[i + 1];
+    snprintf(buffer, sizeof(buffer), format, args);
+    this->print(buffer);
     va_end(args);
 }
-
 
 #endif

@@ -38,6 +38,7 @@ class PinClass {
 
     private:        
         unsigned int pin;
+        unsigned int wiringPiPin;
         bool valid;
 
 #ifdef NATIVE

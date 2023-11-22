@@ -1,3 +1,5 @@
+#include "main.hpp"
+
 #include <stdio.h>
 #include "log.hpp"
 #include "pin.hpp"
@@ -5,24 +7,14 @@
 #include "settings.hpp"
 #include "qtr.hpp"
 
-#include <thread>
+#include "motor.hpp"
+#include "lidar.hpp"
 
 #include "httplib.h"
 
-void executeServer()
-{
-    httplib::Server svr;
-
-    svr.Get("/hi", [](const httplib::Request &, httplib::Response &res)
-            { res.set_content("Hello World!", "text/plain"); });
-
-    svr.listen("0.0.0.0", 8080);
-}
-
-QTRSensors qtr;
-
-const uint8_t SensorCount = 8;
-uint16_t sensorValues[SensorCount];
+#include <thread>
+#include <chrono>
+#include <thread>
 
 int main()
 {
@@ -76,7 +68,6 @@ int main()
         printf("Sensor 3: %d\n", times[2]);
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
-    
 
     return EXIT_SUCCESS;
 }

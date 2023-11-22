@@ -1,6 +1,7 @@
 #ifdef RASPBERRY_PI
 
 #include "pin.hpp"
+#include "log.hpp"
 
 #include <wiringPi.h>
 
@@ -10,8 +11,20 @@ void PinClass::setMode(PinMode mode)
     {
         LOG_ERROR("Pin", "Pin instance %i is not valid.", this->pin);
         return;
-    }    
-    pinMode(this->pin, (int)mode);
+    }
+
+    switch (mode)
+    {
+    case PinMode::Input:
+        pinMode(this->wiringPiPin, INPUT);
+        break;
+    case PinMode::Output:
+        pinMode(this->wiringPiPin, OUTPUT);
+        break;
+    case PinMode::PwmOutput:
+        pinMode(this->wiringPiPin, PWM_OUTPUT);
+        break;
+    }
 }
 
 void PinClass::writeDigital(DigitalState value)
@@ -21,7 +34,17 @@ void PinClass::writeDigital(DigitalState value)
         LOG_ERROR("Pin", "Pin instance %i is not valid.", this->pin);
         return;
     }
-    digitalWrite(this->pin, (int)value);
+
+    switch (value)
+    {
+    case DigitalState::High:
+
+        digitalWrite(this->wiringPiPin, HIGH);
+        break;
+    case DigitalState::Low:
+        digitalWrite(this->wiringPiPin, LOW);
+        break;
+    }
 }
 
 DigitalState PinClass::readDigital() const
@@ -31,13 +54,10 @@ DigitalState PinClass::readDigital() const
         LOG_ERROR("Pin", "Pin instance %i is not valid.", this->pin);
         return DigitalState::Low;
     }
-    switch (digitalRead(this->pin))
-    {
-    case HIGH:
+    if (digitalRead(this->wiringPiPin) == HIGH)
         return DigitalState::High;
-    case LOW:
-        return DigitalState::Low;
-    }
+
+    return DigitalState::Low;
 }
 
 void PinClass::writeAnalog(unsigned int value)
@@ -47,7 +67,8 @@ void PinClass::writeAnalog(unsigned int value)
         LOG_ERROR("Pin", "Pin instance %i is not valid.", this->pin);
         return;
     }
-    analogWrite(this->pin, value);
+    LOG_VERBOSE("Pin", "Analog write %i on pin %i (%i)", value, this->pin, this->wiringPiPin);
+    pwmWrite(this->wiringPiPin, value);
 }
 
 int PinClass::readAnalog() const
@@ -57,14 +78,14 @@ int PinClass::readAnalog() const
         LOG_ERROR("Pin", "Pin instance %i is not valid.", this->pin);
         return 0;
     }
-    return analogRead(this->pin);
+    return analogRead(this->wiringPiPin);
 }
 
 bool PinClass::initialize()
 {
     if (wiringPiSetup() == -1)
         return false;
-        
+
     return true;
 }
 

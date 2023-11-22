@@ -66,7 +66,7 @@
 #endif
 
 #if LOG_LEVEL >= 5
-#define LOG_VERBOSE(Module_Name, Format, ...) LOG_ALL(Module_Name, "Verbose", Format, ##__VA_ARGS__)
+#define LOG_VERBOSE(Module_Name, Format, ...) LOG_ALL(Module_Name, LOG_WHITE, "Verbose", Format, ##__VA_ARGS__)
 #else
 #define LOG_VERBOSE(Module_Name, Format, ...)
 #endif

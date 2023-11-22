@@ -55,5 +55,4 @@ void LCDClass::printFormatted(const char* format, ...)
     LOG_INFORMATION("LCD", "Printed \"%s\" to LCD.", this->buffer);
 }
 
-
 #endif
