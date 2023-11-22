@@ -2,7 +2,8 @@
 #include "log.hpp"
 #include "pin.hpp"
 #include "lcd.hpp"
-#include "QTRSensors.hpp"
+#include "settings.hpp"
+#include "qtr.hpp"
 
 #include <thread>
 
@@ -31,34 +32,49 @@ int main()
         return EXIT_FAILURE;
     }
 
+
+    SettingsClass settings = SettingsClass();
+
+    PinClass I2C_SDA(2), I2C_SCL(3);
+
+    display(I2C_SDA, I2C_SCL);
+
+    server();
+
     LOG_INFORMATION("Main", "Initialized pin class.");
 
-    std::thread(executeServer).detach();
+    LiDARClass lidar(I2C_SDA, I2C_SCL);
+    if (!lidar.isValid())
+        return EXIT_FAILURE;
 
-    PinClass Pin(2);
+    PinClass leftMotorEnabled(19);
+    PinClass leftMotorA1(17);
+    PinClass leftMotorA2(27);
 
-    Pin.setMode(PinMode::Output);
+    PinClass rightMotorEnabled(13);
+    PinClass rightMotorA1(23);
+    PinClass rightMotorA2(24);
+
+    MotorClass rightMotor(rightMotorEnabled, rightMotorA1, rightMotorA2);
+    MotorClass leftMotor(leftMotorEnabled, leftMotorA1, leftMotorA2);
 
     LOG_INFORMATION("Main", "Ir sensors");
-    qtr.setTypeRC();
-    qtr.setSensorPins((const uint8_t[]){3, 4, 5, 6, 7, 8, 9, 10}, SensorCount);
-    qtr.setEmitterPin(2);
 
     LOG_INFORMATION("Main", "Starting program.");
 
+    PinClass sensor1(18);
+    PinClass sensor2(23);
+    PinClass sensor3(24);
+
+    QTRClass qtrClass(sensor1, sensor2, sensor3);
+
     while (true)
     {
-        uint16_t position = qtr.readLineBlack(sensorValues);
-
-        // print the sensor values as numbers from 0 to 1000, where 0 means maximum
-        // reflectance and 1000 means minimum reflectance, followed by the line
-        // position
-        for (uint8_t i = 0; i < SensorCount; i++)
-        {
-            LOG_INFORMATION("Main", "%d", sensorValues[i]);
-        }
-        LOG_INFORMATION("Main", "%d", position);
-
+        auto times = qtrClass.getTimesElapsed();
+        printf("Sensor 1: %d\n", times[0]);
+        printf("Sensor 2: %d\n", times[1]);
+        printf("Sensor 3: %d\n", times[2]);
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
     
 

@@ -14,6 +14,8 @@ PinClass::PinClass(unsigned int pin) : pin(pin)
         this->valid = false;
         return;
     }
+    this->wiringPiPin = convertToWiringPi(pin);
+    LOG_VERBOSE("Pin", "Pin %i is valid : %i", pin, this->wiringPiPin);
     // Check if pin is already in use
     for (auto pin : PinClass::pins)
     {
