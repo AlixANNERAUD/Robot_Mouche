@@ -63,6 +63,6 @@ std::array<clock_t, 3> QTRClass::getTimesElapsed() const
 {
     std::array<clock_t, 3> times;
     for (int i = 0; i < 3; i++)
-        times[i] = this->start_times[i] - clock();
+        times[i] = clock() - this->start_times[i];
     return times;
 }
