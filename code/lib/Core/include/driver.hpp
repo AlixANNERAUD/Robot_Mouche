@@ -35,6 +35,7 @@ private:
     float linePosition;
 
     float computeLinePosition();
+    void update();
 };
 
 #endif
