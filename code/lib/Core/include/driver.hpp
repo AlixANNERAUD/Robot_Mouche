@@ -4,7 +4,7 @@
 #include "pin.hpp"
 #include "lidar.hpp"
 #include "motor.hpp"
-#include "QTRSensors.hpp"
+#include "qtr.hpp"
 #include "settings.hpp"
 #include "pin.hpp"
 #include "pid.hpp"
@@ -13,7 +13,7 @@ class DriverClass
 {
 public:
     DriverClass() = delete;
-    DriverClass(MotorClass &left, MotorClass &right, QTRSensors &qtr, SettingsClass &settings);
+    DriverClass(MotorClass &left, MotorClass &right, QTRClass &qtr1, QTRClass &qtr2, SettingsClass &settings);
     
     void run();
     void stop();
@@ -21,11 +21,14 @@ public:
     void setSpeed(float speed);
     void setDirection(float direction);
 
+    double computeLinePosition();
+
 private:
     bool running;
     MotorClass &left;
     MotorClass &right;
-    QTRSensors &qtr;
+    QTRClass &qtr1;
+    QTRClass &qtr2;
     SettingsClass &settings;
 
     PidControlClass pid;
@@ -34,7 +37,6 @@ private:
     float steering;
     float linePosition;
 
-    float computeLinePosition();
     void update();
 };
 
