@@ -83,4 +83,5 @@ void ServerClass::listen() {
     });
 
     server.listen("0.0.0.0", 8080);
+    LOG_INFORMATION("Server", "Server stopped");
 }

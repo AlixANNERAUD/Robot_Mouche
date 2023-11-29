@@ -102,18 +102,7 @@ function buttonPressed(b) {
     return b === 1.0;
 }
 
-function loop() {
-    const gamepads = navigator.getGamepads();
-    if (!gamepads) {
-        return;
-    }
-
-    const gp = gamepads[0];
-
-    let gpx = gp.axes[0];
-    let gpy = gp.axes[1];
-    postGamepadDirection(gpx, gpy);
-
+function update_gamepad_display(gpx, gpy) {
     // calculate x and y so that sqrt(x^2 + y^2) = 1
     let x = gpx;
     let y = gpy;
@@ -126,5 +115,43 @@ function loop() {
     cd_inner.style.left = `${x * rem * 3.5 + 2.5 * rem}px`;
     cd_inner.style.top = `${y * rem * 3.5 + 2.5 * rem}px`;
 
+}
+
+function loop() {
+    const gamepads = navigator.getGamepads();
+    if (!gamepads) {
+        return;
+    }
+
+    const gp = gamepads[0];
+
+    let gpx = gp.axes[0];
+    let gpy = gp.axes[1];
+    postGamepadDirection(gpx, gpy);
+    update_gamepad_display(gpx, gpy);
     requestAnimationFrame(loop);
 }
+
+document.addEventListener("keydown", (e) => {
+    if (e.key == "ArrowLeft") {
+        gpx = -1;
+        gpy = 0;
+        update_gamepad_display(gpx, gpy);
+        postGamepadDirection(-1, 0);
+    } else if (e.key == "ArrowRight") {
+        gpx = 1;
+        gpy = 0;
+        update_gamepad_display(gpx, gpy);
+        postGamepadDirection(1, 0);
+    } else if (e.key == "ArrowUp") {
+        gpx = 0;
+        gpy = -1;
+        update_gamepad_display(gpx, gpy);
+        postGamepadDirection(0, -1);
+    } else if (e.key == "ArrowDown") {
+        gpx = 0;
+        gpy = 1;
+        update_gamepad_display(gpx, gpy);
+        postGamepadDirection(0, 1);
+    }
+});
