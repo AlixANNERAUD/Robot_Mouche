@@ -85,5 +85,30 @@ void ServerClass::listen() {
         res.set_content("All good!", "text/plain");
     });
 
+    server.Get("/state", [this](const httplib::Request &req, httplib::Response &res)
+    {
+        // Get times   
+        std::array<clock_t, 3> qtr1 = this->qtr1->getTimesElapsed();
+        clock_t t1 = qtr1[0];
+        clock_t t2 = qtr1[1];
+        clock_t t3 = qtr1[2];
+        std::array<clock_t, 3> qtr2 = this->qtr2->getTimesElapsed();
+        clock_t t4 = qtr2[0];
+        clock_t t5 = qtr2[1];
+        clock_t t6 = qtr2[2];
+
+        // Gather in body
+        char body[sizeof(clock_t)*6];
+        *(clock_t *)body = t1;
+        *(clock_t *)(body+sizeof(clock_t)) = t2;
+        *(clock_t *)(body+sizeof(clock_t)*2) = t3;
+        *(clock_t *)(body+sizeof(clock_t)*3) = t4;
+        *(clock_t *)(body+sizeof(clock_t)*4) = t5;
+        *(clock_t *)(body+sizeof(clock_t)*5) = t6;
+
+        res.set_header("Access-Control-Allow-Origin", "*");
+        res.set_content(body, sizeof(clock_t)*6, "application/octet-stream");
+    });
+
     server.listen("0.0.0.0", 8080);
 }
