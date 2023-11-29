@@ -14,7 +14,7 @@ class DriverClass
 {
 public:
     DriverClass() = delete;
-    DriverClass(MotorClass &left, MotorClass &right, QTRClass &qtr1, QTRClass &qtr2, SettingsClass &settings);
+    DriverClass(MotorClass &left, MotorClass &right, QTRClass &qtr1, QTRClass &qtr2);
     
     void start();
     void stop();
@@ -22,17 +22,21 @@ public:
     void setSpeed(float speed);
     void setDirection(float direction);
 
+    // - Callbocks
     void updatePidConstants(SettingsClass settings);
+    void updateGamepad(float direction, float speed);
 
     double computeLinePosition();
 
 private:
+    RobotMode mode;
+
     std::atomic_bool running;
     MotorClass &left;
     MotorClass &right;
     QTRClass &qtr1;
     QTRClass &qtr2;
-    SettingsClass &settings;
+    SettingsClass settings;
 
     PidControlClass pid;
 
