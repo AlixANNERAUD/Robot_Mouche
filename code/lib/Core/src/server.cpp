@@ -19,8 +19,8 @@ void ServerClass::listen() {
 
     LOG_INFORMATION("Server", "Starting server");
 
-    GamepadDirectionCallback *on_gamepad_direction = this->on_gamepad_direction;
-    SettingsChangeCallback *on_settings_change = this->on_settings_change;
+    auto on_gamepad_direction = this->on_gamepad_direction;
+    auto on_settings_change = this->on_settings_change;
 
     server.Post("/gamepad-direction", [on_gamepad_direction](const httplib::Request &req, httplib::Response &res)
     { 

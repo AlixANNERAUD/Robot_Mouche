@@ -37,8 +37,6 @@ void LCDClass::setCursor(unsigned int x, unsigned int y)
 
     this->x = x;
     this->y = y;
-
-    LOG_INFORMATION("LCD", "Set cursor to (%i, %i).", this->x, this->y);
 }
 
 void LCDClass::printFormatted(const char* format, ...)
@@ -52,7 +50,6 @@ void LCDClass::printFormatted(const char* format, ...)
     va_start(args, format);
     snprintf(this->buffer, sizeof(buffer), format, args);
     va_end(args);
-    LOG_INFORMATION("LCD", "Printed \"%s\" to LCD.", this->buffer);
 }
 
 #endif

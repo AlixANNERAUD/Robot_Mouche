@@ -5,6 +5,8 @@
 #include "qtr.hpp"
 #include "settings.hpp"
 
+#include <functional>
+
 typedef void GamepadDirectionCallback(float, float);
 typedef void SettingsChangeCallback(SettingsClass);
 
@@ -19,6 +21,8 @@ public:
     SettingsChangeCallback *on_settings_change;
     QTRClass *qtr1;
     QTRClass *qtr2;
+    std::function<void(float, float)> on_gamepad_direction;
+    std::function<void(SettingsClass)> on_settings_change;
 };
 
 #endif // SERVER_HPP_INCLUDED
