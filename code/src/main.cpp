@@ -54,16 +54,16 @@ int main()
 
     LOG_INFORMATION("Main", "Starting program.");
 
-    PinClass sensor1(18);
-    PinClass sensor2(23);
-    PinClass sensor3(24);
+    PinClass sensor11(18);
+    PinClass sensor21(23);
+    PinClass sensor31(24);
 
-    QTRClass qtr1(sensor1, sensor2, sensor3);
+    QTRClass qtr1(sensor11, sensor21, sensor31);
 
-    PinClass sensor1(18); // Change it
-    PinClass sensor2(23); // Change it
-    PinClass sensor3(24); // Change it
-    QTRClass qtr2(sensor1, sensor2, sensor3);
+    PinClass sensor12(18); // Change it
+    PinClass sensor22(23); // Change it
+    PinClass sensor32(24); // Change it
+    QTRClass qtr2(sensor12, sensor22, sensor32);
     DriverClass driver(leftMotor, rightMotor, qtr1, qtr2, settings);
    
 
