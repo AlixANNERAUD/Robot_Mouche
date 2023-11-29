@@ -7,8 +7,8 @@
 
 using namespace std;
 
-DriverClass::DriverClass(MotorClass &left, MotorClass &right, QTRClass &qtr1, QTRClass &qtr2)
-    : running(false), left(left), right(right), qtr1(qtr1), qtr2(qtr2), settings(settings), pid(settings.KP, settings.KI, settings.KD, 0.0), mode(RobotMode::Manual)
+DriverClass::DriverClass(LiDARClass& lidar, MotorClass &left, MotorClass &right, QTRClass &qtr1, QTRClass &qtr2)
+    : running(false), left(left), right(right), qtr1(qtr1), qtr2(qtr2), settings(settings), pid(settings.KP, settings.KI, settings.KD, 0.0), mode(RobotMode::Manual), lidar(lidar)
 {
     this->speed = 0.0f;
     this->steering = 0.0f;
@@ -72,13 +72,22 @@ void DriverClass::update()
     if (this->mode == RobotMode::LineFollower)
     {
         this->steering = std::clamp((float)(this->pid.getSteering(this->linePosition, clock()) / 1024.0), -1.0f, 1.0f); // NOMALIZE it from -1.0 to 1.0
+
+
     }
 
     float speedLeft = std::min(this->speed - this->steering, 1.0f) * 1024.0f;
     float speedRight = std::min(this->speed - this->steering, 1.0f) * 1024.0f;
 
+    if (this->mode == RobotMode::LineFollower && this->lidar.getDistance() < 100)
+    {
+        speedLeft = 0;
+        speedRight = 0;
+    }
+    
     this->left.setSpeed((unsigned int)speedLeft);
     this->right.setSpeed((unsigned int)speedRight);
+    
 }
 
 void DriverClass::stop()
@@ -109,6 +118,8 @@ void DriverClass::setDirection(float direction)
 
 void DriverClass::updateGamepad(float direction, float speed)
 {
+    if (this->settings.mode == RobotMode::LineFollower)
+        return;
     this->setSpeed(speed);
     this->setDirection(direction);
 }

@@ -14,7 +14,7 @@ class DriverClass
 {
 public:
     DriverClass() = delete;
-    DriverClass(MotorClass &left, MotorClass &right, QTRClass &qtr1, QTRClass &qtr2);
+    DriverClass(LiDARClass& lidar, MotorClass &left, MotorClass &right, QTRClass &qtr1, QTRClass &qtr2);
     
     void start();
     void stop();
@@ -36,6 +36,7 @@ private:
     MotorClass &right;
     QTRClass &qtr1;
     QTRClass &qtr2;
+    LiDARClass &lidar;
     SettingsClass settings;
 
     PidControlClass pid;

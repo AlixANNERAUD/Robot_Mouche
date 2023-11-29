@@ -59,7 +59,7 @@ int main()
     PinClass sensor22(23); // Change it
     PinClass sensor32(24); // Change it
     QTRClass qtr2(sensor12, sensor22, sensor32);
-    DriverClass driver(leftMotor, rightMotor, qtr1, qtr2);
+    DriverClass driver(lidar, leftMotor, rightMotor, qtr1, qtr2);
 
     server(driver);
 
