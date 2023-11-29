@@ -31,7 +31,18 @@ int main()
 
     display(I2C_SDA, I2C_SCL);
 
-    server();
+    PinClass sensor11(18);
+    PinClass sensor21(23);
+    PinClass sensor31(24);
+
+    QTRClass qtr1(sensor11, sensor21, sensor31);
+
+    PinClass sensor12(18); // Change it
+    PinClass sensor22(23); // Change it
+    PinClass sensor32(24); // Change it
+    QTRClass qtr2(sensor12, sensor22, sensor32);
+
+    server(&qtr1, &qtr2);
 
     LOG_INFORMATION("Main", "Initialized pin class.");
 
@@ -54,18 +65,7 @@ int main()
 
     LOG_INFORMATION("Main", "Starting program.");
 
-    PinClass sensor11(18);
-    PinClass sensor21(23);
-    PinClass sensor31(24);
-
-    QTRClass qtr1(sensor11, sensor21, sensor31);
-
-    PinClass sensor12(18); // Change it
-    PinClass sensor22(23); // Change it
-    PinClass sensor32(24); // Change it
-    QTRClass qtr2(sensor12, sensor22, sensor32);
     DriverClass driver(leftMotor, rightMotor, qtr1, qtr2, settings);
    
-
     return EXIT_SUCCESS;
 }

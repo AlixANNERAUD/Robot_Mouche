@@ -1,8 +1,11 @@
 #include "server.hpp"
+#include "qtr.hpp"
 #include "log.hpp"
 #include "httplib.h"
 
-ServerClass::ServerClass() {
+ServerClass::ServerClass(QTRClass *qtr1, QTRClass *qtr2) {
+    this->qtr1 = qtr1;
+    this->qtr2 = qtr2;
     this->on_gamepad_direction = [](float, float) {
         LOG_WARNING("Server", "Unhandled gamepad direction!");
     };
