@@ -16,7 +16,7 @@ window.addEventListener("gamepadconnected", (e) => {
         e.gamepad.axes.length,
     );
     controller_title.innerText = "Controller";
-    gameLoop();
+    loop();
 });
 
 window.addEventListener("gamepaddisconnected", (e) => {
@@ -69,6 +69,32 @@ function postSettings() {
 }
 document.getElementById("submit-settings").onclick = postSettings;
 
+function postGamepadDirection(gpx, gpy) {
+    // API addr
+    let addr = document.getElementById("robot-address").value;
+
+    let gpx_array = new Float32Array([gpx]).buffer;
+    let gpy_array = new Float32Array([gpy]).buffer;
+    let gpx_ints = new Uint8Array(gpx_array);
+    let gpy_ints = new Uint8Array(gpy_array);
+
+    // Send request
+    fetch(`${addr}/gamepad-direction`, {
+        method: "POST",
+        body: new Uint8Array([...gpx_ints, ...gpy_ints]),
+    })
+        .then((res) => {
+            if (res.ok) {
+                logs.innerText += "Gamepad sent successfully\n";
+            } else {
+                logs.innerText += "Error sending gamepad\n";
+            }
+        })
+        .catch((err) => {
+            logs.innerText += `Error sending gamepad: ${err}\n`;
+        });
+}
+
 function buttonPressed(b) {
     if (typeof b === "object") {
         return b.pressed;
@@ -76,17 +102,7 @@ function buttonPressed(b) {
     return b === 1.0;
 }
 
-function gameLoop() {
-    const gamepads = navigator.getGamepads();
-    if (!gamepads) {
-        return;
-    }
-
-    const gp = gamepads[0];
-
-    let gpx = gp.axes[0];
-    let gpy = gp.axes[1];
-
+function update_gamepad_display(gpx, gpy) {
     // calculate x and y so that sqrt(x^2 + y^2) = 1
     let x = gpx;
     let y = gpy;
@@ -99,5 +115,43 @@ function gameLoop() {
     cd_inner.style.left = `${x * rem * 3.5 + 2.5 * rem}px`;
     cd_inner.style.top = `${y * rem * 3.5 + 2.5 * rem}px`;
 
-    requestAnimationFrame(gameLoop);
 }
+
+function loop() {
+    const gamepads = navigator.getGamepads();
+    if (!gamepads) {
+        return;
+    }
+
+    const gp = gamepads[0];
+
+    let gpx = gp.axes[0];
+    let gpy = gp.axes[1];
+    postGamepadDirection(gpx, gpy);
+    update_gamepad_display(gpx, gpy);
+    requestAnimationFrame(loop);
+}
+
+document.addEventListener("keydown", (e) => {
+    if (e.key == "ArrowLeft") {
+        gpx = -1;
+        gpy = 0;
+        update_gamepad_display(gpx, gpy);
+        postGamepadDirection(-1, 0);
+    } else if (e.key == "ArrowRight") {
+        gpx = 1;
+        gpy = 0;
+        update_gamepad_display(gpx, gpy);
+        postGamepadDirection(1, 0);
+    } else if (e.key == "ArrowUp") {
+        gpx = 0;
+        gpy = -1;
+        update_gamepad_display(gpx, gpy);
+        postGamepadDirection(0, -1);
+    } else if (e.key == "ArrowDown") {
+        gpx = 0;
+        gpy = 1;
+        update_gamepad_display(gpx, gpy);
+        postGamepadDirection(0, 1);
+    }
+});

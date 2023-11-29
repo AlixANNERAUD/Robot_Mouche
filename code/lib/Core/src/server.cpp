@@ -21,8 +21,8 @@ void ServerClass::listen() {
 
     server.Post("/gamepad-direction", [on_gamepad_direction](const httplib::Request &req, httplib::Response &res)
     { 
-        // Ensure body is long enough
-        if (req.body.length() < 8) {
+        // Ensure body is the right length
+        if (req.body.length() != 8) {
             LOG_ERROR("Server", "Gamepad direction request body too short!");
             res.set_content("Gamepad direction request body too short!", "text/plain"); 
             return;
@@ -83,4 +83,5 @@ void ServerClass::listen() {
     });
 
     server.listen("0.0.0.0", 8080);
+    LOG_INFORMATION("Server", "Server stopped");
 }
