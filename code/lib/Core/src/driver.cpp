@@ -15,10 +15,13 @@ DriverClass::DriverClass(MotorClass &left, MotorClass &right, QTRClass &qtr1, QT
 }
 
 void DriverClass::start() {
+    if (this->running)
+        return;
+
     std::thread(&DriverClass::run, this).detach();
 }
 
-void DriverClass::run() {
+void DriverClass::run() {        
     this->running = true;
     while (this->running)
     {
@@ -61,7 +64,6 @@ double DriverClass::computeLinePosition() {
 
 void DriverClass::update() {
     this->linePosition = this->computeLinePosition();
-                    
     this->steering = std::clamp((float)(this->pid.getSteering(this->linePosition, clock()) / 1024.0), -1.0f, 1.0f); // NOMALIZE it from -1.0 to 1.0
 
     float speedLeft = std::min(this->speed - this->steering, 1.0f) * 1024.0f;
