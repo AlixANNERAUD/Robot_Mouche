@@ -7,8 +7,20 @@ let cd_inner = controller_display.firstElementChild;
 let cd_bounding_rect = controller_display.getBoundingClientRect();
 let rem = cd_bounding_rect.width / 7;
 var info = {
+    t1: 0,
+    t2: 0,
+    t3: 0,
+    t4: 0,
+    t5: 0,
+    t6: 0,
     last_update: 0,
 };
+let qtr_value1 = document.querySelector("#irs-sensors-display>div:nth-child(1)>div:nth-child(2)");
+let qtr_value2 = document.querySelector("#irs-sensors-display>div:nth-child(2)>div:nth-child(2)");
+let qtr_value3 = document.querySelector("#irs-sensors-display>div:nth-child(3)>div:nth-child(2)");
+let qtr_value4 = document.querySelector("#irs-sensors-display>div:nth-child(4)>div:nth-child(2)");
+let qtr_value5 = document.querySelector("#irs-sensors-display>div:nth-child(5)>div:nth-child(2)");
+let qtr_value6 = document.querySelector("#irs-sensors-display>div:nth-child(6)>div:nth-child(2)");
 
 window.addEventListener("gamepadconnected", (e) => {
     console.log(
@@ -138,6 +150,7 @@ function update_info() {
             }
         })
         .then((data) => {
+            console.log(data);
             info["t1"] = new Uint32Array(data.slice(0, 4))[0];
             info["t2"] = new Uint32Array(data.slice(4, 8))[0];
             info["t3"] = new Uint32Array(data.slice(8, 12))[0];
@@ -145,10 +158,20 @@ function update_info() {
             info["t5"] = new Uint32Array(data.slice(16, 20))[0];
             info["t6"] = new Uint32Array(data.slice(20, 24))[0];
             info["last_update"] = now;
+            update_qtr_display();
         })
         .catch((err) => {
             logs.innerText += `Error getting info: ${err}\n`;
         });
+}
+
+function update_qtr_display() {
+    qtr_value1.innerText = info["t1"];
+    qtr_value2.innerText = info["t2"];
+    qtr_value3.innerText = info["t3"];
+    qtr_value4.innerText = info["t4"];
+    qtr_value5.innerText = info["t5"];
+    qtr_value6.innerText = info["t6"];
 }
 
 function loop() {
