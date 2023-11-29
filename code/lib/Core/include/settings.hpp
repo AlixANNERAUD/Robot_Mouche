@@ -17,6 +17,7 @@ public:
 
     RobotMode mode;
     double KP, KI, KD;
+    short int irs_threshold;
 };
 
 #endif // SETTINGS_HPP_INCLUDED

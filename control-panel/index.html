@@ -32,7 +32,7 @@
         <h2>Settings</h2>
         
         <h3>Robot address</h3>
-        <input type="text" id="robot-address" placeholder="127.0.0.1" />
+        <input type="text" id="robot-address" placeholder="127.0.0.1" value="http://localhost:8080" />
 
         <h3>KP, KI and KD</h3>
         <div id="kp-ki-kd-settings">
@@ -40,6 +40,9 @@
             <input type="number" step="any" id="ki-input" placeholder="KI" value="1" />
             <input type="number" step="any" id="kd-input" placeholder="KD" value="1" />
         </div>
+
+        <h3>IRS Sensor threshold</h3>
+        <input type="number" id="irs-threshold-input" placeholder="50" value="50" min="0" max="10000" />
 
         <input type="submit" id="submit-settings" value="Submit" />
 

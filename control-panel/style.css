@@ -82,6 +82,8 @@ h3 {
 
 input[type="text"], input[type="number"], input[type="submit"] {
     all: unset;
+    display: block;
+    width: 12rem;
     border: 1px solid black;
     border-radius: 4px;
     padding: 0.3rem;
@@ -90,6 +92,7 @@ input[type="text"], input[type="number"], input[type="submit"] {
 input[type="submit"] {
     background-color: #eee;
     border: 1px solid #ddd;
+    width: min-content;
     cursor: pointer;
     margin: 2.5rem 0;
 }
