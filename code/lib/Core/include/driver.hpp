@@ -1,13 +1,14 @@
 #ifndef DRIVER_HPP_INCLUDED
 #define DRIVER_HPP_INCLUDED
 
-#include "pin.hpp"
 #include "lidar.hpp"
 #include "motor.hpp"
 #include "qtr.hpp"
 #include "settings.hpp"
 #include "pin.hpp"
 #include "pid.hpp"
+
+#include <atomic>
 
 class DriverClass
 {
@@ -24,7 +25,7 @@ public:
     double computeLinePosition();
 
 private:
-    bool running;
+    std::atomic_bool running;
     MotorClass &left;
     MotorClass &right;
     QTRClass &qtr1;

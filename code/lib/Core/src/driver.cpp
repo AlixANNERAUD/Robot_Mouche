@@ -5,29 +5,29 @@
 #include <array>
 #include <thread>
 
-
 using namespace std;
 
 DriverClass::DriverClass(MotorClass &left, MotorClass &right, QTRClass &qtr1, QTRClass &qtr2, SettingsClass &settings)
-    : left(left), right(right), qtr1(qtr1), qtr2(qtr2), settings(settings), pid(settings.KP, settings.KI, settings.KD, 0.0)
+    : running(false), left(left), right(right), qtr1(qtr1), qtr2(qtr2), settings(settings), pid(settings.KP, settings.KI, settings.KD, 0.0)
 {
-    this->running = false;
     this->speed = 0.0f;
     this->steering = 0.0f;
 }
 
 void DriverClass::start() {
-    std::thread(&DriverClass::run, *this).detach();
+    std::thread(&DriverClass::run, this).detach();
 }
 
 void DriverClass::run() {
-    // TODO: make this run in a thread
-
     this->running = true;
-    while (true)
+    while (this->running)
     {
         this->update();
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
+        
+    this->left.setSpeed(0);
+    this->right.setSpeed(0);
 }
 
 double DriverClass::computeLinePosition() {
@@ -73,7 +73,5 @@ void DriverClass::update() {
 
 void DriverClass::stop()
 {
-    this->running = false;
-    this->left.setSpeed(0);
-    this->right.setSpeed(0);
+   this->running = false;
 }
