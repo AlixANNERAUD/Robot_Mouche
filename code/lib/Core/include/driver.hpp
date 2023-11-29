@@ -1,5 +1,5 @@
-#ifndef I2C_HPP_INCLUDED
-#define I2C_HPP_INCLUDED
+#ifndef DRIVER_HPP_INCLUDED
+#define DRIVER_HPP_INCLUDED
 
 #include "pin.hpp"
 #include "lidar.hpp"
