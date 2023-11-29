@@ -35,7 +35,6 @@ void QTRClass::loop()
         {
             chargeSensor(sensor1);
             this->start_times[0] = clock();
-
         }
         if (sensor2.readDigital() == DigitalState::Low)
         {
