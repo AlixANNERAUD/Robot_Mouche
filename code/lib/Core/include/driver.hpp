@@ -22,6 +22,8 @@ public:
     void setSpeed(float speed);
     void setDirection(float direction);
 
+    void updatePidConstants(SettingsClass settings);
+
     double computeLinePosition();
 
 private:

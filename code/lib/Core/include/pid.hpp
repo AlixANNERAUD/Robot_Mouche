@@ -28,7 +28,9 @@ private:
 public:
     PidControlClass(double Kp, double Ki, double Kd, double setpoint);
     
+    void updateConstants(double Kp, double Ki, double Kd);
     double getSteering(double measuredValue, clock_t recordClock);
+    
 };
 
 

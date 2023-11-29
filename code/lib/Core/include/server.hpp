@@ -4,6 +4,8 @@
 #include "server.hpp"
 #include "settings.hpp"
 
+#include <functional>
+
 typedef void GamepadDirectionCallback(float, float);
 typedef void SettingsChangeCallback(SettingsClass);
 
@@ -14,8 +16,8 @@ public:
 
     void listen();
 
-    GamepadDirectionCallback *on_gamepad_direction;
-    SettingsChangeCallback *on_settings_change;
+    std::function<void(float, float)> on_gamepad_direction;
+    std::function<void(SettingsClass)> on_settings_change;
 };
 
 #endif // SERVER_HPP_INCLUDED

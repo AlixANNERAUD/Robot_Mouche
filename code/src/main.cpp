@@ -30,8 +30,6 @@ int main()
 
     display(I2C_SDA, I2C_SCL);
 
-    server();
-
     LOG_INFORMATION("Main", "Initialized pin class.");
 
     LiDARClass lidar(I2C_SDA, I2C_SCL);
@@ -64,6 +62,9 @@ int main()
     PinClass sensor32(24); // Change it
     QTRClass qtr2(sensor12, sensor22, sensor32);
     DriverClass driver(leftMotor, rightMotor, qtr1, qtr2, settings);
+
+    server(driver);
+
     driver.start();
     while (true)
     {

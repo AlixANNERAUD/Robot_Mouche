@@ -77,3 +77,7 @@ void DriverClass::stop()
 {
    this->running = false;
 }
+
+void DriverClass::updatePidConstants(SettingsClass settings) {
+    this->pid.updateConstants(settings.KP, settings.KI, settings.KD);
+}
