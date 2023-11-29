@@ -6,6 +6,7 @@
 #include "lcd.hpp"
 #include "settings.hpp"
 #include "qtr.hpp"
+#include "driver.hpp"
 
 #include "motor.hpp"
 #include "lidar.hpp"
@@ -23,7 +24,6 @@ int main()
         LOG_ERROR("Main", "Failed to initialize pin class.");
         return EXIT_FAILURE;
     }
-
 
     SettingsClass settings = SettingsClass();
 
@@ -54,20 +54,18 @@ int main()
 
     LOG_INFORMATION("Main", "Starting program.");
 
-    PinClass sensor1(18);
-    PinClass sensor2(23);
-    PinClass sensor3(24);
+    PinClass sensor11(18);
+    PinClass sensor21(23);
+    PinClass sensor31(24);
 
-    QTRClass qtrClass(sensor1, sensor2, sensor3);
+    QTRClass qtr1(sensor11, sensor21, sensor31);
 
-    while (true)
-    {
-        auto times = qtrClass.getTimesElapsed();
-        printf("Sensor 1: %d\n", times[0]);
-        printf("Sensor 2: %d\n", times[1]);
-        printf("Sensor 3: %d\n", times[2]);
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    }
+    PinClass sensor12(18); // Change it
+    PinClass sensor22(23); // Change it
+    PinClass sensor32(24); // Change it
+    QTRClass qtr2(sensor12, sensor22, sensor32);
+    DriverClass driver(leftMotor, rightMotor, qtr1, qtr2, settings);
+   
 
     return EXIT_SUCCESS;
 }
