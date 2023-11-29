@@ -5,7 +5,7 @@
 #include "pin.hpp"
 #include "lcd.hpp"
 #include "settings.hpp"
-#include "QTRSensors.hpp"
+#include "qtr.hpp"
 
 #include "motor.hpp"
 #include "lidar.hpp"
@@ -24,18 +24,6 @@ int main()
         return EXIT_FAILURE;
     }
 
-    QTRSensors qtr;
-    const uint8_t SensorCount = 3;
-    uint16_t sensorValues[SensorCount];
-
-    qtr.setTypeRC();
-    qtr.setSensorPins((const uint8_t[]){3, 4, 5, 6, 7, 8, 9, 10}, SensorCount);
-    qtr.setEmitterPin(2);
-    for (uint16_t i = 0; i < 400; i++)
-    {
-        qtr.calibrate();
-    }
-
 
     SettingsClass settings = SettingsClass();
 
@@ -50,17 +38,6 @@ int main()
     LiDARClass lidar(I2C_SDA, I2C_SCL);
     if (!lidar.isValid())
         return EXIT_FAILURE;
-
-    while (true)
-    {
-        uint16_t position = qtr.readLineBlack(sensorValues);
-        LOG_INFORMATION("Main", "Amplitude: %d", lidar.getAmplitude());
-        LOG_INFORMATION("Main", "Distance: %d", lidar.getDistance());
-        LOG_INFORMATION("Main", "Error: %d", lidar.getError());
-        LOG_INFORMATION("Main", "Position : %d", position);
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    }
-
 
     PinClass leftMotorEnabled(19);
     PinClass leftMotorA1(17);
@@ -77,8 +54,19 @@ int main()
 
     LOG_INFORMATION("Main", "Starting program.");
 
+    PinClass sensor1(18);
+    PinClass sensor2(23);
+    PinClass sensor3(24);
+
+    QTRClass qtrClass(sensor1, sensor2, sensor3);
+
     while (true)
     {
+        auto times = qtrClass.getTimesElapsed();
+        printf("Sensor 1: %d\n", times[0]);
+        printf("Sensor 2: %d\n", times[1]);
+        printf("Sensor 3: %d\n", times[2]);
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
 
     return EXIT_SUCCESS;
