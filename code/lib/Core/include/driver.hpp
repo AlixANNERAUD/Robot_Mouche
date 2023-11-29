@@ -15,7 +15,7 @@ public:
     DriverClass() = delete;
     DriverClass(MotorClass &left, MotorClass &right, QTRClass &qtr1, QTRClass &qtr2, SettingsClass &settings);
     
-    void run();
+    void start();
     void stop();
 
     void setSpeed(float speed);
@@ -37,6 +37,7 @@ private:
     float steering;
     float linePosition;
 
+    void run();
     void update();
 };
 

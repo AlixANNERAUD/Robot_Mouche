@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <chrono>
 #include <array>
+#include <thread>
 
 
 using namespace std;
@@ -15,8 +16,13 @@ DriverClass::DriverClass(MotorClass &left, MotorClass &right, QTRClass &qtr1, QT
     this->steering = 0.0f;
 }
 
+void DriverClass::start() {
+    std::thread(&DriverClass::run, *this).detach();
+}
+
 void DriverClass::run() {
     // TODO: make this run in a thread
+
     this->running = true;
     while (true)
     {
