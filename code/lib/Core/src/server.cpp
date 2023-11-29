@@ -85,7 +85,7 @@ void ServerClass::listen() {
         res.set_content("All good!", "text/plain");
     });
 
-    server.Get("/state", [this](const httplib::Request &req, httplib::Response &res)
+    server.Get("/info", [this](const httplib::Request &req, httplib::Response &res)
     {
         // Get times   
         std::array<clock_t, 3> qtr1 = this->qtr1->getTimesElapsed();

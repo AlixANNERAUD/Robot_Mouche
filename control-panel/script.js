@@ -6,6 +6,9 @@ let logs = document.getElementById("logs");
 let cd_inner = controller_display.firstElementChild;
 let cd_bounding_rect = controller_display.getBoundingClientRect();
 let rem = cd_bounding_rect.width / 7;
+var info = {
+    last_update: 0,
+};
 
 window.addEventListener("gamepadconnected", (e) => {
     console.log(
@@ -16,7 +19,6 @@ window.addEventListener("gamepadconnected", (e) => {
         e.gamepad.axes.length,
     );
     controller_title.innerText = "Controller";
-    loop();
 });
 
 window.addEventListener("gamepaddisconnected", (e) => {
@@ -117,20 +119,53 @@ function update_gamepad_display(gpx, gpy) {
 
 }
 
-function loop() {
-    const gamepads = navigator.getGamepads();
-    if (!gamepads) {
+function update_info() {
+    let now = new Date().getTime();
+    if (now - info["last_update"] < 200) {
         return;
     }
 
-    const gp = gamepads[0];
+    let addr = document.getElementById("robot-address").value;
 
-    let gpx = gp.axes[0];
-    let gpy = gp.axes[1];
-    postGamepadDirection(gpx, gpy);
-    update_gamepad_display(gpx, gpy);
+    fetch(`${addr}/info`, {
+        method: "GET",
+    })
+        .then((res) => {
+            if (res.ok) {
+                return res.arrayBuffer();
+            } else {
+                logs.innerText += "Error getting info\n";
+            }
+        })
+        .then((data) => {
+            info["t1"] = new Uint32Array(data.slice(0, 4))[0];
+            info["t2"] = new Uint32Array(data.slice(4, 8))[0];
+            info["t3"] = new Uint32Array(data.slice(8, 12))[0];
+            info["t4"] = new Uint32Array(data.slice(12, 16))[0];
+            info["t5"] = new Uint32Array(data.slice(16, 20))[0];
+            info["t6"] = new Uint32Array(data.slice(20, 24))[0];
+            info["last_update"] = now;
+        })
+        .catch((err) => {
+            logs.innerText += `Error getting info: ${err}\n`;
+        });
+}
+
+function loop() {
+    update_info();
+
+    const gamepads = navigator.getGamepads();
+    if (gamepads && gamepads[0]) {
+        const gp = gamepads[0];
+        let gpx = gp.axes[0];
+        let gpy = gp.axes[1];
+        postGamepadDirection(gpx, gpy);
+        update_gamepad_display(gpx, gpy);
+    }
+
     requestAnimationFrame(loop);
 }
+loop();
 
 document.addEventListener("keydown", (e) => {
     if (e.key == "ArrowLeft") {
