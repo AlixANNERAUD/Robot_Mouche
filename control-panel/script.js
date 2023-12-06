@@ -6,6 +6,28 @@ let logs = document.getElementById("logs");
 let cd_inner = controller_display.firstElementChild;
 let cd_bounding_rect = controller_display.getBoundingClientRect();
 let rem = cd_bounding_rect.width / 7;
+var info = {
+    t1: 0,
+    t2: 0,
+    t3: 0,
+    t4: 0,
+    t5: 0,
+    t6: 0,
+    last_update: 0,
+};
+let mode_selector = document.getElementById("mode-selector");
+let qtr_value1 = document.querySelector("#irs-sensors-display>div:nth-child(1)>div:nth-child(2)");
+let qtr_value2 = document.querySelector("#irs-sensors-display>div:nth-child(2)>div:nth-child(2)");
+let qtr_value3 = document.querySelector("#irs-sensors-display>div:nth-child(3)>div:nth-child(2)");
+let qtr_value4 = document.querySelector("#irs-sensors-display>div:nth-child(4)>div:nth-child(2)");
+let qtr_value5 = document.querySelector("#irs-sensors-display>div:nth-child(5)>div:nth-child(2)");
+let qtr_value6 = document.querySelector("#irs-sensors-display>div:nth-child(6)>div:nth-child(2)");
+let qtr_box1 = document.getElementById("irs-sensor-box-1");
+let qtr_box2 = document.getElementById("irs-sensor-box-2");
+let qtr_box3 = document.getElementById("irs-sensor-box-3");
+let qtr_box4 = document.getElementById("irs-sensor-box-4");
+let qtr_box5 = document.getElementById("irs-sensor-box-5");
+let qtr_box6 = document.getElementById("irs-sensor-box-6");
 
 window.addEventListener("gamepadconnected", (e) => {
     console.log(
@@ -16,7 +38,6 @@ window.addEventListener("gamepadconnected", (e) => {
         e.gamepad.axes.length,
     );
     controller_title.innerText = "Controller";
-    loop();
 });
 
 window.addEventListener("gamepaddisconnected", (e) => {
@@ -33,7 +54,7 @@ function postSettings() {
     let addr = document.getElementById("robot-address").value;
 
     // Get mode
-    let mode = 0;
+    let mode = mode_selector.selectedIndex;
 
     // KP, KI, KD
     let kp = document.getElementById("kp-input").value;
@@ -117,20 +138,70 @@ function update_gamepad_display(gpx, gpy) {
 
 }
 
-function loop() {
-    const gamepads = navigator.getGamepads();
-    if (!gamepads) {
+function update_info() {
+    let now = new Date().getTime();
+    if (now - info["last_update"] < 200) {
         return;
     }
 
-    const gp = gamepads[0];
+    let addr = document.getElementById("robot-address").value;
 
-    let gpx = gp.axes[0];
-    let gpy = gp.axes[1];
-    postGamepadDirection(gpx, gpy);
-    update_gamepad_display(gpx, gpy);
+    fetch(`${addr}/info`, {
+        method: "GET",
+    })
+        .then((res) => {
+            if (res.ok) {
+                return res.arrayBuffer();
+            } else {
+                logs.innerText += "Error getting info\n";
+            }
+        })
+        .then((data) => {
+            let size_of_clock_t = data.byteLength / 6;
+            info["t1"] = new Uint32Array(data.slice(0, size_of_clock_t))[0];
+            info["t2"] = new Uint32Array(data.slice(size_of_clock_t, size_of_clock_t*2))[0];
+            info["t3"] = new Uint32Array(data.slice(size_of_clock_t*2, size_of_clock_t*3))[0];
+            info["t4"] = new Uint32Array(data.slice(size_of_clock_t*3, size_of_clock_t*4))[0];
+            info["t5"] = new Uint32Array(data.slice(size_of_clock_t*4, size_of_clock_t*5))[0];
+            info["t6"] = new Uint32Array(data.slice(size_of_clock_t*5, size_of_clock_t*6))[0];
+            info["last_update"] = now;
+            update_qtr_display();
+        })
+        .catch((err) => {
+            logs.innerText += `Error getting info: ${err}\n`;
+        });
+}
+
+function update_qtr_display() {
+    qtr_value1.innerText = info["t1"];
+    qtr_value2.innerText = info["t2"];
+    qtr_value3.innerText = info["t3"];
+    qtr_value4.innerText = info["t4"];
+    qtr_value5.innerText = info["t5"];
+    qtr_value6.innerText = info["t6"];
+    qtr_box1.style.backgroundColor = "rgba(0, 0, 0, " + (info["t1"] / 100) + ")";
+    qtr_box2.style.backgroundColor = "rgba(0, 0, 0, " + (info["t2"] / 100) + ")";
+    qtr_box3.style.backgroundColor = "rgba(0, 0, 0, " + (info["t3"] / 100) + ")";
+    qtr_box4.style.backgroundColor = "rgba(0, 0, 0, " + (info["t4"] / 100) + ")";
+    qtr_box5.style.backgroundColor = "rgba(0, 0, 0, " + (info["t5"] / 100) + ")";
+    qtr_box6.style.backgroundColor = "rgba(0, 0, 0, " + (info["t6"] / 100) + ")";
+}
+
+function loop() {
+    update_info();
+
+    const gamepads = navigator.getGamepads();
+    if (gamepads && gamepads[0]) {
+        const gp = gamepads[0];
+        let gpx = gp.axes[0];
+        let gpy = gp.axes[1];
+        postGamepadDirection(gpx, gpy);
+        update_gamepad_display(gpx, gpy);
+    }
+
     requestAnimationFrame(loop);
 }
+loop();
 
 document.addEventListener("keydown", (e) => {
     if (e.key == "ArrowLeft") {

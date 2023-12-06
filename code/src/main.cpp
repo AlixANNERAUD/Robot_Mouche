@@ -28,6 +28,19 @@ int main()
 
     display(I2C_SDA, I2C_SCL);
 
+    LOG_INFORMATION("Main", "Ir sensors");
+
+    PinClass sensor11(18);
+    PinClass sensor21(23);
+    PinClass sensor31(24);
+
+    QTRClass qtr1(sensor11, sensor21, sensor31);
+
+    PinClass sensor12(18); // Change it
+    PinClass sensor22(23); // Change it
+    PinClass sensor32(24); // Change it
+    QTRClass qtr2(sensor12, sensor22, sensor32);
+
     LOG_INFORMATION("Main", "Initialized pin class.");
 
     LiDARClass lidar(I2C_SDA, I2C_SCL);
@@ -45,23 +58,11 @@ int main()
     MotorClass rightMotor(rightMotorEnabled, rightMotorA1, rightMotorA2);
     MotorClass leftMotor(leftMotorEnabled, leftMotorA1, leftMotorA2);
 
-    LOG_INFORMATION("Main", "Ir sensors");
-
     LOG_INFORMATION("Main", "Starting program.");
 
-    PinClass sensor11(18);
-    PinClass sensor21(23);
-    PinClass sensor31(24);
-
-    QTRClass qtr1(sensor11, sensor21, sensor31);
-
-    PinClass sensor12(18); // Change it
-    PinClass sensor22(23); // Change it
-    PinClass sensor32(24); // Change it
-    QTRClass qtr2(sensor12, sensor22, sensor32);
     DriverClass driver(lidar, leftMotor, rightMotor, qtr1, qtr2);
 
-    server(driver);
+    server(&qtr1, &qtr2, driver);
 
     driver.start();
     while (true)

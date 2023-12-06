@@ -2,8 +2,10 @@
 #define MAIN_HPP_INCLUDED
 
 #include "pin.hpp"
+#include "qtr.hpp"
 #include "driver.hpp"
+
 void display(PinClass& SDA, PinClass& SCL);
-void server(DriverClass& driver);
+void server(QTRClass *qtr1, QTRClass *qtr2, DriverClass& driver);
 
 #endif
