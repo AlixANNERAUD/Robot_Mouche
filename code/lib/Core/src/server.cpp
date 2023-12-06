@@ -18,7 +18,8 @@ void play_sound(std::string file_name) {
     LOG_INFORMATION("Server", "Playing sound: %s", file_name.c_str());
     system("pkill -9 mpg321");
     system("amixer -q set PCM,0 unmute");
-    system("mpg321 -q audioRickroll.mp3 &");
+    std::string command = "mpg321 -q " + file_name + " &";
+    system(command.c_str());
 }
 
 void ServerClass::listen() {
