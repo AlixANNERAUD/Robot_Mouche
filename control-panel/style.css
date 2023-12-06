@@ -14,6 +14,8 @@ body {
     min-height: 100%;
     width: calc((100% - 2px) / 2);
     padding: 1rem 2rem;
+    display: flex;
+    flex-direction: column;
 }
 
 h3 {
@@ -69,6 +71,42 @@ h3 {
     width: 2rem;
     height: 2rem;
     border-radius: 4px;
+}
+
+/* Soundboard */
+
+#soundboard {
+    flex-grow: 1;
+    border-top: 2px solid #ddd;
+    margin-top: 2rem;
+}
+
+#soundboard>div {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+#soundboard>div>div {
+    width: 4rem;
+    height: 4rem;
+    padding: .5rem;
+    border-radius: .5rem;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+}
+
+#soundboard>div>div>img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+#soundboard>div>div:hover {
+    background-color: #eee;
 }
 
 /* Settings */

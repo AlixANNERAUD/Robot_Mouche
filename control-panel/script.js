@@ -29,6 +29,46 @@ let qtr_box4 = document.getElementById("irs-sensor-box-4");
 let qtr_box5 = document.getElementById("irs-sensor-box-5");
 let qtr_box6 = document.getElementById("irs-sensor-box-6");
 
+let soundboard_rick = document.querySelector("#soundboard>div>div:nth-child(1)");
+let soundboard_bagpipes = document.querySelector("#soundboard>div>div:nth-child(2)");
+let soundboard_dwarf = document.querySelector("#soundboard>div>div:nth-child(3)");
+let soundboard_fly = document.querySelector("#soundboard>div>div:nth-child(4)");
+let soundboard_silence = document.querySelector("#soundboard>div>div:nth-child(5)");
+let soundboard_pig1 = document.querySelector("#soundboard>div>div:nth-child(6)");
+let soundboard_pig2 = document.querySelector("#soundboard>div>div:nth-child(7)");
+let soundboard_pig3 = document.querySelector("#soundboard>div>div:nth-child(8)");
+let soundboard_achievement = document.querySelector("#soundboard>div>div:nth-child(9)");
+soundboard_rick.addEventListener("click", (e) => { play_sound("rick.mp3") });
+soundboard_bagpipes.addEventListener("click", (e) => { play_sound("bagpipes.mp3") });
+soundboard_dwarf.addEventListener("click", (e) => { play_sound("dwarf.mp3") });
+soundboard_fly.addEventListener("click", (e) => { play_sound("fly.mp3") });
+soundboard_silence.addEventListener("click", (e) => { play_sound("silence.mp3") });
+soundboard_pig1.addEventListener("click", (e) => { play_sound("pig1.mp3") });
+soundboard_pig2.addEventListener("click", (e) => { play_sound("pig2.mp3") });
+soundboard_pig3.addEventListener("click", (e) => { play_sound("pig3.mp3") });
+soundboard_achievement.addEventListener("click", (e) => { play_sound("achievement.mp3") });
+
+function play_sound(sound) {
+    // API addr
+    let addr = document.getElementById("robot-address").value;
+
+    // Send request
+    fetch(`${addr}/play-sound`, {
+        method: "POST",
+        body: sound,
+    })
+        .then((res) => {
+            if (res.ok) {
+                logs.innerText += "Sound sent successfully\n";
+            } else {
+                logs.innerText += "Error sending sound\n";
+            }
+        })
+        .catch((err) => {
+            logs.innerText += `Error sending sound: ${err}\n`;
+        });
+}
+
 window.addEventListener("gamepadconnected", (e) => {
     console.log(
         "Gamepad connected at index %d: %s. %d buttons, %d axes.",
