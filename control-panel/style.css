@@ -97,7 +97,7 @@ h3 {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 1rem 1rem 0 0;
+    margin: 0 1rem 1rem 0;
 }
 
 #soundboard>div>div>img {
