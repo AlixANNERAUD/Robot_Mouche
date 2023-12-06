@@ -16,6 +16,9 @@ ServerClass::ServerClass(QTRClass *qtr1, QTRClass *qtr2) {
 
 void play_sound(std::string file_name) {
     LOG_INFORMATION("Server", "Playing sound: %s", file_name.c_str());
+    system("pkill -9 mpg321");
+    system("amixer -q set PCM,0 unmute");
+    system("mpg321 -q audioRickroll.mp3 &");
 }
 
 void ServerClass::listen() {
