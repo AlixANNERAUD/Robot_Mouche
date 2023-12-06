@@ -21,6 +21,12 @@ let qtr_value3 = document.querySelector("#irs-sensors-display>div:nth-child(3)>d
 let qtr_value4 = document.querySelector("#irs-sensors-display>div:nth-child(4)>div:nth-child(2)");
 let qtr_value5 = document.querySelector("#irs-sensors-display>div:nth-child(5)>div:nth-child(2)");
 let qtr_value6 = document.querySelector("#irs-sensors-display>div:nth-child(6)>div:nth-child(2)");
+let qtr_box1 = document.getElementById("irs-sensor-box-1");
+let qtr_box2 = document.getElementById("irs-sensor-box-2");
+let qtr_box3 = document.getElementById("irs-sensor-box-3");
+let qtr_box4 = document.getElementById("irs-sensor-box-4");
+let qtr_box5 = document.getElementById("irs-sensor-box-5");
+let qtr_box6 = document.getElementById("irs-sensor-box-6");
 
 window.addEventListener("gamepadconnected", (e) => {
     console.log(
@@ -172,6 +178,12 @@ function update_qtr_display() {
     qtr_value4.innerText = info["t4"];
     qtr_value5.innerText = info["t5"];
     qtr_value6.innerText = info["t6"];
+    qtr_box1.style.backgroundColor = "rgba(0, 0, 0, " + (info["t1"] / 100) + ")";
+    qtr_box2.style.backgroundColor = "rgba(0, 0, 0, " + (info["t2"] / 100) + ")";
+    qtr_box3.style.backgroundColor = "rgba(0, 0, 0, " + (info["t3"] / 100) + ")";
+    qtr_box4.style.backgroundColor = "rgba(0, 0, 0, " + (info["t4"] / 100) + ")";
+    qtr_box5.style.backgroundColor = "rgba(0, 0, 0, " + (info["t5"] / 100) + ")";
+    qtr_box6.style.backgroundColor = "rgba(0, 0, 0, " + (info["t6"] / 100) + ")";
 }
 
 function loop() {

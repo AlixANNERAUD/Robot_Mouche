@@ -71,13 +71,6 @@ h3 {
     border-radius: 4px;
 }
 
-#irs-sensor-box-1 { background-color: rgba(0, 0, 0, 0.2); }
-#irs-sensor-box-2 { background-color: rgba(0, 0, 0, 1.0); }
-#irs-sensor-box-3 { background-color: rgba(0, 0, 0, 1.0); }
-#irs-sensor-box-4 { background-color: rgba(0, 0, 0, 0.3); }
-#irs-sensor-box-5 { background-color: rgba(0, 0, 0, 0.04); }
-#irs-sensor-box-6 { background-color: rgba(0, 0, 0, 0.05); }
-
 /* Settings */
 
 input[type="text"], input[type="number"], input[type="submit"] {
