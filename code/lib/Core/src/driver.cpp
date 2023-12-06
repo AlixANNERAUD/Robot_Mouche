@@ -71,7 +71,7 @@ void DriverClass::update()
 
     if (this->mode == RobotMode::LineFollower)
     {
-        this->steering = std::clamp((float)(this->pid.getSteering(this->linePosition, clock()) / 1024.0), -1.0f, 1.0f); // NOMALIZE it from -1.0 to 1.0
+        this->steering = std::clamp((float)(this->pid.getSteering(this->linePosition, clock()) / 1024.0), -1.0f, 1.0f); // NORMALIZE it from -1.0 to 1.0
 
 
     }
