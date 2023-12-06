@@ -84,6 +84,7 @@ h3 {
 #soundboard>div {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
 }
 
 #soundboard>div>div {

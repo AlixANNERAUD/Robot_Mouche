@@ -37,6 +37,7 @@ let soundboard_silence = document.querySelector("#soundboard>div>div:nth-child(5
 let soundboard_pig1 = document.querySelector("#soundboard>div>div:nth-child(6)");
 let soundboard_pig2 = document.querySelector("#soundboard>div>div:nth-child(7)");
 let soundboard_pig3 = document.querySelector("#soundboard>div>div:nth-child(8)");
+let soundboard_achievement = document.querySelector("#soundboard>div>div:nth-child(9)");
 soundboard_rick.addEventListener("click", (e) => { play_sound("rick.mp3") });
 soundboard_bagpipes.addEventListener("click", (e) => { play_sound("bagpipes.mp3") });
 soundboard_dwarf.addEventListener("click", (e) => { play_sound("dwarf.mp3") });
@@ -45,6 +46,7 @@ soundboard_silence.addEventListener("click", (e) => { play_sound("silence.mp3") 
 soundboard_pig1.addEventListener("click", (e) => { play_sound("pig1.mp3") });
 soundboard_pig2.addEventListener("click", (e) => { play_sound("pig2.mp3") });
 soundboard_pig3.addEventListener("click", (e) => { play_sound("pig3.mp3") });
+soundboard_achievement.addEventListener("click", (e) => { play_sound("achievement.mp3") });
 
 function play_sound(sound) {
     // API addr
