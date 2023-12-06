@@ -22,7 +22,7 @@ public:
     void setSpeed(float speed);
     void setDirection(float direction);
 
-    // - Callbocks
+    // - Callbacks
     void updatePidConstants(SettingsClass settings);
     void updateGamepad(float direction, float speed);
 
