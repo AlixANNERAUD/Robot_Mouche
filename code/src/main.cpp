@@ -4,7 +4,6 @@
 #include "log.hpp"
 #include "pin.hpp"
 #include "lcd.hpp"
-#include "settings.hpp"
 #include "qtr.hpp"
 #include "driver.hpp"
 
@@ -24,11 +23,12 @@ int main()
         LOG_ERROR("Main", "Failed to initialize pin class.");
         return EXIT_FAILURE;
     }
-    SettingsClass settings = SettingsClass();
 
     PinClass I2C_SDA(2), I2C_SCL(3);
 
     display(I2C_SDA, I2C_SCL);
+
+    LOG_INFORMATION("Main", "Ir sensors");
 
     PinClass sensor11(18);
     PinClass sensor21(23);
@@ -58,30 +58,17 @@ int main()
     MotorClass rightMotor(rightMotorEnabled, rightMotorA1, rightMotorA2);
     MotorClass leftMotor(leftMotorEnabled, leftMotorA1, leftMotorA2);
 
-    LOG_INFORMATION("Main", "Ir sensors");
-
     LOG_INFORMATION("Main", "Starting program.");
 
-    DriverClass driver(leftMotor, rightMotor, qtr1, qtr2, settings);
+    DriverClass driver(lidar, leftMotor, rightMotor, qtr1, qtr2);
 
     server(&qtr1, &qtr2, driver);
 
     driver.start();
     while (true)
     {
-        switch (settings.mode)
-        {
-            case RobotMode::LineFollower:
-                driver.start();
-                break;
-            case RobotMode::Manual:
-                driver.stop();
-                break;
-            default:
-                break;
-        }
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
-    
+    driver.stop();
     return EXIT_SUCCESS;
 }
