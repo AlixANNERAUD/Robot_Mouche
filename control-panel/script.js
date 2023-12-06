@@ -150,13 +150,13 @@ function update_info() {
             }
         })
         .then((data) => {
-            console.log(data);
-            info["t1"] = new Uint32Array(data.slice(0, 4))[0];
-            info["t2"] = new Uint32Array(data.slice(4, 8))[0];
-            info["t3"] = new Uint32Array(data.slice(8, 12))[0];
-            info["t4"] = new Uint32Array(data.slice(12, 16))[0];
-            info["t5"] = new Uint32Array(data.slice(16, 20))[0];
-            info["t6"] = new Uint32Array(data.slice(20, 24))[0];
+            let size_of_clock_t = data.byteLength / 6;
+            info["t1"] = new Uint32Array(data.slice(0, size_of_clock_t))[0];
+            info["t2"] = new Uint32Array(data.slice(size_of_clock_t, size_of_clock_t*2))[0];
+            info["t3"] = new Uint32Array(data.slice(size_of_clock_t*2, size_of_clock_t*3))[0];
+            info["t4"] = new Uint32Array(data.slice(size_of_clock_t*3, size_of_clock_t*4))[0];
+            info["t5"] = new Uint32Array(data.slice(size_of_clock_t*4, size_of_clock_t*5))[0];
+            info["t6"] = new Uint32Array(data.slice(size_of_clock_t*5, size_of_clock_t*6))[0];
             info["last_update"] = now;
             update_qtr_display();
         })
