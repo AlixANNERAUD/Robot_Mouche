@@ -18,7 +18,7 @@ void play_sound(std::string file_name) {
     LOG_INFORMATION("Server", "Playing sound: %s", file_name.c_str());
     system("pkill -9 mpg321");
     system("amixer -q set PCM,0 unmute");
-    std::string command = "mpg321 -q " + file_name + " &";
+    std::string command = "mpg321 -q assets/" + file_name + " &";
     system(command.c_str());
 }
 

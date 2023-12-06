@@ -33,6 +33,12 @@ let soundboard_rick = document.querySelector("#soundboard>div>div:nth-child(1)")
 let soundboard_bagpipes = document.querySelector("#soundboard>div>div:nth-child(2)");
 let soundboard_dwarf = document.querySelector("#soundboard>div>div:nth-child(3)");
 let soundboard_fly = document.querySelector("#soundboard>div>div:nth-child(4)");
+let soundboard_silence = document.querySelector("#soundboard>div>div:nth-child(5)");
+soundboard_rick.addEventListener("click", (e) => { play_sound("rick.mp3") });
+soundboard_bagpipes.addEventListener("click", (e) => { play_sound("bagpipes.mp3") });
+soundboard_dwarf.addEventListener("click", (e) => { play_sound("dwarf.mp3") });
+soundboard_fly.addEventListener("click", (e) => { play_sound("fly.mp3") });
+soundboard_silence.addEventListener("click", (e) => { play_sound("silence.mp3") });
 
 function play_sound(sound) {
     // API addr
@@ -54,11 +60,6 @@ function play_sound(sound) {
             logs.innerText += `Error sending sound: ${err}\n`;
         });
 }
-
-soundboard_rick.addEventListener("click", (e) => { play_sound("rick.mp3") });
-soundboard_bagpipes.addEventListener("click", (e) => { play_sound("bagpipes.mp3") });
-soundboard_dwarf.addEventListener("click", (e) => { play_sound("dwarf.mp3") });
-soundboard_fly.addEventListener("click", (e) => { play_sound("fly.mp3") });
 
 window.addEventListener("gamepadconnected", (e) => {
     console.log(
