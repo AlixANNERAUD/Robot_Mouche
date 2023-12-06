@@ -90,16 +90,6 @@ input[type="submit"] {
     margin: 2.5rem 0;
 }
 
-select {
-    display: block;
-    width: 12rem;
-    border: 1px solid black;
-    border-radius: 4px;
-    padding: 0.3rem;
-    background-color: white;
-    font-size: unset;
-}
-
 #kp-ki-kd-settings {
     display: flex;
     flex-direction: row;

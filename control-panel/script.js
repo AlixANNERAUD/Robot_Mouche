@@ -15,7 +15,6 @@ var info = {
     t6: 0,
     last_update: 0,
 };
-let mode_selector = document.getElementById("mode-selector");
 let qtr_value1 = document.querySelector("#irs-sensors-display>div:nth-child(1)>div:nth-child(2)");
 let qtr_value2 = document.querySelector("#irs-sensors-display>div:nth-child(2)>div:nth-child(2)");
 let qtr_value3 = document.querySelector("#irs-sensors-display>div:nth-child(3)>div:nth-child(2)");
@@ -54,7 +53,7 @@ function postSettings() {
     let addr = document.getElementById("robot-address").value;
 
     // Get mode
-    let mode = mode_selector.selectedIndex;
+    let mode = 0;
 
     // KP, KI, KD
     let kp = document.getElementById("kp-input").value;
