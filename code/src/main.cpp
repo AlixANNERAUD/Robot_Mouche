@@ -4,7 +4,6 @@
 #include "log.hpp"
 #include "pin.hpp"
 #include "lcd.hpp"
-#include "settings.hpp"
 #include "qtr.hpp"
 #include "driver.hpp"
 
@@ -25,13 +24,9 @@ int main()
         return EXIT_FAILURE;
     }
 
-    SettingsClass settings = SettingsClass();
-
     PinClass I2C_SDA(2), I2C_SCL(3);
 
     display(I2C_SDA, I2C_SCL);
-
-    server();
 
     LOG_INFORMATION("Main", "Initialized pin class.");
 
@@ -64,8 +59,15 @@ int main()
     PinClass sensor22(23); // Change it
     PinClass sensor32(24); // Change it
     QTRClass qtr2(sensor12, sensor22, sensor32);
-    DriverClass driver(leftMotor, rightMotor, qtr1, qtr2, settings);
-   
+    DriverClass driver(lidar, leftMotor, rightMotor, qtr1, qtr2);
 
+    server(driver);
+
+    driver.start();
+    while (true)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    driver.stop();
     return EXIT_SUCCESS;
 }

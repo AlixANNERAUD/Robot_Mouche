@@ -13,6 +13,14 @@ PidControlClass::PidControlClass(double Kp, double Ki, double Kd, double setpoin
     this->A1 = -this->Kp;
 }
 
+void PidControlClass::updateConstants(double Kp, double Ki, double Kd) {
+    this->Kp = Kp;
+    this->Ki = Ki;
+    this->Kd = Kd;
+    this->tau = this->Kd / (this->Kp * PID_N);
+    this->A1 = -this->Kp;
+}
+
 double PidControlClass::getSteering(double measuredValue, clock_t recordClock) {
     this->dt[2] = this->dt[1];
     this->dt[1] = this->dt[0];
