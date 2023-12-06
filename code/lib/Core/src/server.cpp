@@ -15,7 +15,7 @@ ServerClass::ServerClass(QTRClass *qtr1, QTRClass *qtr2) {
 }
 
 void play_sound(std::string file_name) {
-    // TODO
+    LOG_INFORMATION("Server", "Playing sound: %s", file_name.c_str());
 }
 
 void ServerClass::listen() {
@@ -91,6 +91,8 @@ void ServerClass::listen() {
 
     server.Post("/play-sound", [](const httplib::Request &req, httplib::Response &res){
         play_sound(req.body);
+        res.set_header("Access-Control-Allow-Origin", "*");
+        res.set_content("Playing!", "text/plain");
     });
 
     server.Get("/info", [this](const httplib::Request &req, httplib::Response &res)
