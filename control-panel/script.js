@@ -264,5 +264,8 @@ document.addEventListener("keydown", (e) => {
         gpy = 1;
         update_gamepad_display(gpx, gpy);
         postGamepadDirection(0, 1);
+    } else if (e.key == "w") {
+        postGamepadDirection(0, 0);
+        update_gamepad_display(0, 0);
     }
 });
