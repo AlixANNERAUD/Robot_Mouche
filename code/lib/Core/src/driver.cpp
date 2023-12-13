@@ -61,6 +61,17 @@ double DriverClass::computeLinePosition()
     double qtr2Position = (qtr2[0] + qtr2[1] * 2.0 + qtr2[2] * 3.0);
 
     double position = -qtr1Position + qtr2Position;
+    
+    // Detect no line present 
+    LOG_DEBUG("SUM QTR : %f", qtr1Sum + qtr1Sum);
+    if (qtr1Sum + qtr2Sum < 100)
+    {
+        position = this->lastPositionKnown;
+    }
+    else
+    {
+        this->lastPositionKnown = position;
+    }
 
     return position;
 }
@@ -71,9 +82,11 @@ void DriverClass::update()
 
     if (this->mode == RobotMode::LineFollower)
     {
-        this->steering = std::clamp((float)(this->pid.getSteering(this->linePosition, clock()) / 1024.0), -1.0f, 1.0f); // NORMALIZE it from -1.0 to 1.0
-
-
+        LOG_DEBUG("Line position : %f", this->linePosition);
+        float stearing = (float)this->pid.getSteering(this->linePosition, clock());
+        LOG_DEBUG("Steering before processing : %f", this->stearing);
+        this->steering = std::clamp(stearing / 1024.0f, -1.0f, 1.0f); // NORMALIZE it from -1.0 to 1.0
+        LOG_DEBUG("Steering after processing : %f", this->stearing);
         float speedLeft = std::min(this->speed - this->steering, 1.0f) * 1024.0f;
         float speedRight = std::min(this->speed - this->steering, 1.0f) * 1024.0f;
 
@@ -85,9 +98,7 @@ void DriverClass::update()
         
         this->left.setSpeed((unsigned int)speedLeft);
         this->right.setSpeed((unsigned int)speedRight);
-    
     }
-
 }
 
 void DriverClass::stop()

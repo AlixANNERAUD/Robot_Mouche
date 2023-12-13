@@ -44,6 +44,7 @@ private:
     float speed;
     float steering;
     float linePosition;
+    float lastPositionKnown;
 
     void run();
     void update();
