@@ -26,19 +26,19 @@ int main()
 
     PinClass I2C_SDA(2), I2C_SCL(3);
 
-    display(I2C_SDA, I2C_SCL);
+    //display(I2C_SDA, I2C_SCL);
 
     LOG_INFORMATION("Main", "Ir sensors");
 
-    PinClass sensor11(18);
-    PinClass sensor21(23);
-    PinClass sensor31(24);
+    PinClass sensor11(8);
+    PinClass sensor21(7);
+    PinClass sensor31(25);
 
     QTRClass qtr1(sensor11, sensor21, sensor31);
 
-    PinClass sensor12(18); // Change it
-    PinClass sensor22(23); // Change it
-    PinClass sensor32(24); // Change it
+    PinClass sensor12(0); // Change it
+    PinClass sensor22(5); // Change it
+    PinClass sensor32(6); // Change it
     QTRClass qtr2(sensor12, sensor22, sensor32);
 
     LOG_INFORMATION("Main", "Initialized pin class.");

@@ -40,7 +40,7 @@ void MotorClass::setSpeed(unsigned int speed)
         LOG_ERROR("Motor", "Motor instance is not valid.");
         return;
     }
-    LOG_DEBUG("Motor", "Speed : %u", speed);
+    LOG_INFORMATION("Motor", "Speed : %u", speed);
 
     this->Enabled.writeAnalog(speed);
 #ifdef NATIVE

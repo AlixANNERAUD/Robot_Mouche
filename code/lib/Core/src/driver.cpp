@@ -74,20 +74,20 @@ void DriverClass::update()
         this->steering = std::clamp((float)(this->pid.getSteering(this->linePosition, clock()) / 1024.0), -1.0f, 1.0f); // NORMALIZE it from -1.0 to 1.0
 
 
+        float speedLeft = std::min(this->speed - this->steering, 1.0f) * 1024.0f;
+        float speedRight = std::min(this->speed - this->steering, 1.0f) * 1024.0f;
+
+        if (this->mode == RobotMode::LineFollower && this->lidar.getDistance() < 100)
+        {
+            speedLeft = 0;
+            speedRight = 0;
+        }
+        
+        this->left.setSpeed((unsigned int)speedLeft);
+        this->right.setSpeed((unsigned int)speedRight);
+    
     }
 
-    float speedLeft = std::min(this->speed - this->steering, 1.0f) * 1024.0f;
-    float speedRight = std::min(this->speed - this->steering, 1.0f) * 1024.0f;
-
-    if (this->mode == RobotMode::LineFollower && this->lidar.getDistance() < 100)
-    {
-        speedLeft = 0;
-        speedRight = 0;
-    }
-    
-    this->left.setSpeed((unsigned int)speedLeft);
-    this->right.setSpeed((unsigned int)speedRight);
-    
 }
 
 void DriverClass::stop()
@@ -100,14 +100,14 @@ void DriverClass::setSpeed(float speed)
     if (speed >= 0)
     {
         this->speed = clamp(speed, 0.0f, 1.0f);
-        this->left.setDirection(MotorDirection::Forward);
-        this->right.setDirection(MotorDirection::Forward);
+        this->right.set(MotorDirection::Forward, (unsigned int)(speed * 1024.0f));
+        this->left.set(MotorDirection::Forward, (unsigned int)(speed * 1024.0f));
     }
     else
     {
         this->speed = clamp(-speed, 0.0f, 1.0f);
-        this->left.setDirection(MotorDirection::Backward);
-        this->right.setDirection(MotorDirection::Backward);
+        this->right.set(MotorDirection::Backward, (unsigned int)(-speed * 1024.0f));
+        this->left.set(MotorDirection::Backward, (unsigned int)(-speed * 1024.0f));
     }
 }
 
@@ -120,8 +120,34 @@ void DriverClass::updateGamepad(float direction, float speed)
 {
     if (this->settings.mode == RobotMode::LineFollower)
         return;
-    this->setSpeed(speed);
-    this->setDirection(direction);
+
+
+
+    float velocity = speed;
+    float rotation = direction;
+
+    float left_speed = velocity - rotation;
+    float right_speed = velocity + rotation;
+
+    printf("Left speed : %f\n", left_speed);
+    printf("Right speed : %f\n", right_speed);
+
+    if (left_speed >= 0.0f) {
+        this->left.set(MotorDirection::Forward, (unsigned int)(left_speed * 1024.0f));
+    }
+    else {
+        this->left.set(MotorDirection::Backward, (unsigned int)(-left_speed * 1024.0f));
+    }
+
+    if (right_speed >= 0.0f) {
+        this->right.set(MotorDirection::Forward, (unsigned int)(right_speed * 1024.0f));
+    }
+    else {
+        this->right.set(MotorDirection::Backward, (unsigned int)(-right_speed * 1024.0f));
+    }
+
+    //this->setSpeed(speed);
+    //this->setDirection(direction);
 }
 
 void DriverClass::updatePidConstants(SettingsClass settings)
