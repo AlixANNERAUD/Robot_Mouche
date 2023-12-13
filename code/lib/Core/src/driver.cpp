@@ -7,8 +7,8 @@
 
 using namespace std;
 
-DriverClass::DriverClass(LiDARClass& lidar, MotorClass &left, MotorClass &right, QTRClass &qtr1, QTRClass &qtr2)
-    : running(false), left(left), right(right), qtr1(qtr1), qtr2(qtr2), settings(settings), pid(settings.KP, settings.KI, settings.KD, 0.0), mode(RobotMode::Manual), lidar(lidar)
+DriverClass::DriverClass(LiDARClass& lidar, MotorClass &left, MotorClass &right)
+    : running(false), left(left), right(right), settings(settings), pid(settings.KP, settings.KI, settings.KD, 0.0), mode(RobotMode::Manual), lidar(lidar)
 {
     this->speed = 0.0f;
     this->steering = 0.0f;
@@ -37,30 +37,11 @@ void DriverClass::run()
 
 double DriverClass::computeLinePosition()
 {
-    std::array<clock_t, 3> arrayQtr1 = this->qtr1.getTimesElapsed();
-    std::array<clock_t, 3> arrayQtr2 = this->qtr2.getTimesElapsed();
+    // TODO get line position from file saved by python script
 
-    // We put the values in an array to have a symetric formula 0 will be the center of the line
-    std::array<double, 3> qtr1 = {(double)arrayQtr1[2], (double)arrayQtr1[1], (double)arrayQtr1[0]};
-    std::array<double, 3> qtr2 = {(double)arrayQtr2[0], (double)arrayQtr2[1], (double)arrayQtr2[2]};
-
-    double qtr1Sum, qtr2Sum = 0.0;
-
-    for (int i = 0; i < 3; i++)
-    {
-        qtr1Sum += qtr1[i];
-        qtr2Sum += qtr2[i];
-    }
-
-    for (int i = 0; i < 3; i++)
-    {
-        qtr1[i] /= qtr1Sum + qtr2Sum;
-    }
-
-    double qtr1Position = (qtr1[0] + qtr1[1] * 2.0 + qtr1[2] * 3.0);
-    double qtr2Position = (qtr2[0] + qtr2[1] * 2.0 + qtr2[2] * 3.0);
-
-    double position = -qtr1Position + qtr2Position;
+    int qtr1Sum = 0; // FIXME
+    int qtr2Sum = 0; // FIXME
+    double position = 0.0; // FIXME
     
     // Detect no line present 
     LOG_DEBUG("Driver", "SUM QTR : %f", (float)(qtr1Sum + qtr1Sum));

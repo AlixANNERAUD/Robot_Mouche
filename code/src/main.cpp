@@ -4,7 +4,6 @@
 #include "log.hpp"
 #include "pin.hpp"
 #include "lcd.hpp"
-#include "qtr.hpp"
 #include "driver.hpp"
 
 #include "motor.hpp"
@@ -28,19 +27,6 @@ int main()
 
     //display(I2C_SDA, I2C_SCL);
 
-    LOG_INFORMATION("Main", "Ir sensors");
-
-    PinClass sensor11(8);
-    PinClass sensor21(7);
-    PinClass sensor31(25);
-
-    QTRClass qtr1(sensor11, sensor21, sensor31);
-
-    PinClass sensor12(0); // Change it
-    PinClass sensor22(5); // Change it
-    PinClass sensor32(6); // Change it
-    QTRClass qtr2(sensor12, sensor22, sensor32);
-
     LOG_INFORMATION("Main", "Initialized pin class.");
 
     LiDARClass lidar(I2C_SDA, I2C_SCL);
@@ -60,9 +46,9 @@ int main()
 
     LOG_INFORMATION("Main", "Starting program.");
 
-    DriverClass driver(lidar, leftMotor, rightMotor, qtr1, qtr2);
+    DriverClass driver(lidar, leftMotor, rightMotor);
 
-    server(&qtr1, &qtr2, driver);
+    server(driver);
 
     driver.start();
     while (true)
