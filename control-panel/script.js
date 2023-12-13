@@ -1,5 +1,6 @@
 console.log("Hello World!");
 
+let robot_addr_input = document.getElementById("robot-address");
 let controller_title = document.getElementById("controller-title");
 let controller_display = document.getElementById("controller-display");
 let logs = document.getElementById("logs");
@@ -48,9 +49,14 @@ soundboard_pig2.addEventListener("click", (e) => { play_sound("pig2.mp3") });
 soundboard_pig3.addEventListener("click", (e) => { play_sound("pig3.mp3") });
 soundboard_achievement.addEventListener("click", (e) => { play_sound("achievement.mp3") });
 
+robot_addr_input.value = localStorage.getItem("robot_addr");
+robot_addr_input.addEventListener("change", (e) => {
+    localStorage.setItem("robot_addr", robot_addr_input.value);
+});
+
 function play_sound(sound) {
     // API addr
-    let addr = document.getElementById("robot-address").value;
+    let addr = robot_addr_input.value;
 
     // Send request
     fetch(`${addr}/play-sound`, {
@@ -59,13 +65,13 @@ function play_sound(sound) {
     })
         .then((res) => {
             if (res.ok) {
-                logs.innerText += "Sound sent successfully\n";
+                append_to_logs("Sound sent successfully");
             } else {
-                logs.innerText += "Error sending sound\n";
+                append_to_logs("Error sending sound");
             }
         })
         .catch((err) => {
-            logs.innerText += `Error sending sound: ${err}\n`;
+            append_to_logs(`Error sending sound: ${err}`);
         });
 }
 
@@ -91,7 +97,7 @@ window.addEventListener("gamepaddisconnected", (e) => {
 
 function postSettings() {
     // API addr
-    let addr = document.getElementById("robot-address").value;
+    let addr = robot_addr_input.value;
 
     // Get mode
     let mode = mode_selector.selectedIndex;
@@ -119,13 +125,13 @@ function postSettings() {
     })
         .then((res) => {
             if (res.ok) {
-                logs.innerText += "Settings sent successfully\n";
+                append_to_logs("Settings sent successfully");
             } else {
-                logs.innerText += "Error sending settings\n";
+                append_to_logs("Error sending settings");
             }
         })
         .catch((err) => {
-            logs.innerText += `Error sending settings: ${err}\n`;
+            append_to_logs(`Error sending settings: ${err}`);
         });
 }
 document.getElementById("submit-settings").onclick = postSettings;
@@ -146,13 +152,13 @@ function postGamepadDirection(gpx, gpy) {
     })
         .then((res) => {
             if (res.ok) {
-                logs.innerText += "Gamepad sent successfully\n";
+                append_to_logs("Gamepad sent successfully");
             } else {
-                logs.innerText += "Error sending gamepad\n";
+                append_to_logs("Error sending gamepad");
             }
         })
         .catch((err) => {
-            logs.innerText += `Error sending gamepad: ${err}\n`;
+            append_to_logs(`Error sending gamepad: ${err}`);
         });
 }
 
@@ -178,13 +184,21 @@ function update_gamepad_display(gpx, gpy) {
 
 }
 
+function append_to_logs(text) {
+    let lines = logs.innerText.split("\n");
+    lines = lines.slice(0, 40);
+    logs.innerText = lines.join("\n");
+    let time = new Date().toLocaleTimeString();
+    logs.innerText = `[${time}] ${text}\n${logs.innerText}`;
+}
+
 function update_info() {
     let now = new Date().getTime();
     if (now - info["last_update"] < 200) {
         return;
     }
 
-    let addr = document.getElementById("robot-address").value;
+    let addr = robot_addr_input.value;
 
     fetch(`${addr}/info`, {
         method: "GET",
@@ -193,7 +207,7 @@ function update_info() {
             if (res.ok) {
                 return res.arrayBuffer();
             } else {
-                logs.innerText += "Error getting info\n";
+                append_to_logs("Error getting info");
             }
         })
         .then((data) => {
@@ -208,7 +222,7 @@ function update_info() {
             update_qtr_display();
         })
         .catch((err) => {
-            logs.innerText += `Error getting info: ${err}\n`;
+            append_to_logs(`Error getting info: ${err}`);
         });
 }
 
