@@ -4,6 +4,8 @@
 #include <chrono>
 #include <array>
 #include <thread>
+#include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -35,24 +37,57 @@ void DriverClass::run()
     this->right.setSpeed(0);
 }
 
+#define EXPECTED_POSITION_SUM 50*255
+
 double DriverClass::computeLinePosition()
 {
-    // TODO get line position from file saved by python script
+    // Open file line_position.txt
+    fstream file;
+    file.open("line_position.csv", ios::in);
+    if (!file.is_open())
+    {
+        LOG_ERROR("Driver", "Failed to open line_position.csv");
+        return 0.0;
+    }
 
-    int qtr1Sum = 0; // FIXME
-    int qtr2Sum = 0; // FIXME
-    double position = 0.0; // FIXME
-    
-    // Detect no line present 
-    LOG_DEBUG("Driver", "SUM QTR : %f", (float)(qtr1Sum + qtr1Sum));
-    if (qtr1Sum + qtr2Sum < 100)
+    // Read 640 comma separated values
+    short values[640];
+    for (int i = 0; i < 640; i++)
     {
-        position = this->lastPositionKnown;
+        if (i != 0)
+        {
+            char comma;
+            file >> comma;
+        }
+        file >> values[i];
     }
-    else
+
+    // Find the peak
+    int peakIndex = 0;
+    int peakValue = 0;
+    for (int i = 0; i < 640; i++)
     {
-        this->lastPositionKnown = position;
+        if (values[i] > peakValue)
+        {
+            peakValue = values[i];
+            peakIndex = i;
+        }
     }
+
+    // Ensure there is no other peak
+    for (int i = 0; i < 640; i++)
+    {
+        if (i + 50 > peakIndex && i < peakIndex + 50)
+            continue;
+        if (values[i] > peakValue * 2 / 3)
+        {
+            LOG_ERROR("Driver", "Found multiple peaks");
+            return 0.0;
+        }
+    }
+
+    double position = ((double)peakIndex - 320.0) / 640.0;
+    LOG_DEBUG("Driver", "Line position : %f", position);
 
     return position;
 }

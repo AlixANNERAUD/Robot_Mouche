@@ -53,3 +53,4 @@ dkms.conf
 
 code/.vscode/extensions.json
 .vscode/settings.json
+code/line_position.csv
