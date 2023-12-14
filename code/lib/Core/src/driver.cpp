@@ -43,24 +43,16 @@ double DriverClass::computeLinePosition()
 {
     // Open file line_position.txt
     fstream file;
-    file.open("line_position.csv", ios::in);
+    file.open("line_position.bin", ios::in);
     if (!file.is_open())
     {
-        LOG_ERROR("Driver", "Failed to open line_position.csv");
+        LOG_ERROR("Driver", "Failed to open line_position.bin");
         return 0.0;
     }
 
     // Read 640 comma separated values
-    short values[640];
-    for (int i = 0; i < 640; i++)
-    {
-        if (i != 0)
-        {
-            char comma;
-            file >> comma;
-        }
-        file >> values[i];
-    }
+    char values[640];
+    file.read(values, sizeof(values));
 
     // Find the peak
     int peakIndex = 0;
