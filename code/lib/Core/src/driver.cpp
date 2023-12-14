@@ -37,8 +37,6 @@ void DriverClass::run()
     this->right.setSpeed(0);
 }
 
-#define EXPECTED_POSITION_SUM 50*255
-
 double DriverClass::computeLinePosition()
 {
     // Open file line_position.txt
@@ -64,6 +62,13 @@ double DriverClass::computeLinePosition()
             peakValue = values[i];
             peakIndex = i;
         }
+    }
+
+    // If there is no peak go straight
+    if (peakValue < 100)
+    {
+        LOG_DEBUG("Driver", "No peak found");
+        return 0.0;
     }
 
     // Ensure there is no other peak

@@ -4,4 +4,7 @@ import random
 
 with open('line_position.bin', 'w') as f:
     for i in range(640):
-        f.write(chr(random.randint(0, 40)))
+        if i == 100:
+            f.write(chr(200))
+        else:
+            f.write(chr(random.randint(0, 40)))
