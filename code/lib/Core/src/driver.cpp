@@ -83,13 +83,21 @@ double DriverClass::computeLinePosition()
             }
         }
 
-        // If line width is more than 50, accept the line or else search another
-        if (line_end - line_start > 50)
-        {
-            break;
-        } else
+        // If line width is more than 50 search another
+        if (line_end - line_start < 50)
         {
             LOG_ERROR("Driver", "Line width is too small (%d)", line_end - line_start);
+            continue;
+        }
+
+        // Ensure there is no other line
+        for (int i = line_end; i < 640; i++)
+        {
+            if (values[i] >= 100 && (i >= 638 || values[i + 1] >= 100) && (i >= 637 || values[i + 2] >= 100))
+            {
+                LOG_ERROR("Driver", "Found another line");
+                break;
+            }
         }
     }
 
