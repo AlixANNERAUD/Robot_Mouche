@@ -146,8 +146,6 @@ void DriverClass::updateGamepad(float direction, float speed)
     if (this->settings.mode == RobotMode::LineFollower)
         return;
 
-
-
     float velocity = speed;
     float rotation = direction;
 
@@ -178,11 +176,12 @@ void DriverClass::updateGamepad(float direction, float speed)
 void DriverClass::updateSettings(SettingsClass settings)
 {
     // Check is changing mode
-    #ifdef RASPBERRY_PI
     if (settings.mode != this->settings.mode)
     {        
         if (settings.mode == RobotMode::LineFollower)
         {
+            this->setSpeed(0.5f);
+            #ifdef RASPBERRY_PI
             // Start camera program
             this->camera_program_pid = fork();
             if (this->camera_program_pid == 0)
@@ -190,14 +189,17 @@ void DriverClass::updateSettings(SettingsClass settings)
                 execl("/usr/bin/python3", "/home/pi/Documents/Robot_Mouche/code/src/cam2.py", NULL);
                 exit(0);
             }
+            #endif 
         }
         else
         {
+            #ifdef RASPBERRY_PI
             // Stop camera program
             kill(this->camera_program_pid, SIGKILL);
+            #endif 
+            this->setSpeed(0.0f);
         }
     }
-    #endif 
     this->settings = settings;
     this->pid.updateConstants(settings.KP, settings.KI, settings.KD);
        
