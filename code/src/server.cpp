@@ -10,6 +10,6 @@ void server(DriverClass &driver)
 {
     ServerClass server = ServerClass();
     server.on_gamepad_direction = std::bind(&DriverClass::updateGamepad, &driver, std::placeholders::_1, std::placeholders::_2);
-    server.on_settings_change = std::bind(&DriverClass::updatePidConstants, &driver, std::placeholders::_1);
+    server.on_settings_change = std::bind(&DriverClass::updateSettings, &driver, std::placeholders::_1);
     std::thread(&ServerClass::listen, server).detach();
 }

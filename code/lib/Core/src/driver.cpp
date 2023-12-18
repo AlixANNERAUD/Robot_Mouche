@@ -6,6 +6,7 @@
 #include <thread>
 #include <iostream>
 #include <fstream>
+#include <signal.h>
 
 using namespace std;
 
@@ -174,8 +175,30 @@ void DriverClass::updateGamepad(float direction, float speed)
     //this->setDirection(direction);
 }
 
-void DriverClass::updatePidConstants(SettingsClass settings)
+void DriverClass::updateSettings(SettingsClass settings)
 {
+    // Check is changing mode
+    #ifdef RASPBERRY_PI
+    if (settings.mode != this->settings.mode)
+    {        
+        if (settings.mode == RobotMode::LineFollower)
+        {
+            // Start camera program
+            this->camera_program_pid = fork();
+            if (this->camera_program_pid == 0)
+            {
+                execl("/usr/bin/python3", "/home/pi/Documents/Robot_Mouche/code/src/cam2.py", NULL);
+                exit(0);
+            }
+        }
+        else
+        {
+            // Stop camera program
+            kill(this->camera_program_pid, SIGKILL);
+        }
+    }
+    #endif 
     this->settings = settings;
     this->pid.updateConstants(settings.KP, settings.KI, settings.KD);
+       
 }

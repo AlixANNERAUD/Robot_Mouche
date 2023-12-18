@@ -7,6 +7,7 @@
 #include "pin.hpp"
 #include "pid.hpp"
 
+#include <unistd.h>
 #include <atomic>
 
 class DriverClass
@@ -22,7 +23,7 @@ public:
     void setDirection(float direction);
 
     // - Callbacks
-    void updatePidConstants(SettingsClass settings);
+    void updateSettings(SettingsClass settings);
     void updateGamepad(float direction, float speed);
 
     double computeLinePosition();
@@ -42,6 +43,8 @@ private:
     float steering;
     float linePosition;
     float lastPositionKnown;
+
+    pid_t camera_program_pid;
 
     void run();
     void update();
