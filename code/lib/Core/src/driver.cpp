@@ -97,7 +97,7 @@ double DriverClass::computeLinePosition()
     double position = ((double)line_position - 320.0) / 320.0;
     LOG_DEBUG("Driver", "Line position : %d", line_position);
 
-    return 0.0;
+    return position;
 }
 
 void DriverClass::update()
