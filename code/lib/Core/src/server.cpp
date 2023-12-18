@@ -1,6 +1,8 @@
 #include "server.hpp"
 #include "log.hpp"
 #include "httplib.h"
+#include <cstdlib>
+#include <string>
 
 ServerClass::ServerClass() {
     this->on_gamepad_direction = [](float, float) {
@@ -26,6 +28,12 @@ void ServerClass::listen() {
 
     auto on_gamepad_direction = this->on_gamepad_direction;
     auto on_settings_change = this->on_settings_change;
+
+    std::string Server_ressources_path = SERVER_RESSOURCES_PATH;
+
+    LOG_INFORMATION("Server", "Serving files from %s", Server_ressources_path.c_str());
+
+    server.set_mount_point("/", Server_ressources_path);
 
     server.Post("/gamepad-direction", [on_gamepad_direction](const httplib::Request &req, httplib::Response &res)
     { 
@@ -105,6 +113,6 @@ void ServerClass::listen() {
         res.set_content(body, 0, "application/octet-stream");
     });
 
-    server.listen("0.0.0.0", 8080);
+    server.listen("0.0.0.0", 80);
     LOG_INFORMATION("Server", "Server stopped");
 }

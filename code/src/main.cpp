@@ -25,7 +25,7 @@ int main()
 
     PinClass I2C_SDA(2), I2C_SCL(3);
 
-    //display(I2C_SDA, I2C_SCL);
+    // display(I2C_SDA, I2C_SCL);
 
     LOG_INFORMATION("Main", "Initialized pin class.");
 
@@ -33,13 +33,13 @@ int main()
     if (!lidar.isValid())
         return EXIT_FAILURE;
 
-    PinClass leftMotorEnabled(19);
-    PinClass leftMotorA1(17);
-    PinClass leftMotorA2(27);
-
     PinClass rightMotorEnabled(13);
-    PinClass rightMotorA1(23);
-    PinClass rightMotorA2(24);
+    PinClass rightMotorA1(17);
+    PinClass rightMotorA2(27);
+
+    PinClass leftMotorEnabled(12);
+    PinClass leftMotorA1(23);
+    PinClass leftMotorA2(24);
 
     MotorClass rightMotor(rightMotorEnabled, rightMotorA1, rightMotorA2);
     MotorClass leftMotor(leftMotorEnabled, leftMotorA1, leftMotorA2);
@@ -55,6 +55,6 @@ int main()
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
-    driver.stop();
+    //    driver.stop();
     return EXIT_SUCCESS;
 }
