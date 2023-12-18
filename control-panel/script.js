@@ -49,7 +49,7 @@ soundboard_pig2.addEventListener("click", (e) => { play_sound("pig2.mp3") });
 soundboard_pig3.addEventListener("click", (e) => { play_sound("pig3.mp3") });
 soundboard_achievement.addEventListener("click", (e) => { play_sound("achievement.mp3") });
 
-robot_addr_input.value = localStorage.getItem("robot_addr");
+robot_addr_input.value = localStorage.getItem("robot_addr") || "http://alimon.local:80";
 robot_addr_input.addEventListener("change", (e) => {
     localStorage.setItem("robot_addr", robot_addr_input.value);
 });
@@ -169,15 +169,9 @@ function buttonPressed(b) {
     return b === 1.0;
 }
 
-function update_gamepad_display(gpx, gpy) {
+function update_gamepad_display(x, y) {
     // calculate x and y so that sqrt(x^2 + y^2) = 1
-    let x = gpx;
-    let y = gpy;
-    let r = Math.sqrt(x * x + y * y);
-    if (r > 1) {
-        x /= r;
-        y /= r;
-    }
+    
 
     cd_inner.style.left = `${x * rem * 3.5 + 2.5 * rem}px`;
     cd_inner.style.top = `${y * rem * 3.5 + 2.5 * rem}px`;
@@ -200,30 +194,30 @@ function update_info() {
 
     let addr = robot_addr_input.value;
 
-    fetch(`${addr}/info`, {
-        method: "GET",
-    })
-        .then((res) => {
-            if (res.ok) {
-                return res.arrayBuffer();
-            } else {
-                append_to_logs("Error getting info");
-            }
-        })
-        .then((data) => {
-            let size_of_clock_t = data.byteLength / 6;
-            info["t1"] = new Uint32Array(data.slice(0, size_of_clock_t))[0];
-            info["t2"] = new Uint32Array(data.slice(size_of_clock_t, size_of_clock_t*2))[0];
-            info["t3"] = new Uint32Array(data.slice(size_of_clock_t*2, size_of_clock_t*3))[0];
-            info["t4"] = new Uint32Array(data.slice(size_of_clock_t*3, size_of_clock_t*4))[0];
-            info["t5"] = new Uint32Array(data.slice(size_of_clock_t*4, size_of_clock_t*5))[0];
-            info["t6"] = new Uint32Array(data.slice(size_of_clock_t*5, size_of_clock_t*6))[0];
-            info["last_update"] = now;
-            update_qtr_display();
-        })
-        .catch((err) => {
-            append_to_logs(`Error getting info: ${err}`);
-        });
+//    fetch(`${addr}/info`, {
+//        method: "GET",
+//    })
+//        .then((res) => {
+//            if (res.ok) {
+//                return res.arrayBuffer();
+//            } else {
+//                append_to_logs("Error getting info");
+//            }
+//        })
+//        .then((data) => {
+//            let size_of_clock_t = data.byteLength / 6;
+//            info["t1"] = new Uint32Array(data.slice(0, size_of_clock_t))[0];
+//            info["t2"] = new Uint32Array(data.slice(size_of_clock_t, size_of_clock_t*2))[0];
+//            info["t3"] = new Uint32Array(data.slice(size_of_clock_t*2, size_of_clock_t*3))[0];
+//            info["t4"] = new Uint32Array(data.slice(size_of_clock_t*3, size_of_clock_t*4))[0];
+//            info["t5"] = new Uint32Array(data.slice(size_of_clock_t*4, size_of_clock_t*5))[0];
+//            info["t6"] = new Uint32Array(data.slice(size_of_clock_t*5, size_of_clock_t*6))[0];
+//            info["last_update"] = now;
+//            update_qtr_display();
+//        })
+//        .catch((err) => {
+//            append_to_logs(`Error getting info: ${err}`);
+//        });
 }
 
 function update_qtr_display() {
@@ -249,8 +243,17 @@ function loop() {
         const gp = gamepads[0];
         let gpx = gp.axes[0];
         let gpy = gp.axes[1];
-        postGamepadDirection(gpx, gpy);
-        update_gamepad_display(gpx, gpy);
+
+        let x = gpx;
+        let y = gpy;
+        let r = Math.sqrt(x * x + y * y);
+        if (r > 1) {
+            x /= r;
+            y /= r;
+        }
+
+        postGamepadDirection(x, y);
+        update_gamepad_display(x, y);
     }
 
     requestAnimationFrame(loop);

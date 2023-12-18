@@ -83,7 +83,7 @@ int PinClass::readAnalog() const
 
 bool PinClass::initialize()
 {
-    if (wiringPiSetup() == -1)
+    if (wiringPiSetupGpio() == -1)
         return false;
 
     return true;

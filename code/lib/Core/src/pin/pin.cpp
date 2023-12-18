@@ -9,14 +9,15 @@ std::vector<PinClass*> PinClass::pins;
 PinClass::PinClass(unsigned int pin) : pin(pin)
 {
     // Check if pin is valid
-    if (convertToWiringPi(pin) == 0xFFFFFFFF)
-    {
-        LOG_ERROR("Pin", "Pin %i is not a valid pin.", pin);
-        this->wiringPiPin = 0xFFFFFFFF;
-        this->valid = false;
-        return;
-    }
-    this->wiringPiPin = convertToWiringPi(pin);
+//    if (convertToWiringPi(pin) == 0xFFFFFFFF)
+//    {
+//        LOG_ERROR("Pin", "Pin %i is not a valid pin.", pin);
+//        this->wiringPiPin = 0xFFFFFFFF;
+//        this->valid = false;
+//        return;
+//    }
+    this->wiringPiPin = pin;
+   // this->wiringPiPin = convertToWiringPi(pin);
     LOG_VERBOSE("Pin", "Pin %i is valid : %i", pin, this->wiringPiPin);
     // Check if pin is already in use
     for (auto pin : PinClass::pins)

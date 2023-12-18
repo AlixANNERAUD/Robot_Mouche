@@ -3,7 +3,6 @@
 
 #include "lidar.hpp"
 #include "motor.hpp"
-#include "qtr.hpp"
 #include "settings.hpp"
 #include "pin.hpp"
 #include "pid.hpp"
@@ -14,7 +13,7 @@ class DriverClass
 {
 public:
     DriverClass() = delete;
-    DriverClass(LiDARClass& lidar, MotorClass &left, MotorClass &right, QTRClass &qtr1, QTRClass &qtr2);
+    DriverClass(LiDARClass& lidar, MotorClass &left, MotorClass &right);
     
     void start();
     void stop();
@@ -34,8 +33,6 @@ private:
     std::atomic_bool running;
     MotorClass &left;
     MotorClass &right;
-    QTRClass &qtr1;
-    QTRClass &qtr2;
     LiDARClass &lidar;
     SettingsClass settings;
 

@@ -1,11 +1,10 @@
 #include "server.hpp"
-#include "qtr.hpp"
 #include "log.hpp"
 #include "httplib.h"
+#include <cstdlib>
+#include <string>
 
-ServerClass::ServerClass(QTRClass *qtr1, QTRClass *qtr2) {
-    this->qtr1 = qtr1;
-    this->qtr2 = qtr2;
+ServerClass::ServerClass() {
     this->on_gamepad_direction = [](float, float) {
         LOG_WARNING("Server", "Unhandled gamepad direction!");
     };
@@ -29,6 +28,12 @@ void ServerClass::listen() {
 
     auto on_gamepad_direction = this->on_gamepad_direction;
     auto on_settings_change = this->on_settings_change;
+
+    std::string Server_ressources_path = SERVER_RESSOURCES_PATH;
+
+    LOG_INFORMATION("Server", "Serving files from %s", Server_ressources_path.c_str());
+
+    server.set_mount_point("/", Server_ressources_path);
 
     server.Post("/gamepad-direction", [on_gamepad_direction](const httplib::Request &req, httplib::Response &res)
     { 
@@ -101,29 +106,13 @@ void ServerClass::listen() {
 
     server.Get("/info", [this](const httplib::Request &req, httplib::Response &res)
     {
-        // Get times   
-        std::array<clock_t, 3> qtr1 = this->qtr1->getTimesElapsed();
-        clock_t t1 = qtr1[0];
-        clock_t t2 = qtr1[1];
-        clock_t t3 = qtr1[2];
-        std::array<clock_t, 3> qtr2 = this->qtr2->getTimesElapsed();
-        clock_t t4 = qtr2[0];
-        clock_t t5 = qtr2[1];
-        clock_t t6 = qtr2[2];
-
-        // Gather in body
-        char body[sizeof(clock_t)*6];
-        *(clock_t *)body = t1;
-        *(clock_t *)(body+sizeof(clock_t)) = t2;
-        *(clock_t *)(body+sizeof(clock_t)*2) = t3;
-        *(clock_t *)(body+sizeof(clock_t)*3) = t4;
-        *(clock_t *)(body+sizeof(clock_t)*4) = t5;
-        *(clock_t *)(body+sizeof(clock_t)*5) = t6;
+        // Create body
+        char body[0];
 
         res.set_header("Access-Control-Allow-Origin", "*");
-        res.set_content(body, sizeof(clock_t)*6, "application/octet-stream");
+        res.set_content(body, 0, "application/octet-stream");
     });
 
-    server.listen("0.0.0.0", 8080);
+    server.listen("0.0.0.0", 80);
     LOG_INFORMATION("Server", "Server stopped");
 }

@@ -4,11 +4,13 @@
 #include <chrono>
 #include <array>
 #include <thread>
+#include <iostream>
+#include <fstream>
 
 using namespace std;
 
-DriverClass::DriverClass(LiDARClass& lidar, MotorClass &left, MotorClass &right, QTRClass &qtr1, QTRClass &qtr2)
-    : running(false), left(left), right(right), qtr1(qtr1), qtr2(qtr2), settings(settings), pid(settings.KP, settings.KI, settings.KD, 0.0), mode(RobotMode::Manual), lidar(lidar)
+DriverClass::DriverClass(LiDARClass& lidar, MotorClass &left, MotorClass &right)
+    : running(false), left(left), right(right), settings(settings), pid(settings.KP, settings.KI, settings.KD, 0.0), mode(RobotMode::Manual), lidar(lidar)
 {
     this->speed = 0.0f;
     this->steering = 0.0f;
@@ -37,41 +39,52 @@ void DriverClass::run()
 
 double DriverClass::computeLinePosition()
 {
-    std::array<clock_t, 3> arrayQtr1 = this->qtr1.getTimesElapsed();
-    std::array<clock_t, 3> arrayQtr2 = this->qtr2.getTimesElapsed();
-
-    // We put the values in an array to have a symetric formula 0 will be the center of the line
-    std::array<double, 3> qtr1 = {(double)arrayQtr1[2], (double)arrayQtr1[1], (double)arrayQtr1[0]};
-    std::array<double, 3> qtr2 = {(double)arrayQtr2[0], (double)arrayQtr2[1], (double)arrayQtr2[2]};
-
-    double qtr1Sum, qtr2Sum = 0.0;
-
-    for (int i = 0; i < 3; i++)
+    // Open file line_position.txt
+    fstream file;
+    file.open("line_position.bin", ios::in);
+    if (!file.is_open())
     {
-        qtr1Sum += qtr1[i];
-        qtr2Sum += qtr2[i];
+        LOG_ERROR("Driver", "Failed to open line_position.bin");
+        return 0.0;
     }
 
-    for (int i = 0; i < 3; i++)
+    // Read 640 comma separated values
+    char values[640];
+    file.read(values, sizeof(values));
+
+    // Find the peak
+    int peakIndex = 0;
+    int peakValue = 0;
+    for (int i = 0; i < 640; i++)
     {
-        qtr1[i] /= qtr1Sum + qtr2Sum;
+        if (values[i] > peakValue)
+        {
+            peakValue = values[i];
+            peakIndex = i;
+        }
     }
 
-    double qtr1Position = (qtr1[0] + qtr1[1] * 2.0 + qtr1[2] * 3.0);
-    double qtr2Position = (qtr2[0] + qtr2[1] * 2.0 + qtr2[2] * 3.0);
+    // If there is no peak go straight
+    if (peakValue < 100)
+    {
+        LOG_DEBUG("Driver", "No peak found");
+        return 0.0;
+    }
 
-    double position = -qtr1Position + qtr2Position;
-    
-    // Detect no line present 
-    LOG_DEBUG("Driver", "SUM QTR : %f", (float)(qtr1Sum + qtr1Sum));
-    if (qtr1Sum + qtr2Sum < 100)
+    // Ensure there is no other peak
+    for (int i = 0; i < 640; i++)
     {
-        position = this->lastPositionKnown;
+        if (i + 50 > peakIndex && i < peakIndex + 50)
+            continue;
+        if (values[i] > peakValue * 2 / 3)
+        {
+            LOG_ERROR("Driver", "Found multiple peaks");
+            return 0.0;
+        }
     }
-    else
-    {
-        this->lastPositionKnown = position;
-    }
+
+    double position = ((double)peakIndex - 320.0) / 640.0;
+    LOG_DEBUG("Driver", "Line position : %f", position);
 
     return position;
 }

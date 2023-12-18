@@ -4,7 +4,6 @@
 #include "log.hpp"
 #include "pin.hpp"
 #include "lcd.hpp"
-#include "qtr.hpp"
 #include "driver.hpp"
 
 #include "motor.hpp"
@@ -26,20 +25,7 @@ int main()
 
     PinClass I2C_SDA(2), I2C_SCL(3);
 
-    //display(I2C_SDA, I2C_SCL);
-
-    LOG_INFORMATION("Main", "Ir sensors");
-
-    PinClass sensor11(8);
-    PinClass sensor21(7);
-    PinClass sensor31(25);
-
-    QTRClass qtr1(sensor11, sensor21, sensor31);
-
-    PinClass sensor12(0); // Change it
-    PinClass sensor22(5); // Change it
-    PinClass sensor32(6); // Change it
-    QTRClass qtr2(sensor12, sensor22, sensor32);
+    // display(I2C_SDA, I2C_SCL);
 
     LOG_INFORMATION("Main", "Initialized pin class.");
 
@@ -47,28 +33,28 @@ int main()
     if (!lidar.isValid())
         return EXIT_FAILURE;
 
-    PinClass leftMotorEnabled(19);
-    PinClass leftMotorA1(17);
-    PinClass leftMotorA2(27);
-
     PinClass rightMotorEnabled(13);
-    PinClass rightMotorA1(23);
-    PinClass rightMotorA2(24);
+    PinClass rightMotorA1(17);
+    PinClass rightMotorA2(27);
+
+    PinClass leftMotorEnabled(12);
+    PinClass leftMotorA1(23);
+    PinClass leftMotorA2(24);
 
     MotorClass rightMotor(rightMotorEnabled, rightMotorA1, rightMotorA2);
     MotorClass leftMotor(leftMotorEnabled, leftMotorA1, leftMotorA2);
 
     LOG_INFORMATION("Main", "Starting program.");
 
-    DriverClass driver(lidar, leftMotor, rightMotor, qtr1, qtr2);
+    DriverClass driver(lidar, leftMotor, rightMotor);
 
-    server(&qtr1, &qtr2, driver);
+    server(driver);
 
     driver.start();
     while (true)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
-    driver.stop();
+    //    driver.stop();
     return EXIT_SUCCESS;
 }
