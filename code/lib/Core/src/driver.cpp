@@ -9,8 +9,8 @@
 #include <signal.h>
 #include <cmath>
 
-DriverClass::DriverClass(LiDARClass& lidar, MotorClass &left, MotorClass &right)
-    : running(false), left(left), right(right), settings(settings), pid(settings.KP, settings.KI, settings.KD, 0.0), mode(RobotMode::Manual), lidar(lidar)
+DriverClass::DriverClass(LiDARClass &lidar, MotorClass &left, MotorClass &right)
+    : running(false), left(left), right(right), settings(settings), pid(settings.KP, settings.KI, settings.KD, 0.0), lidar(lidar)
 {
     this->speed = 0.0f;
     this->steering = 0.0f;
@@ -52,58 +52,77 @@ double DriverClass::computeLinePosition()
     char values[640];
     file.read(values, sizeof(values));
 
-    // Find the peak
-    int peakIndex = 0;
-    int peakValue = 0;
-    for (int i = 0; i < 640; i++)
-    {
-        if (values[i] > peakValue)
+    int line_start = -1;
+    int line_end = 0;
+    int limit = 100;
+    while (limit--) {
+        // Find line start (x where value > 100)
+        for (int i = line_end; i < 640; i++)
         {
-            peakValue = values[i];
-            peakIndex = i;
+            if (values[i] >= 100 && (i >= 638 || values[i + 1] >= 100) && (i >= 637 || values[i + 2] >= 100))
+            {
+                line_start = i;
+                break;
+            }
         }
-    }
 
-    // If there is no peak go straight
-    if (peakValue < 100)
-    {
-        LOG_DEBUG("Driver", "No peak found");
-        return 0.0;
-    }
-
-    // Ensure there is no other peak
-    for (int i = 0; i < 640; i++)
-    {
-        if (i + 50 > peakIndex && i < peakIndex + 50)
-            continue;
-        if (values[i] > peakValue * 2 / 3)
+        // Check line was found
+        if (line_start == -1)
         {
-            LOG_ERROR("Driver", "Found multiple peaks");
+            LOG_ERROR("Driver", "Failed to find line");
             return 0.0;
         }
+
+        // Find line end
+        line_end = line_start;
+        for (int i = line_start; i < 640; i++)
+        {
+            if (values[i] < 100 && (i >= 638 || values[i + 1] < 100) && (i >= 637 || values[i + 2] < 100))
+            {
+                line_end = i;
+                break;
+            }
+        }
+
+        // If line width is more than 50, accept the line or else search another
+        if (line_end - line_start > 50)
+        {
+            break;
+        } else
+        {
+     //       LOG_ERROR("Driver", "Line width is too small (%d)", line_end - line_start);
+        }
     }
 
-    double position = ((double)peakIndex - 320.0) / 640.0;
-    LOG_DEBUG("Driver", "Line position : %f", position);
+    int line_position = (line_start + line_end) / 2;
+    double position = ((double)line_position - 320.0) / 320.0;
+    //LOG_DEBUG("Driver", "Line position : %d", line_position);
 
+    if (!limit) {
+        LOG_ERROR("Driver", "Failed to find line");
+        return 0.0;
+    }
     return position;
 }
 
 void DriverClass::update()
 {
     this->linePosition = this->computeLinePosition();
-    LOG_DEBUG("Driver", "Line position : %f", this->linePosition);
+    //LOG_DEBUG("Driver", "Line position : %f", this->linePosition);
 
-    if (this->mode == RobotMode::LineFollower)
+    if (this->settings.mode == RobotMode::LineFollower)
     {
-        float steering = (float)this->pid.getSteering(this->linePosition, clock());
-        LOG_DEBUG("Driver", "Steering before processing : %f", steering);
-        this->steering = std::clamp(steering / 1024.0f, -1.0f, 1.0f); // NORMALIZE it from -1.0 to 1.0
-        LOG_DEBUG("Driver", "Steering after processing : %f", this->steering);
+        this->steering = (float)this->linePosition;
+       // float steering = (float)this->pid.getSteering(this->linePosition, clock());
+        //LOG_DEBUG("Driver", "Steering before processing : %f", steering);
+        this->steering = std::clamp(this->steering, -1.0f, 1.0f)*0.1; // NORMALIZE it from -1.0 to 1.0
+        
+
+        //LOG_DEBUG("Driver", "Steering after processing : %f", this->steering);
         float speedLeft = std::min(this->speed - this->steering, 1.0f) * 1024.0f;
         float speedRight = std::min(this->speed - this->steering, 1.0f) * 1024.0f;
 
-        if (this->mode == RobotMode::LineFollower && this->lidar.getDistance() < 100)
+        if (this->settings.mode == RobotMode::LineFollower && this->lidar.getDistance() < 100)
         {
             speedLeft = 0;
             speedRight = 0;
@@ -120,18 +139,19 @@ void DriverClass::stop()
 
 void DriverClass::setMotorsSpeed(float left, float right)
 {
-    this->left.setSpeed(left);
-    this->right.setSpeed(right);
+    this->left.set(left);
+    this->right.set(right);
 }
 
 void DriverClass::setSpeedFromCartesianPosition(float x, float y)
 {
-    float r = std::sqrt(x * x + y * y);
-    float theta = std::atan2(y, x);
+    float r = sqrt(x * x + y * y);
+    float theta = atan2(y, x) - M_PI / 4.0f;
 
-    float leftSpeed = r * std::cos(theta);
+    theta = fmod(theta + 2 * M_PI, 2 * M_PI);
+
     float rightSpeed = r * std::sin(theta);
-
+    float leftSpeed = r * std::cos(theta);
 
     this->setMotorsSpeed(leftSpeed, rightSpeed);
 }
@@ -146,30 +166,34 @@ void DriverClass::updateGamepad(float direction, float speed)
 
 void DriverClass::updateSettings(SettingsClass settings)
 {
+    LOG_DEBUG("Driver", "Updating settings");
     // Check is changing mode
     if (settings.mode != this->settings.mode)
-    {        
+    {
+        LOG_DEBUG("Driver", "Changing mode");
         if (settings.mode == RobotMode::LineFollower)
         {
-            #ifdef RASPBERRY_PI
+#ifdef RASPBERRY_PI
             // Start camera program
             this->camera_program_pid = fork();
+            LOG_INFORMATION("Driver", "Starting camera program");
             if (this->camera_program_pid == 0)
             {
-                execl("/usr/bin/python3", "/home/pi/Documents/Robot_Mouche/code/src/cam2.py", NULL);
+                if (execl("/usr/bin/python3", "/usr/bin/python3", "/home/pi/Documents/Robot_Mouche/code/src/cam2.py") != 0)
+                    LOG_ERROR("Driver", "Failed to start camera program");
+
                 exit(0);
             }
-            #endif 
+#endif
         }
         else
         {
-            #ifdef RASPBERRY_PI
+#ifdef RASPBERRY_PI
             // Stop camera program
             kill(this->camera_program_pid, SIGKILL);
-            #endif 
+#endif
         }
     }
     this->settings = settings;
     this->pid.updateConstants(settings.KP, settings.KI, settings.KD);
-       
 }
