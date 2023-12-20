@@ -7,8 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <signal.h>
-
-using namespace std;
+#include <cmath>
 
 DriverClass::DriverClass(LiDARClass& lidar, MotorClass &left, MotorClass &right)
     : running(false), left(left), right(right), settings(settings), pid(settings.KP, settings.KI, settings.KD, 0.0), mode(RobotMode::Manual), lidar(lidar)
@@ -41,8 +40,8 @@ void DriverClass::run()
 double DriverClass::computeLinePosition()
 {
     // Open file line_position.txt
-    fstream file;
-    file.open("line_position.bin", ios::in);
+    std::fstream file;
+    file.open("line_position.bin", std::ios::in);
     if (!file.is_open())
     {
         LOG_ERROR("Driver", "Failed to open line_position.bin");
@@ -109,9 +108,8 @@ void DriverClass::update()
             speedLeft = 0;
             speedRight = 0;
         }
-        
-        this->left.setSpeed((unsigned int)speedLeft);
-        this->right.setSpeed((unsigned int)speedRight);
+
+        this->setMotorsSpeed(speedLeft, speedRight);
     }
 }
 
@@ -120,25 +118,22 @@ void DriverClass::stop()
     this->running = false;
 }
 
-void DriverClass::setSpeed(float speed)
+void DriverClass::setMotorsSpeed(float left, float right)
 {
-    if (speed >= 0)
-    {
-        this->speed = clamp(speed, 0.0f, 1.0f);
-        this->right.set(MotorDirection::Forward, (unsigned int)(speed * 1024.0f));
-        this->left.set(MotorDirection::Forward, (unsigned int)(speed * 1024.0f));
-    }
-    else
-    {
-        this->speed = clamp(-speed, 0.0f, 1.0f);
-        this->right.set(MotorDirection::Backward, (unsigned int)(-speed * 1024.0f));
-        this->left.set(MotorDirection::Backward, (unsigned int)(-speed * 1024.0f));
-    }
+    this->left.setSpeed(left);
+    this->right.setSpeed(right);
 }
 
-void DriverClass::setDirection(float direction)
+void DriverClass::setSpeedFromCartesianPosition(float x, float y)
 {
-    this->steering = clamp(direction, -1.0f, 1.0f);
+    float r = std::sqrt(x * x + y * y);
+    float theta = std::atan2(y, x);
+
+    float leftSpeed = r * std::cos(theta);
+    float rightSpeed = r * std::sin(theta);
+
+
+    this->setMotorsSpeed(leftSpeed, rightSpeed);
 }
 
 void DriverClass::updateGamepad(float direction, float speed)
@@ -146,31 +141,7 @@ void DriverClass::updateGamepad(float direction, float speed)
     if (this->settings.mode == RobotMode::LineFollower)
         return;
 
-    float velocity = speed;
-    float rotation = direction;
-
-    float left_speed = velocity - rotation;
-    float right_speed = velocity + rotation;
-
-    printf("Left speed : %f\n", left_speed);
-    printf("Right speed : %f\n", right_speed);
-
-    if (left_speed >= 0.0f) {
-        this->left.set(MotorDirection::Forward, (unsigned int)(left_speed * 1024.0f));
-    }
-    else {
-        this->left.set(MotorDirection::Backward, (unsigned int)(-left_speed * 1024.0f));
-    }
-
-    if (right_speed >= 0.0f) {
-        this->right.set(MotorDirection::Forward, (unsigned int)(right_speed * 1024.0f));
-    }
-    else {
-        this->right.set(MotorDirection::Backward, (unsigned int)(-right_speed * 1024.0f));
-    }
-
-    //this->setSpeed(speed);
-    //this->setDirection(direction);
+    this->setSpeedFromCartesianPosition(direction, -speed);
 }
 
 void DriverClass::updateSettings(SettingsClass settings)
@@ -180,7 +151,6 @@ void DriverClass::updateSettings(SettingsClass settings)
     {        
         if (settings.mode == RobotMode::LineFollower)
         {
-            this->setSpeed(0.5f);
             #ifdef RASPBERRY_PI
             // Start camera program
             this->camera_program_pid = fork();
@@ -197,7 +167,6 @@ void DriverClass::updateSettings(SettingsClass settings)
             // Stop camera program
             kill(this->camera_program_pid, SIGKILL);
             #endif 
-            this->setSpeed(0.0f);
         }
     }
     this->settings = settings;

@@ -7,6 +7,7 @@
 #endif
 
 #include <string>
+#include <algorithm>
 
 MotorClass::MotorClass(PinClass &Enabled, PinClass &A1, PinClass &A2) : valid(false),
                                                                         Enabled(Enabled),
@@ -75,13 +76,15 @@ void MotorClass::setDirection(MotorDirection direction)
 #endif
 }
 
-void MotorClass::set(MotorDirection direction, unsigned int speed)
+void MotorClass::set(float relativeSpeed)
 {
     if (!this->isValid())
     {
         LOG_ERROR("Motor", "Motor instance is not valid.");
         return;
     }
+
+    relativeSpeed = std::clamp(relativeSpeed, -1.0f, 1.0f);
 
     LOG_DEBUG("Motor", "Set direction and speed.");
     this->setDirection(direction);

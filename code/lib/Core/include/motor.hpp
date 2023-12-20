@@ -17,7 +17,7 @@ public:
 
     void setSpeed(unsigned int speed);
     void setDirection(MotorDirection forward);
-    void set(MotorDirection direction, unsigned int speed);
+    void set(float relativeSpeed);
     void stop();
 
     bool isValid() const;

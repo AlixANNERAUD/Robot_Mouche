@@ -19,8 +19,8 @@ public:
     void start();
     void stop();
 
-    void setSpeed(float speed);
-    void setDirection(float direction);
+    void setMotorsSpeed(float left, float right);
+    void setSpeedFromCartesianPosition(float x, float y);
 
     // - Callbacks
     void updateSettings(SettingsClass settings);
