@@ -253,6 +253,7 @@ async function update_info_display() {
                         borderColor: '#3e95cd',
                         fill: false,
                         pointBackgroundColor: pointBackgroundColor,
+                        borderColor: pointBackgroundColor,
                     }
                 ]
             },
