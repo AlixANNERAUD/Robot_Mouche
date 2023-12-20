@@ -216,6 +216,7 @@ function update_info() {
             }
             camera_data = new Uint8Array(data.slice(0, 640));
             line_position = new Float64Array(data.slice(640, 648))[0];
+            console.log(line_position);
             update_info_display();
         })
         .catch((err) => {
