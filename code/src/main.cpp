@@ -34,12 +34,12 @@ int main()
         return EXIT_FAILURE;
 
     PinClass rightMotorEnabled(13);
-    PinClass rightMotorA1(17);
-    PinClass rightMotorA2(27);
+    PinClass rightMotorA1(27);
+    PinClass rightMotorA2(17);
 
     PinClass leftMotorEnabled(12);
-    PinClass leftMotorA1(23);
-    PinClass leftMotorA2(24);
+    PinClass leftMotorA1(24);
+    PinClass leftMotorA2(23);
 
     MotorClass rightMotor(rightMotorEnabled, rightMotorA1, rightMotorA2);
     MotorClass leftMotor(leftMotorEnabled, leftMotorA1, leftMotorA2);
