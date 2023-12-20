@@ -1,9 +1,9 @@
 console.log("Hello World!");
 
 let robot_addr_input = document.getElementById("robot-address");
-let kp = document.getElementById("kp-input").value;
-let ki = document.getElementById("ki-input").value;
-let kd = document.getElementById("kd-input").value;
+let kp = document.getElementById("kp-input");
+let ki = document.getElementById("ki-input");
+let kd = document.getElementById("kd-input");
 let controller_title = document.getElementById("controller-title");
 let controller_display = document.getElementById("controller-display");
 let logs = document.getElementById("logs");
@@ -100,9 +100,9 @@ function postSettings() {
     let mode = mode_selector.selectedIndex;
 
     // KP, KI, KD
-    let kp_array = new Float64Array([kp]).buffer;
-    let ki_array = new Float64Array([ki]).buffer;
-    let kd_array = new Float64Array([kd]).buffer;
+    let kp_array = new Float64Array([kp.value]).buffer;
+    let ki_array = new Float64Array([ki.value]).buffer;
+    let kd_array = new Float64Array([kd.value]).buffer;
     let kp_ints = new Uint8Array(kp_array);
     let ki_ints = new Uint8Array(ki_array);
     let kd_ints = new Uint8Array(kd_array);
