@@ -16,7 +16,7 @@ public:
     SettingsClass(RobotMode mode);
 
     RobotMode mode;
-    double KP, KI, KD;
+    double KP, KI, KD, KS;
     short int irs_threshold;
 };
 

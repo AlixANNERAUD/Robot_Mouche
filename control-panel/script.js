@@ -4,6 +4,7 @@ let robot_addr_input = document.getElementById("robot-address");
 let kp = document.getElementById("kp-input");
 let ki = document.getElementById("ki-input");
 let kd = document.getElementById("kd-input");
+let ks = document.getElementById("ks-input");
 let controller_title = document.getElementById("controller-title");
 let controller_display = document.getElementById("controller-display");
 let logs = document.getElementById("logs");
@@ -40,6 +41,7 @@ robot_addr_input.addEventListener("change", (e) => {
 ki.value = localStorage.getItem("ki") || 0;
 kp.value = localStorage.getItem("kp") || 0;
 kd.value = localStorage.getItem("kd") || 0;
+ks.value = localStorage.getItem("ks") || 1;
 ki.addEventListener("change", (e) => {
     localStorage.setItem("ki", ki.value);
 });
@@ -48,6 +50,9 @@ kp.addEventListener("change", (e) => {
 });
 kd.addEventListener("change", (e) => {
     localStorage.setItem("kd", kd.value);
+});
+ks.addEventListener("change", (e) => {
+    localStorage.setItem("ks", kd.value);
 });
 
 function play_sound(sound) {
@@ -98,23 +103,20 @@ function postSettings() {
     // Get mode
     let mode = mode_selector.selectedIndex;
 
-    // KP, KI, KD
+    // KP, KI, KD, KS
     let kp_array = new Float64Array([kp.value]).buffer;
     let ki_array = new Float64Array([ki.value]).buffer;
     let kd_array = new Float64Array([kd.value]).buffer;
+    let ks_array = new Float64Array([ks.value]).buffer;
     let kp_ints = new Uint8Array(kp_array);
     let ki_ints = new Uint8Array(ki_array);
     let kd_ints = new Uint8Array(kd_array);
-
-    // IRS threshold (integer)
-    let irs_threshold = document.getElementById("irs-threshold-input").value;
-    let irs_threshold_array = new Uint16Array([irs_threshold]).buffer;
-    let irs_threshold_ints = new Uint8Array(irs_threshold_array);
+    let ks_ints = new Uint8Array(ks_array);
 
     // Send request
     fetch(`${addr}/settings`, {
         method: "POST",
-        body: new Uint8Array([mode, ...kp_ints, ...ki_ints, ...kd_ints, ...irs_threshold_ints]),
+        body: new Uint8Array([mode, ...kp_ints, ...ki_ints, ...kd_ints, ...ks_ints]),
     })
         .then((res) => {
             if (res.ok) {

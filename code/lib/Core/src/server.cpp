@@ -66,7 +66,7 @@ void ServerClass::listen() {
     { 
         // Body format: 1 byte for mode (0 = line follower, 1 = manual)
 
-        long unsigned int expected_body_length = 1+3*8+2;
+        long unsigned int expected_body_length = 1+4*8;
         if (req.body.length() != expected_body_length) {
             LOG_ERROR("Server", "Settings request body wrong length! (got %d, expected %d)", req.body.length(), expected_body_length);
             res.set_content("Settings request body wrong length!", "text/plain");
@@ -92,12 +92,11 @@ void ServerClass::listen() {
         settings.KP = *(double *)req.body.substr(1, 9).c_str();
         settings.KI = *(double *)req.body.substr(9, 9).c_str();
         settings.KD = *(double *)req.body.substr(17, 9).c_str();
-        settings.irs_threshold = *(short int *)req.body.substr(25, 2).c_str();
+        settings.KS = *(double *)req.body.substr(25, 9).c_str();
 
         // Respond
         LOG_INFORMATION("Server", "Settings request received: All good!");
-        LOG_INFORMATION("Server", "KP: %f, KI: %f, KD: %f", settings.KP, settings.KI, settings.KD);
-        LOG_INFORMATION("Server", "IRS threshold: %d", settings.irs_threshold);
+        LOG_INFORMATION("Server", "KP: %f, KI: %f, KD: %f, KS: %f", settings.KP, settings.KI, settings.KD, settings.KS);
         on_settings_change(settings);
         res.set_header("Access-Control-Allow-Origin", "*");
         res.set_content("All good!", "text/plain");

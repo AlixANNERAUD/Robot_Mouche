@@ -6,6 +6,7 @@ SettingsClass::SettingsClass()
     this->KP = 1.0;
     this->KI = 1.0;
     this->KD = 1.0;
+    this->KS = 1.0;
     this->irs_threshold = 50;
 }
 
@@ -15,5 +16,6 @@ SettingsClass::SettingsClass(RobotMode mode)
     this->KP = 1.0;
     this->KI = 1.0;
     this->KD = 1.0;
+    this->KS = 1.0;
     this->irs_threshold = 50;
 }
