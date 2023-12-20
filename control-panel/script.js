@@ -10,7 +10,6 @@ let logs = document.getElementById("logs");
 let cd_inner = controller_display.firstElementChild;
 let cd_bounding_rect = controller_display.getBoundingClientRect();
 let rem = cd_bounding_rect.width / 7;
-var info_last_update = 0;
 var camera_data = [];
 var line_position = 0;
 let mode_selector = document.getElementById("mode-selector");
@@ -193,11 +192,6 @@ function append_to_logs(text) {
 
 var updating_info = false;
 function update_info() {
-    let now = new Date().getTime();
-    if (now - info_last_update < 200) {
-        return;
-    }
-
     let addr = robot_addr_input.value;
 
     if (updating_info) {
@@ -208,7 +202,6 @@ function update_info() {
         method: "GET",
     })
         .then((res) => {
-            info_last_update = new Date().getTime();
             updating_info = false;
             if (res.ok) {
                 return res.arrayBuffer();
@@ -222,7 +215,6 @@ function update_info() {
             update_info_display();
         })
         .catch((err) => {
-            info_last_update = new Date().getTime();
             updating_info = false;
             append_to_logs(`Error getting info: ${err}`);
         });
