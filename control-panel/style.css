@@ -47,12 +47,6 @@ h3 {
     border-radius: 50%;
 }
 
-/* Camera display */
-
-canvas {
-    flex-grow: 1;
-}
-
 /* Soundboard */
 
 #soundboard {
