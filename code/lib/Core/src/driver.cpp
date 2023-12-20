@@ -47,6 +47,9 @@ std::array<char, 640> DriverClass::readLinePositionFile()
     if (!file.is_open())
     {
         LOG_ERROR("Driver", "Failed to open line_position.bin");
+        values[0] = 42;
+        values[1] = 69;
+        return values;
     }
 
     // Read 640 values
@@ -112,6 +115,9 @@ double DriverClass::computeLinePosition(std::array<char, 640> values)
 void DriverClass::update()
 {
     auto values = readLinePositionFile();
+    if (values[0] == 42 && values[1] == 69) {
+        return;
+    }
     this->linePosition = this->computeLinePosition(values);
     //LOG_DEBUG("Driver", "Line position : %f", this->linePosition);
 
