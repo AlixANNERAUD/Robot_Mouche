@@ -1,3 +1,6 @@
 .pio
 .vscode/
 .output
+line_position.bin
+line_position.bin.tags
+stream.asx
