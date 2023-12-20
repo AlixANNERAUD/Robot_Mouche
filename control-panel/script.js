@@ -1,6 +1,9 @@
 console.log("Hello World!");
 
 let robot_addr_input = document.getElementById("robot-address");
+let kp = document.getElementById("kp-input").value;
+let ki = document.getElementById("ki-input").value;
+let kd = document.getElementById("kd-input").value;
 let controller_title = document.getElementById("controller-title");
 let controller_display = document.getElementById("controller-display");
 let logs = document.getElementById("logs");
@@ -34,6 +37,18 @@ soundboard_achievement.addEventListener("click", (e) => { play_sound("achievemen
 robot_addr_input.value = localStorage.getItem("robot_addr") || "http://alimon.local:80";
 robot_addr_input.addEventListener("change", (e) => {
     localStorage.setItem("robot_addr", robot_addr_input.value);
+});
+ki.value = localStorage.getItem("ki") || 0;
+kp.value = localStorage.getItem("kp") || 0;
+kd.value = localStorage.getItem("kd") || 0;
+ki.addEventListener("change", (e) => {
+    localStorage.setItem("ki", ki.value);
+});
+kp.addEventListener("change", (e) => {
+    localStorage.setItem("kp", kp.value);
+});
+kd.addEventListener("change", (e) => {
+    localStorage.setItem("kd", kd.value);
 });
 
 function play_sound(sound) {
@@ -85,9 +100,6 @@ function postSettings() {
     let mode = mode_selector.selectedIndex;
 
     // KP, KI, KD
-    let kp = document.getElementById("kp-input").value;
-    let ki = document.getElementById("ki-input").value;
-    let kd = document.getElementById("kd-input").value;
     let kp_array = new Float64Array([kp]).buffer;
     let ki_array = new Float64Array([ki]).buffer;
     let kd_array = new Float64Array([kd]).buffer;
@@ -215,9 +227,7 @@ async function update_info_display() {
         chart.destroy();
     }
 
-    // Use line_position which is between -1 and 1 to calculate the position between 0 and 640
     let line_position_pixels = (line_position + 1) * 320;
-    // Make all points blue except those near the line (20 pixels)
     let pointBackgroundColor = Array.from({ length: 640 }, (_, i) => {
         if (Math.abs(i - line_position_pixels) < 20) {
             return "#ff0000";
