@@ -15,6 +15,8 @@ void PidControlClass::updateConstants(double Kp, double Ki, double Kd) {
     this->Kp = Kp;
     this->Ki = Ki;
     this->Kd = Kd;
+    this->integral = 0.0;
+    this->previousError = 0.0;
 }
 
 double PidControlClass::getSteering(double measuredValue, clock_t recordClock) {
