@@ -210,11 +210,12 @@ function update_info() {
             }
         })
         .then((data) => {
-            if (data[0] == 42 && data[1] == 69) {
+            let camera_data_tmp = new Uint8Array(data.slice(0, 640));
+            if (camera_data_tmp[0] == 42 && camera_data_tmp[1] == 69) {
                 append_to_logs("Error getting info: file not found");
                 return;
             }
-            camera_data = new Uint8Array(data.slice(0, 640));
+            camera_data = camera_data_tmp;
             line_position = new Float64Array(data.slice(640, 648))[0];
             console.log(line_position);
             update_info_display();
