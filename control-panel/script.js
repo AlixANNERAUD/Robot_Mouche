@@ -191,6 +191,7 @@ function append_to_logs(text) {
     logs.innerText = `[${time}] ${text}\n${logs.innerText}`;
 }
 
+var updating_info = false;
 function update_info() {
     let now = new Date().getTime();
     if (now - info_last_update < 200) {
@@ -199,11 +200,16 @@ function update_info() {
 
     let addr = robot_addr_input.value;
 
+    if (updating_info) {
+        return;
+    }
+    updating_info = true;
     fetch(`${addr}/info`, {
         method: "GET",
     })
         .then((res) => {
             info_last_update = new Date().getTime();
+            updating_info = false;
             if (res.ok) {
                 return res.arrayBuffer();
             } else {
@@ -217,6 +223,7 @@ function update_info() {
         })
         .catch((err) => {
             info_last_update = new Date().getTime();
+            updating_info = false;
             append_to_logs(`Error getting info: ${err}`);
         });
 }
