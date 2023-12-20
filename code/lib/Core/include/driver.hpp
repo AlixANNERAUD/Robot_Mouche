@@ -29,8 +29,6 @@ public:
     double computeLinePosition();
 
 private:
-    RobotMode mode;
-
     std::atomic_bool running;
     MotorClass &left;
     MotorClass &right;
