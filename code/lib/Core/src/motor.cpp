@@ -3,7 +3,7 @@
 #include "log.hpp"
 
 #ifdef RASPBERRY_PI
-    #include "wiringPi.h"
+#include "wiringPi.h"
 #endif
 
 #include <string>
@@ -87,8 +87,12 @@ void MotorClass::set(float relativeSpeed)
     relativeSpeed = std::clamp(relativeSpeed, -1.0f, 1.0f);
 
     LOG_DEBUG("Motor", "Set direction and speed.");
-    this->setDirection(direction);
-    this->setSpeed(speed);
+    if (relativeSpeed > 0)
+        this->setDirection(MotorDirection::Forward);
+    else
+        this->setDirection(MotorDirection::Backward);
+
+    this->setSpeed(static_cast<unsigned int>(std::abs(relativeSpeed) * 1023));
 }
 
 void MotorClass::stop()
