@@ -81,7 +81,7 @@ double DriverClass::computeLinePosition(std::array<char, 640> values)
         }
 
         // Find line end
-        line_end = line_start;
+        line_end = 639;
         for (int i = line_start; i < 640; i++)
         {
             if (values[i] < 100 && (i >= 638 || values[i + 1] < 100) && (i >= 637 || values[i + 2] < 100))
