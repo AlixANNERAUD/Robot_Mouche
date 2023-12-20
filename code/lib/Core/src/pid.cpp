@@ -9,47 +9,38 @@ PidControlClass::PidControlClass(double Kp, double Ki, double Kd, double setpoin
     : Kp(Kp), Ki(Ki), Kd(Kd), setpoint(setpoint) 
 {
     this->lastRecordClock = clock();
-    this->tau = this->Kd / (this->Kp * PID_N);
-    this->A1 = -this->Kp;
 }
 
 void PidControlClass::updateConstants(double Kp, double Ki, double Kd) {
     this->Kp = Kp;
     this->Ki = Ki;
     this->Kd = Kd;
-    this->tau = this->Kd / (this->Kp * PID_N);
-    this->A1 = -this->Kp;
 }
 
 double PidControlClass::getSteering(double measuredValue, clock_t recordClock) {
-    this->dt[2] = this->dt[1];
-    this->dt[1] = this->dt[0];
-    this->dt[0] =  ((double)(recordClock - this->lastRecordClock) / (CLOCKS_PER_SEC));
+    double dt = (double)(recordClock - this->lastRecordClock) / CLOCKS_PER_SEC;
     this->lastRecordClock = recordClock;
-    
-    this->errors[2] = this->errors[1];
-    this->errors[1] = this->errors[0];
-    this->errors[0] = setpoint - (double)measuredValue;
 
-    // Adapt to the shift of the time steps
-    this->A0 = this->Kp + this->Ki * this->dt[0];
-    this->A0d = this->Kd / this->dt[0];
-    this->A1d = -2.0 * this->Kd / this->dt[1];
-    this->A2d = this->Kd / this->dt[2];
-    this->alpha = this->dt[0] / (2 * this->tau);
-    // Propotional integral terms
-    this->output += this->A0 * this->errors[0] + this->A1 * this->errors[1];
-    // Filtered derivative term
-    this->d1 = this->d0;
-    this->d0 = this->A0d * this->errors[0] + this->A1d * this->errors[1] + this->A2d * this->errors[2];
-    this->fd1 = this->fd0;
-    this->fd0 = ((this->alpha) / (this->alpha + 1)) * (this->d0 + this->d1) - ((this->alpha - 1) / (this->alpha + 1)) * this->fd1;
-    this->output += this->fd0;
+    double error = this->setpoint - measuredValue;
+    double proportional = error;
+    double integral = this->integral + error * dt;
+    double derivative = (error - this->previousError) / dt;
+    double output = this->Kp * proportional + this->Ki * integral + this->Kd * derivative;
+    this->previousError = error;
 
-    if (isnan(this->output) || isinf(this->output)) {
-        LOG_ERROR("PID", "Output is NaN or Inf. Return steering to 0.");
-        this->output = 0.0;
-    }
-
-    return this->output;
+    return output;
 }
+
+/*
+previous_error := 0
+integral := 0
+loop:
+    error := setpoint − measured_value
+    proportional := error;
+    integral := integral + error × dt
+    derivative := (error − previous_error) / dt
+    output := Kp × proportional + Ki × integral + Kd × derivative
+    previous_error := error
+    wait(dt)
+    goto loop
+*/

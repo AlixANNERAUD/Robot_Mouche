@@ -8,20 +8,10 @@
 class PidControlClass
 {
 private:
-    double errors[3] = {0.0, 0.0, 0.0};
-    double A0, A1;
-    double A0d, A1d, A2d;
-    double d0, d1 = 0.0;
-    double fd0, fd1 = 0.0;
     double Kp, Ki, Kd;
     double setpoint;
-    double output;
-    double alpha;
-    double tau;
-    
-    // time step
-    double dt[3] = {1, 1, 1}; // can be 1 because associated errors are 0 and a 0 value will return an infinite value
-    int nRecords = 0;
+    double integral = 0.0;
+    double previousError = 0.0;
     clock_t lastRecordClock = 0;
     
 
