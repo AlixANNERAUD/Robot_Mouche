@@ -1,0 +1,6 @@
+ <ASX version ="3.0">
+   <TITLE>Stream1234</TITLE>
+   <ENTRY>
+     <REF HREF="http://alimon.local:8090" />
+   </ENTRY>
+ </ASX>
