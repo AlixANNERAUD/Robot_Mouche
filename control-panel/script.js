@@ -136,6 +136,8 @@ function postSettings() {
 }
 document.getElementById("submit-settings").onclick = postSettings;
 
+var sending_gamepad_direction = false;
+var last_sent = [0, 0];
 function postGamepadDirection(gpx, gpy) {
     // API addr
     let addr = document.getElementById("robot-address").value;
@@ -146,11 +148,20 @@ function postGamepadDirection(gpx, gpy) {
     let gpy_ints = new Uint8Array(gpy_array);
 
     // Send request
+    if (sending_gamepad_direction) {
+        return;
+    }
+    if (gpx == last_sent[0] && gpy == last_sent[1]) {
+        return;
+    }
+    sending_gamepad_direction = true;
     fetch(`${addr}/gamepad-direction`, {
         method: "POST",
         body: new Uint8Array([...gpx_ints, ...gpy_ints]),
     })
         .then((res) => {
+            last_sent = [gpx, gpy];
+            sending_gamepad_direction = false;
             if (res.ok) {
                 append_to_logs("Gamepad sent successfully");
             } else {
