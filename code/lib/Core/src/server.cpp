@@ -33,7 +33,11 @@ void ServerClass::listen() {
 
     LOG_INFORMATION("Server", "Serving files from %s", Server_ressources_path.c_str());
 
-    server.set_mount_point("/", Server_ressources_path);
+    httplib::Headers headers = {
+        {"Access-Control-Allow-Origin", "*"}
+    };
+
+    server.set_mount_point("/", Server_ressources_path, headers);
 
     server.Post("/gamepad-direction", [on_gamepad_direction](const httplib::Request &req, httplib::Response &res)
     { 
