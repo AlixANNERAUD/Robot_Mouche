@@ -7,28 +7,10 @@ let logs = document.getElementById("logs");
 let cd_inner = controller_display.firstElementChild;
 let cd_bounding_rect = controller_display.getBoundingClientRect();
 let rem = cd_bounding_rect.width / 7;
-var info = {
-    t1: 0,
-    t2: 0,
-    t3: 0,
-    t4: 0,
-    t5: 0,
-    t6: 0,
-    last_update: 0,
-};
+var info_last_update = 0;
+var camera_data = [];
+var line_position = 0;
 let mode_selector = document.getElementById("mode-selector");
-let qtr_value1 = document.querySelector("#irs-sensors-display>div:nth-child(1)>div:nth-child(2)");
-let qtr_value2 = document.querySelector("#irs-sensors-display>div:nth-child(2)>div:nth-child(2)");
-let qtr_value3 = document.querySelector("#irs-sensors-display>div:nth-child(3)>div:nth-child(2)");
-let qtr_value4 = document.querySelector("#irs-sensors-display>div:nth-child(4)>div:nth-child(2)");
-let qtr_value5 = document.querySelector("#irs-sensors-display>div:nth-child(5)>div:nth-child(2)");
-let qtr_value6 = document.querySelector("#irs-sensors-display>div:nth-child(6)>div:nth-child(2)");
-let qtr_box1 = document.getElementById("irs-sensor-box-1");
-let qtr_box2 = document.getElementById("irs-sensor-box-2");
-let qtr_box3 = document.getElementById("irs-sensor-box-3");
-let qtr_box4 = document.getElementById("irs-sensor-box-4");
-let qtr_box5 = document.getElementById("irs-sensor-box-5");
-let qtr_box6 = document.getElementById("irs-sensor-box-6");
 
 let soundboard_rick = document.querySelector("#soundboard>div>div:nth-child(1)");
 let soundboard_bagpipes = document.querySelector("#soundboard>div>div:nth-child(2)");
@@ -199,51 +181,81 @@ function append_to_logs(text) {
 
 function update_info() {
     let now = new Date().getTime();
-    if (now - info["last_update"] < 200) {
+    if (now - info_last_update < 200) {
         return;
     }
 
     let addr = robot_addr_input.value;
 
-//    fetch(`${addr}/info`, {
-//        method: "GET",
-//    })
-//        .then((res) => {
-//            if (res.ok) {
-//                return res.arrayBuffer();
-//            } else {
-//                append_to_logs("Error getting info");
-//            }
-//        })
-//        .then((data) => {
-//            let size_of_clock_t = data.byteLength / 6;
-//            info["t1"] = new Uint32Array(data.slice(0, size_of_clock_t))[0];
-//            info["t2"] = new Uint32Array(data.slice(size_of_clock_t, size_of_clock_t*2))[0];
-//            info["t3"] = new Uint32Array(data.slice(size_of_clock_t*2, size_of_clock_t*3))[0];
-//            info["t4"] = new Uint32Array(data.slice(size_of_clock_t*3, size_of_clock_t*4))[0];
-//            info["t5"] = new Uint32Array(data.slice(size_of_clock_t*4, size_of_clock_t*5))[0];
-//            info["t6"] = new Uint32Array(data.slice(size_of_clock_t*5, size_of_clock_t*6))[0];
-//            info["last_update"] = now;
-//            update_qtr_display();
-//        })
-//        .catch((err) => {
-//            append_to_logs(`Error getting info: ${err}`);
-//        });
+    fetch(`${addr}/info`, {
+        method: "GET",
+    })
+        .then((res) => {
+            info_last_update = new Date().getTime();
+            if (res.ok) {
+                return res.arrayBuffer();
+            } else {
+                append_to_logs("Error getting info");
+            }
+        })
+        .then((data) => {
+            camera_data = new Uint8Array(data.slice(0, 640));
+            line_position = new Float64Array(data.slice(640, 648))[0];
+            update_info_display();
+        })
+        .catch((err) => {
+            info_last_update = new Date().getTime();
+            append_to_logs(`Error getting info: ${err}`);
+        });
 }
 
-function update_qtr_display() {
-    qtr_value1.innerText = info["t1"];
-    qtr_value2.innerText = info["t2"];
-    qtr_value3.innerText = info["t3"];
-    qtr_value4.innerText = info["t4"];
-    qtr_value5.innerText = info["t5"];
-    qtr_value6.innerText = info["t6"];
-    qtr_box1.style.backgroundColor = "rgba(0, 0, 0, " + (info["t1"] / 100) + ")";
-    qtr_box2.style.backgroundColor = "rgba(0, 0, 0, " + (info["t2"] / 100) + ")";
-    qtr_box3.style.backgroundColor = "rgba(0, 0, 0, " + (info["t3"] / 100) + ")";
-    qtr_box4.style.backgroundColor = "rgba(0, 0, 0, " + (info["t4"] / 100) + ")";
-    qtr_box5.style.backgroundColor = "rgba(0, 0, 0, " + (info["t5"] / 100) + ")";
-    qtr_box6.style.backgroundColor = "rgba(0, 0, 0, " + (info["t6"] / 100) + ")";
+var chart;
+async function update_info_display() {
+    if (chart) {
+        chart.destroy();
+    }
+
+    // Use line_position which is between -1 and 1 to calculate the position between 0 and 640
+    let line_position_pixels = (line_position + 1) * 320;
+    // Make all points blue except those near the line (20 pixels)
+    let pointBackgroundColor = Array.from({ length: 640 }, (_, i) => {
+        if (Math.abs(i - line_position_pixels) < 20) {
+            return "#ff0000";
+        }
+        return "#0000ff";
+    });
+
+    chart = new Chart(
+        document.getElementById('acquisitions'),
+        {
+            type: 'line',
+            data: {
+                labels: Array.from({ length: 640 }, (_, i) => i),
+                datasets: [
+                    {
+                        data: camera_data,
+                        label: 'Camera Data',
+                        borderColor: '#3e95cd',
+                        fill: false,
+                        pointBackgroundColor: pointBackgroundColor,
+                    }
+                ]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Camera Acquisitions'
+                },
+                animation: false,
+                scales: {
+                    y: {
+                        min: 0,
+                        max: 255
+                    }
+                }
+            }
+        }
+    );
 }
 
 function loop() {

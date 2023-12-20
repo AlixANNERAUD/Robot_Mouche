@@ -47,30 +47,10 @@ h3 {
     border-radius: 50%;
 }
 
-/* IRS Sensors */
+/* Camera display */
 
-#irs-sensors-display {
-    display: flex;
-    flex-direction: row;
-}
-
-
-#irs-sensors-display>div {
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    width: 2rem;
-    height: calc(1.618 * 2rem);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    margin-right: 1rem;
-}
-
-#irs-sensor-box-1, #irs-sensor-box-2, #irs-sensor-box-3, #irs-sensor-box-4, #irs-sensor-box-5, #irs-sensor-box-6 {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 4px;
+canvas {
+    flex-grow: 1;
 }
 
 /* Soundboard */

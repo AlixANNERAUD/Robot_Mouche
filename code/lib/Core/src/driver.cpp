@@ -37,21 +37,25 @@ void DriverClass::run()
     this->right.setSpeed(0);
 }
 
-double DriverClass::computeLinePosition()
+std::array<char, 640> DriverClass::readLinePositionFile()
 {
     // Open file line_position.txt
     std::fstream file;
     file.open("line_position.bin", std::ios::in);
+
+    std::array<char, 640> values;
     if (!file.is_open())
     {
         LOG_ERROR("Driver", "Failed to open line_position.bin");
-        return 0.0;
     }
 
-    // Read 640 comma separated values
-    char values[640];
-    file.read(values, sizeof(values));
+    // Read 640 values
+    file.read(values.data(), values.size());
+    return values;
+}
 
+double DriverClass::computeLinePosition(std::array<char, 640> values)
+{
     int line_start = -1;
     int line_end = 0;
     int limit = 100;
@@ -107,7 +111,8 @@ double DriverClass::computeLinePosition()
 
 void DriverClass::update()
 {
-    this->linePosition = this->computeLinePosition();
+    auto values = readLinePositionFile();
+    this->linePosition = this->computeLinePosition(values);
     //LOG_DEBUG("Driver", "Line position : %f", this->linePosition);
 
     if (this->settings.mode == RobotMode::LineFollower)

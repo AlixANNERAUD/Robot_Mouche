@@ -1,6 +1,7 @@
 #include "server.hpp"
 #include "log.hpp"
 #include "httplib.h"
+#include "driver.hpp"
 #include <cstdlib>
 #include <string>
 
@@ -110,11 +111,15 @@ void ServerClass::listen() {
 
     server.Get("/info", [this](const httplib::Request &req, httplib::Response &res)
     {
-        // Create body
-        char body[0];
+        std::array<char, 640> values = DriverClass::readLinePositionFile();
+        double line_position = DriverClass::computeLinePosition(values);
+
+        std::array<char, 648> body;
+        memcpy(body.data(), values.data(), 640);
+        memcpy(body.data() + 640, &line_position, 8);
 
         res.set_header("Access-Control-Allow-Origin", "*");
-        res.set_content(body, 0, "application/octet-stream");
+        res.set_content(body.data(), body.size(), "application/octet-stream");
     });
 
     server.listen("0.0.0.0", 80);

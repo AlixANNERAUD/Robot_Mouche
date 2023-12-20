@@ -7,6 +7,7 @@
 #include "pin.hpp"
 #include "pid.hpp"
 
+#include <array>
 #include <unistd.h>
 #include <atomic>
 
@@ -26,7 +27,8 @@ public:
     void updateSettings(SettingsClass settings);
     void updateGamepad(float direction, float speed);
 
-    double computeLinePosition();
+    static double computeLinePosition(std::array<char, 640> values);
+    static std::array<char, 640> readLinePositionFile();
 
 private:
     std::atomic_bool running;
