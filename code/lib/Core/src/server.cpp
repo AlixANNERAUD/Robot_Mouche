@@ -111,11 +111,15 @@ void ServerClass::listen() {
     server.Get("/info", [this](const httplib::Request &req, httplib::Response &res)
     {
         std::array<char, 640> values = DriverClass::readLinePositionFile();
-        double line_position = DriverClass::computeLinePosition(values);
+        std::array<bool, 5> line_position = DriverClass::computeLinePosition(values);
 
-        std::array<char, 648> body;
+        std::array<char, 645> body;
         memcpy(body.data(), values.data(), 640);
-        memcpy(body.data() + 640, &line_position, 8);
+        memcpy(body.data() + 640, &line_position, 5);
+
+        if (sizeof(bool) != 1) {
+            LOG_ERROR("Server", "sizeof(bool) != 1");
+        }
 
         res.set_header("Access-Control-Allow-Origin", "*");
         res.set_content(body.data(), body.size(), "application/octet-stream");

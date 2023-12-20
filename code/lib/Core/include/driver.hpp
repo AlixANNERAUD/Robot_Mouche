@@ -27,7 +27,7 @@ public:
     void updateSettings(SettingsClass settings);
     void updateGamepad(float direction, float speed);
 
-    static double computeLinePosition(std::array<char, 640> values);
+    static std::array<bool, 5> computeLinePosition(std::array<char, 640> values);
     static std::array<char, 640> readLinePositionFile();
 
 private:

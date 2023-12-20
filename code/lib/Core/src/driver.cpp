@@ -59,59 +59,31 @@ std::array<char, 640> DriverClass::readLinePositionFile()
     return values;
 }
 
-double DriverClass::computeLinePosition(std::array<char, 640> values)
+std::array<bool, 5> DriverClass::computeLinePosition(std::array<char, 640> values)
 {
-    int line_start = -1;
-    int line_end = 0;
-    int limit = 100;
-    while (limit--) {
-        // Find line start (x where value > 100)
-        for (int i = line_end; i < 640; i++)
-        {
-            if (values[i] >= 100 && (i >= 638 || values[i + 1] >= 100) && (i >= 637 || values[i + 2] >= 100))
-            {
-                line_start = i;
-                break;
-            }
-        }
+    int ranges[5][2] = {{0, 80}, {80, 200}, {200, 440}, {440, 560}, {560, 640}};
 
-        // Check line was found
-        if (line_start == -1)
+    std::array<bool, 5> linePosition;
+    for (int i = 0; i < 5; i++)
+    {
+        int range[2] = {ranges[i][0], ranges[i][1]};
+        double sum = 0.0;
+        for (int j = range[0]; j < range[1]; j++)
         {
-            LOG_ERROR("Driver", "Failed to find line");
-            return 0.0;
+            sum += (double)values[j];
         }
-
-        // Find line end
-        line_end = 639;
-        for (int i = line_start; i < 640; i++)
+        double average = sum / (double)(range[1] - range[0]);
+        if (average > 100)
         {
-            if (values[i] < 100 && (i >= 638 || values[i + 1] < 100) && (i >= 637 || values[i + 2] < 100))
-            {
-                line_end = i;
-                break;
-            }
+            linePosition[i] = true;
         }
-
-        // If line width is more than 50, accept the line or else search another
-        if (line_end - line_start > 50)
+        else
         {
-            break;
-        } else
-        {
-     //       LOG_ERROR("Driver", "Line width is too small (%d)", line_end - line_start);
+            linePosition[i] = false;
         }
     }
 
-    int line_position = (line_start + line_end) / 2;
-    double position = ((double)line_position - 320.0) / 320.0;
-    //LOG_DEBUG("Driver", "Line position : %d", line_position);
-
-    if (!limit) {
-        LOG_ERROR("Driver", "Failed to find line");
-        return 0.0;
-    }
-    return position;
+    return linePosition;
 }
 
 void DriverClass::update()
@@ -120,7 +92,56 @@ void DriverClass::update()
     if (values[0] == 42 && values[1] == 69) {
         return;
     }
-    this->linePosition = this->computeLinePosition(values);
+    std::array<bool, 5> linePosition = this->computeLinePosition(values);
+
+    LOG_DEBUG("Driver", "Line position : %d %d %d %d %d", linePosition[0], linePosition[1], linePosition[2], linePosition[3], linePosition[4]);
+
+    int eq = 0;
+    if (linePosition[4])
+        eq += 1;
+    if (linePosition[3])
+        eq += 0b10;
+    if (linePosition[2])
+        eq += 0b100;
+    if (linePosition[1])
+        eq += 0b1000;
+    if (linePosition[0])
+        eq += 0b10000;
+
+    switch (eq)
+    {
+    case 0b10000:
+    case 0b11000:
+    case 0b11100:
+    case 0b10100:
+    case 0b01000:
+        this->setMotorsSpeed(this->settings.KS/2, this->settings.KS);
+        break;
+    case 0b01100:
+        this->setMotorsSpeed(this->settings.KS/4, this->settings.KS/2);
+        break;
+    case 0b00001:
+    case 0b00011:
+    case 0b00111:
+    case 0b00101:
+    case 0b00010:
+        this->setMotorsSpeed(this->settings.KS, this->settings.KS/2);
+        break;
+    case 0b00110:
+        this->setMotorsSpeed(this->settings.KS/2, this->settings.KS/4);
+        break;
+    case 0b00100:
+    case 0b01110:
+    case 0b11111:
+        this->setMotorsSpeed(this->settings.KS, this->settings.KS);
+        break;
+    
+    
+    default:
+        this->setMotorsSpeed(this->settings.KS, this->settings.KS);
+        break;
+    }
+
     //LOG_DEBUG("Driver", "Line position : %f", this->linePosition);
 
     if (this->settings.mode == RobotMode::LineFollower)
