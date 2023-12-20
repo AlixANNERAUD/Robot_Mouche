@@ -214,6 +214,17 @@ async function update_info_display() {
     if (chart) {
         chart.destroy();
     }
+
+    // Use line_position which is between -1 and 1 to calculate the position between 0 and 640
+    let line_position_pixels = (line_position + 1) * 320;
+    // Make all points blue except those near the line (20 pixels)
+    let pointBackgroundColor = Array.from({ length: 640 }, (_, i) => {
+        if (Math.abs(i - line_position_pixels) < 20) {
+            return "#ff0000";
+        }
+        return "#0000ff";
+    });
+
     chart = new Chart(
         document.getElementById('acquisitions'),
         {
@@ -225,7 +236,8 @@ async function update_info_display() {
                         data: camera_data,
                         label: 'Camera Data',
                         borderColor: '#3e95cd',
-                        fill: false
+                        fill: false,
+                        pointBackgroundColor: pointBackgroundColor,
                     }
                 ]
             },
