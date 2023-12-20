@@ -52,39 +52,57 @@ double DriverClass::computeLinePosition()
     char values[640];
     file.read(values, sizeof(values));
 
-    // Find the peak
-    int peakIndex = 0;
-    int peakValue = 0;
-    for (int i = 0; i < 640; i++)
-    {
-        if (values[i] > peakValue)
+    int line_start = -1;
+    int line_end = 0;
+    while (1) {
+        // Find line start (x where value > 100)
+        for (int i = line_end; i < 640; i++)
         {
-            peakValue = values[i];
-            peakIndex = i;
+            if (values[i] >= 100 && (i >= 638 || values[i + 1] >= 100) && (i >= 637 || values[i + 2] >= 100))
+            {
+                line_start = i;
+                break;
+            }
         }
-    }
 
-    // If there is no peak go straight
-    if (peakValue < 100)
-    {
-        LOG_DEBUG("Driver", "No peak found");
-        return 0.0;
-    }
-
-    // Ensure there is no other peak
-    for (int i = 0; i < 640; i++)
-    {
-        if (i + 50 > peakIndex && i < peakIndex + 50)
-            continue;
-        if (values[i] > peakValue * 2 / 3)
+        // Check line was found
+        if (line_start == -1)
         {
-            LOG_ERROR("Driver", "Found multiple peaks");
+            LOG_ERROR("Driver", "Failed to find line");
             return 0.0;
         }
+
+        // Find line end
+        for (int i = line_start; i < 640; i++)
+        {
+            if (values[i] < 100 && (i >= 638 || values[i + 1] < 100) && (i >= 637 || values[i + 2] < 100))
+            {
+                line_end = i;
+                break;
+            }
+        }
+
+        // If line width is more than 50 search another
+        if (line_end - line_start < 50)
+        {
+            LOG_ERROR("Driver", "Line width is too small (%d)", line_end - line_start);
+            continue;
+        }
+
+        // Ensure there is no other line
+        for (int i = line_end; i < 640; i++)
+        {
+            if (values[i] >= 100 && (i >= 638 || values[i + 1] >= 100) && (i >= 637 || values[i + 2] >= 100))
+            {
+                LOG_ERROR("Driver", "Found another line");
+                break;
+            }
+        }
     }
 
-    double position = ((double)peakIndex - 320.0) / 640.0;
-    LOG_DEBUG("Driver", "Line position : %f", position);
+    int line_position = (line_start + line_end) / 2;
+    double position = ((double)line_position - 320.0) / 320.0;
+    LOG_DEBUG("Driver", "Line position : %d", line_position);
 
     return position;
 }
