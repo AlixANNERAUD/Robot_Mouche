@@ -159,12 +159,27 @@ void DriverClass::setMotorsSpeed(float left, float right)
 void DriverClass::setSpeedFromCartesianPosition(float x, float y)
 {
     float r = sqrt(x * x + y * y);
-    float theta = atan2(y, x) - M_PI / 4.0f;
+    float theta = atan2(y, x);
 
-    theta = fmod(theta + 2 * M_PI, 2 * M_PI);
+    // theta = fmod(theta + 2 * M_PI, 2 * M_PI);
 
-    float rightSpeed = r * std::sin(theta);
-    float leftSpeed = r * std::cos(theta);
+    float maxR = 1;
+
+    if (std::abs(x) > std::abs(y))
+    {
+        maxR = std::abs(r / x);
+    }
+    else
+    {
+        maxR = std::abs(r / y);
+    }
+
+    float magnitude = r / maxR;
+
+    float turnDamping = 1;
+
+    float leftSpeed = magnitude * (std::sin(theta) + std::cos(theta) / turnDamping);
+    float rightSpeed = magnitude * (std::sin(theta) - std::cos(theta) / turnDamping);
 
     this->setMotorsSpeed(leftSpeed, rightSpeed);
 }
