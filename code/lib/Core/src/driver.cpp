@@ -9,6 +9,8 @@
 #include <signal.h>
 #include <cmath>
 
+// Je suis libertin!
+
 DriverClass::DriverClass(LiDARClass &lidar, MotorClass &left, MotorClass &right)
     : running(false), left(left), right(right), settings(settings), pid(settings.KP, settings.KI, settings.KD, 0.0), lidar(lidar)
 {
