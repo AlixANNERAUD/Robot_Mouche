@@ -9,6 +9,7 @@
 - PCF8574T : I2C to 8-bit GPIO expander (for 1620A).
 - [Benewake SJ-GU-TF-Luna](https://www.gotronic.fr/pj2-sj-pm-tf-luna-a03-product-manual-2195.pdf) : Short-range LiDAR distance sensor.
 - [ST Microelectronics L293D](https://www.st.com/resource/en/datasheet/l293d.pdf) : Push-pull four channel driver with diodes. Used here as a motor driver.
+- [MAX 98357A](https://cdn-learn.adafruit.com/downloads/pdf/adafruit-max98357-i2s-class-d-mono-amp.pdf) : I2S 3W Class D Amplifier. Used here as a speaker driver.
 
 ### Wiring
 
@@ -43,3 +44,11 @@
     - 5 (Configuration) -> Ground (for I2C)
     - 6 (Multiplexing) -> Not connected
 
+- MAX 98357A :
+    - Vin -> 5V
+    - GND -> Ground
+    - SD -> Not connected
+    - GAIN -> Not connected
+    - DIN -> GPIO 21 (I2S DOUT)
+    - BCLK -> GPIO 18 (I2S CLK)
+    - LRCLK -> GPIO 19 (I2S FS)
