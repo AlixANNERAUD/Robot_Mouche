@@ -30,7 +30,7 @@ public:
     static std::array<bool, 5> computeLinePosition(std::array<char, 640> values);
     static std::array<char, 640> readLinePositionFile();
 
-private:
+private:    
     std::atomic_bool running;
     MotorClass &left;
     MotorClass &right;
@@ -43,11 +43,18 @@ private:
     float steering;
     float linePosition;
     float lastPositionKnown;
+    
+    int lastDecision = 0;
+
+    clock_t cycleStart = 0;
+    int backwardCount = 0;
 
     pid_t camera_program_pid;
 
     void run();
     void update();
+
+    int takeDecision(int mask);
 };
 
 #endif
