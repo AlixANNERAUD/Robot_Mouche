@@ -23,7 +23,7 @@
 \titleformat{\chapter}[display]{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{20pt}{\Huge}
 
 % Informations du document
-\title{Rapport de projet d'électronique pour système embarqué}
+\title{Test Rapport de projet d'électronique pour système embarqué}
 \author{Simon GIRARD - Dimitri TIMOZ - Mathis SAUNIER - Alix ANNERAUD}
 \date{\today}
 
@@ -38,25 +38,48 @@
 \tableofcontents
 
 % Chapitres
+% An introduction with the project objectives
 \chapter{Introduction}
 \lipsum[1-2]
-
+% 
 \chapter{Contexte}
 \lipsum[3-4]
 
 \chapter{Conception}
 
-\section{Code}
-
+% A complete fritzing circuit with all the wiring of the different sensors, actuators and components for display
+% + A detailed explanation of your wiring choices as well as any additional technical choices (power, use of resistors, diodes, etc.)
+% + A detailed explanation of the chosen components role and operating principle
 \section{Electronique}
+\subsection{Choix des composants}
+\subsection{Cablâge des composants}
+\subsection{Schéma EasyEDA}
+% A detailed section of your code: approach, structure, etc.
+\section{Code}
+\subsection{Architecture du programme}
+\subsection{Développement des fonctions métiers du robot}
+% Là je sais pas mais on pourrait faire les fonctions des roues, l'algo pour le chemin, le multi threading, le code pour le son ...
 
+\subsection{Développement de l'interface de contrôle}
+% Ici aussi on pourrait détailler succintement avec la communication serveur/robot, la manette, la soundboard et les réglages de vitesse du robot + l'affichage au besoin des logs, de la caméra etc ...
 \section{Mécanique}
+\subsection{Choix de la taille des roues}
+\subsection{Emplacement des roues et des capteurs}
 
+% A section with detailing each member’s taks in the project + l'organisation interne
 \chapter{Méthodologie}
 \lipsum[5-6]
 
 \chapter{Résultats}
 \lipsum[7-8]
+\section{Difficultés rencontrées}
+\subsection{Problèmes de son}
+\subsection{Échec des capteurs QTR}
+\subsection{Tentative d'algorithme suiveur de ligne PID}
+\subsection{Retours d'expériences}
+% Partie dans laquelle on revient sur ces difficultés, on essaie de les raisonner
+% (leur trouver une raison) et faire comme si le projet avait été une source incroyable d'apprentissage pour nous
+\section{Les capacités du robot}
 
 \chapter{Conclusion}
 \lipsum[9-10]
