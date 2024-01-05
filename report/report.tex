@@ -21,6 +21,7 @@
 \rhead{\thepage}
 \renewcommand{\chaptermark}[1]{\markboth{\MakeUppercase{#1}}{}}
 \titleformat{\chapter}[display]{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{20pt}{\Huge}
+\graphicspath{ {./images/} }
 
 % Informations du document
 \title{Test Rapport de projet d'électronique pour système embarqué}
@@ -74,6 +75,23 @@
 \lipsum[7-8]
 \section{Difficultés rencontrées}
 \subsection{Problèmes de son}
+Au tout début du projet, durant la conception de notre robot, l'idée d'ajouter un haut-parleur nous est rapidement venu. Le concept était très simple : utiliser le port jack intégré à notre Raspeberry Pi pour émettre un son qui sera ensuite amplifié avant d'être émis par un haut-parleur.
+En fin de compte, cette fonctionnalité a été un vrai challenge à ajouter sur notre robot et c'est pour cete raison que nous y dédions une sous-partie du rapport. Nous détaillerons toutes les solutions essayées ainsi que la solution finalement retenue.
+\\
+La première solution censée apporter le son à notre robot a été le module d'amplification suivant : 386AMP from DFRobot
+\\
+\includegraphics[scale=0.5]{386AMP.jpg}
+\centering
+\\
+Une première difficulté est survenue. Il nous fallait un câble jack 3.5 vers RCA afin de pouvoir utiliser le module d'amplification sur lequel pouvait ensuite être aisément branché un haut-parleur. Étant donné que le laboratoire d'électronique ne possédait pas ce type de câble,
+nous avons fini par trouver le matériel nécessaire chez nous. Ainsi, nous avons pu faire les premiers tests du module avec des téléphones. Ces derniers étant concluants, nous avons recherché les commandes nécessaires à la lecture d'un audio sur Raspeberry. Nous utilisons donc 3 fonctions systèmes
+de la Raspeberry.
+\begin{itemize}
+    \item system("amixer -q set PCM,0 unmute"); permet de s'assurer que le son de la Raspeberry est actif
+    \item system("mpg321 -q assets/" + filename + " \&"); permet de lancer, en processus d'arrière plan, l'audio désigné par la variable filename
+    \item system("pkill -9 mpg321"); permet d'arrêtter le processus qui joue la musique en cours
+\end{itemize}
+
 \subsection{Échec des capteurs QTR}
 \subsection{Tentative d'algorithme suiveur de ligne PID}
 \subsection{Retours d'expériences}

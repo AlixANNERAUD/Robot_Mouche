@@ -576,6 +576,11 @@ OUTPUT report.toc
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/ecrm1728.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/ecbx1728.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/ecbx1440.tfm
+INPUT ./images//386AMP.jpg
+INPUT ./images//386AMP.jpg
+INPUT ./images//386AMP.jpg
+INPUT ./images//386AMP.jpg
+INPUT ./images//386AMP.jpg
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/ecti1200.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/ecti0800.tfm
 INPUT /usr/share/texlive/texmf-dist/tex/latex/base/t1cmtt.fd
