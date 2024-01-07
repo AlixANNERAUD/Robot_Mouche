@@ -4,25 +4,27 @@
 #include "driver.hpp"
 #include <cstdlib>
 #include <string>
+#include "sound.hpp"
 
-ServerClass::ServerClass() {
-    this->on_gamepad_direction = [](float, float) {
+ServerClass::ServerClass()
+{
+    this->on_gamepad_direction = [](float, float)
+    {
         LOG_WARNING("Server", "Unhandled gamepad direction!");
     };
-    this->on_settings_change = [](SettingsClass) {
+    this->on_settings_change = [](SettingsClass)
+    {
         LOG_WARNING("Server", "Unhandled settings change!");
     };
 }
 
-void play_sound(std::string file_name) {
-    LOG_INFORMATION("Server", "Playing sound: %s", file_name.c_str());
-    system("pkill -9 mpg321");
-    system("amixer -q set PCM,0 unmute");
-    std::string command = "mpg321 -q assets/" + file_name + " &";
-    system(command.c_str());
+void play_sound(std::string file_name)
+{
+    SoundClass::play(file_name);
 }
 
-void ServerClass::listen() {
+void ServerClass::listen()
+{
     httplib::Server server;
 
     LOG_INFORMATION("Server", "Starting server");
@@ -35,13 +37,12 @@ void ServerClass::listen() {
     LOG_INFORMATION("Server", "Serving files from %s", Server_ressources_path.c_str());
 
     httplib::Headers headers = {
-        {"Access-Control-Allow-Origin", "*"}
-    };
+        {"Access-Control-Allow-Origin", "*"}};
 
     server.set_mount_point("/", Server_ressources_path, headers);
 
     server.Post("/gamepad-direction", [on_gamepad_direction](const httplib::Request &req, httplib::Response &res)
-    { 
+                { 
         // Ensure body is the right length
         if (req.body.length() != 8) {
             LOG_ERROR("Server", "Gamepad direction request body too short!");
@@ -59,11 +60,10 @@ void ServerClass::listen() {
 
         // Respond
         res.set_header("Access-Control-Allow-Origin", "*");
-        res.set_content("All good!", "text/plain"); 
-    });
+        res.set_content("All good!", "text/plain"); });
 
     server.Post("/settings", [on_settings_change](const httplib::Request &req, httplib::Response &res)
-    { 
+                { 
         // Body format: 1 byte for mode (0 = line follower, 1 = manual)
 
         long unsigned int expected_body_length = 1+4*8;
@@ -99,17 +99,16 @@ void ServerClass::listen() {
         LOG_INFORMATION("Server", "KP: %f, KI: %f, KD: %f, KS: %f", settings.KP, settings.KI, settings.KD, settings.KS);
         on_settings_change(settings);
         res.set_header("Access-Control-Allow-Origin", "*");
-        res.set_content("All good!", "text/plain");
-    });
+        res.set_content("All good!", "text/plain"); });
 
-    server.Post("/play-sound", [](const httplib::Request &req, httplib::Response &res){
+    server.Post("/play-sound", [](const httplib::Request &req, httplib::Response &res)
+                {
         play_sound(req.body);
         res.set_header("Access-Control-Allow-Origin", "*");
-        res.set_content("Playing!", "text/plain");
-    });
+        res.set_content("Playing!", "text/plain"); });
 
     server.Get("/info", [this](const httplib::Request &req, httplib::Response &res)
-    {
+               {
         std::array<char, 640> values = DriverClass::readLinePositionFile();
         std::array<bool, 5> line_position = DriverClass::computeLinePosition(values);
 
@@ -122,8 +121,7 @@ void ServerClass::listen() {
         }
 
         res.set_header("Access-Control-Allow-Origin", "*");
-        res.set_content(body.data(), body.size(), "application/octet-stream");
-    });
+        res.set_content(body.data(), body.size(), "application/octet-stream"); });
 
     server.listen("0.0.0.0", 80);
     LOG_INFORMATION("Server", "Server stopped");
