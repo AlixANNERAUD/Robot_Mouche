@@ -62,7 +62,11 @@
 % Là je sais pas mais on pourrait faire les fonctions des roues, l'algo pour le chemin, le multi threading, le code pour le son ...
 
 \subsection{Développement de l'interface de contrôle}
-% Ici aussi on pourrait détailler succintement avec la communication serveur/robot, la manette, la soundboard et les réglages de vitesse du robot + l'affichage au besoin des logs, de la caméra etc ...
+Nous avons décidé de nous tourner vers les technologies web pour développer l'interface de contrôle de notre robot. Celles-ci, par leur simplicité, nous ont permis d'avancer rapidement, et de nous concentrer plutôt sur le développement des fonctionnalités de notre robot. Les navigateurs offrent notamment un large support des manettes de jeux, et son intégration a donc été très simple.
+Le robot fait tourner un serveur HTTP afin de recevoir les commandes du client. Internet étant accessible à travers le wifi de l'INSA, le robot peut donc être controlé à distance dans tout le périmètre de l'école. Disposant d'une caméra, il est possible de s'aider du flux vidéo pour contrôler le robot.
+Néanmoins, le réseau de l'INSA nous faire subir quelques instabilités. Si la latence est très satisfaisante le plus souvent, il arrive au robot de perdre la connexion avec le client pendant quelques secondes. Ces problèmes de perte de contrôle du véhicule peuvent se révéler très problématiques. Nous désignons la DSI comme responsable d'éventuels accidents.
+L'interface web nous a été très utile pour piloter le robot, mais aussi pour expérimenter avec différents paramètres, ainsi que pour visualiser l'état de certains capteurs. La plupart des paramètres et affichages des entrées ont été supprimées aujourd'hui.
+
 \section{Mécanique}
 \subsection{Choix de la taille des roues}
 \subsection{Emplacement des roues et des capteurs}
