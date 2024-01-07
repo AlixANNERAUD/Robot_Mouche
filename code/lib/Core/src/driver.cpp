@@ -1,5 +1,7 @@
 #include "driver.hpp"
 #include "log.hpp"
+#include "sound.hpp"
+
 #include <algorithm>
 #include <chrono>
 #include <array>
@@ -11,8 +13,8 @@
 
 // Je suis libertin!
 
-DriverClass::DriverClass(LiDARClass &lidar, MotorClass &left, MotorClass &right)
-    : running(false), left(left), right(right), settings(settings), pid(settings.KP, settings.KI, settings.KD, 0.0), lidar(lidar)
+DriverClass::DriverClass(LiDARClass &lidar, MotorClass &left, MotorClass &right, LCDClass &lcd)
+    : running(false), left(left), right(right), settings(settings), pid(settings.KP, settings.KI, settings.KD, 0.0), lidar(lidar), lcd(lcd)
 {
     this->speed = 0.0f;
     this->steering = 0.0f;
@@ -28,13 +30,30 @@ void DriverClass::start()
 
 void DriverClass::run()
 {
+    this->lcd.print(0, "- Robot Mouche -");
     this->running = true;
+    bool soundPlayed = false;
     while (this->running)
     {
+        // - Remember last distance to avoid to much lcd update
+        if (this->lidar.getDistance() < 5)
+        {
+            this->lcd.print(1, "   Obstacle!    ");
+            if (!soundPlayed)
+            {
+                SoundClass::play("pig3.mp3");
+                soundPlayed = true;
+            }
+        }
+        else
+        {
+            this->lcd.printFormatted(1, "D: %d cm  ", this->lidar.getDistance());
+            soundPlayed = false;
+        }
+
         this->update();
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
-
     this->left.setSpeed(0);
     this->right.setSpeed(0);
 }
@@ -81,7 +100,8 @@ std::array<bool, 5> DriverClass::computeLinePosition(std::array<char, 640> value
     return linePosition;
 }
 
-int DriverClass::takeDecision(int mask) {
+int DriverClass::takeDecision(int mask)
+{
     int decision = 0;
     switch (mask)
     {
@@ -115,7 +135,7 @@ int DriverClass::takeDecision(int mask) {
         this->setMotorsSpeed(-this->settings.KS, -this->settings.KS);
         decision = 0b00000;
         break;
-    
+
     // Avant
     case 0b00100:
     case 0b01110:
@@ -123,7 +143,7 @@ int DriverClass::takeDecision(int mask) {
         this->setMotorsSpeed(this->settings.KS, this->settings.KS);
         decision = 0b11111;
         break;
-    
+
     default:
         // Doesn't mean we have to go forward
         decision = this->lastDecision;
@@ -136,9 +156,16 @@ void DriverClass::update()
 {
     if (this->settings.mode != RobotMode::LineFollower)
         return;
-    
+
+    if (this->lidar.getDistance() < 5)
+    {
+        this->setMotorsSpeed(0, 0);
+        return;
+    }
+
     auto values = readLinePositionFile();
-    if (values[0] == 42 && values[1] == 69) {
+    if (values[0] == 42 && values[1] == 69)
+    {
         return;
     }
     std::array<bool, 5> linePosition = this->computeLinePosition(values);
@@ -159,15 +186,26 @@ void DriverClass::update()
     int decision = this->takeDecision(eq);
 
     LOG_INFORMATION("Driver", "backwardCount: %d", this->backwardCount)
-    if (decision != this->lastDecision) {
-        LOG_DEBUG("Driver", "%d clock: %d", this->cycleStart + CLOCKS_PER_SEC*5 , clock() )
-        if (decision == 0b00000) {
-            this->backwardCount++;
-            if (this->cycleStart + CLOCKS_PER_SEC*5 < clock()) {
-                this->cycleStart = clock();
-                this->backwardCount = 1;
-            } else if (this->backwardCount >= 3) {
+    clock_t now = clock();
+    if (decision != this->lastDecision)
+    {
+        LOG_DEBUG("Driver", "%d clock: %d", this->cycleStart + CLOCKS_PER_SEC * 5, now)
+        if (decision == 0b00000)
+        {
+            if (this->lastBackward + CLOCKS_PER_SEC / 2 < now)
+            {
+                this->backwardCount++;
+                this->lastBackward = now;
+            }
 
+            if (this->cycleStart + CLOCKS_PER_SEC * 5 < now)
+            {
+                this->cycleStart = now;
+                this->backwardCount = 1;
+            }
+            else if (this->backwardCount >= 3)
+            {
+                this->backwardCount = 0;
                 int _ = this->takeDecision(this->lastDecision);
                 LOG_WARNING("Driver", "Replay best decision")
                 std::this_thread::sleep_for(std::chrono::milliseconds(500));
@@ -177,7 +215,7 @@ void DriverClass::update()
 
     this->lastDecision = decision;
 
-    //LOG_DEBUG("Driver", "Line position : %f", this->linePosition);
+    // LOG_DEBUG("Driver", "Line position : %f", this->linePosition);
 }
 
 void DriverClass::stop()

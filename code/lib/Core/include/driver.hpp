@@ -6,6 +6,7 @@
 #include "settings.hpp"
 #include "pin.hpp"
 #include "pid.hpp"
+#include "lcd.hpp"
 
 #include <array>
 #include <unistd.h>
@@ -15,7 +16,7 @@ class DriverClass
 {
 public:
     DriverClass() = delete;
-    DriverClass(LiDARClass& lidar, MotorClass &left, MotorClass &right);
+    DriverClass(LiDARClass& lidar, MotorClass &left, MotorClass &right, LCDClass& lcd);
     
     void start();
     void stop();
@@ -35,6 +36,7 @@ private:
     MotorClass &left;
     MotorClass &right;
     LiDARClass &lidar;
+    LCDClass &lcd;
     SettingsClass settings;
 
     PidControlClass pid;
@@ -47,6 +49,7 @@ private:
     int lastDecision = 0;
 
     clock_t cycleStart = 0;
+    clock_t lastBackward = 0;
     int backwardCount = 0;
 
     pid_t camera_program_pid;
