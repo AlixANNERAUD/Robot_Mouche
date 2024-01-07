@@ -53,6 +53,21 @@
 % + A detailed explanation of the chosen components role and operating principle
 \section{Electronique}
 \subsection{Choix des composants}
+Le choix des composants a été une étape importante dans la réalisation de notre robot. En effet, nous avons dû choisir des composants qui correspondaient à nos besoins et qui étaient compatibles avec notre Raspberry Pi. 
+\\
+Voici les différents composants que nous avons utilisés :
+\begin{itemize}
+    \item L293D, un pont en H, pour contrôler nos moteurs
+    \item 1602A, un écran LCD, pour afficher des informations sur notre robot
+    \item PCF8574T pour contrôler notre écran LCD à travers le bus I2C permettant d'économiser des pins sur notre Raspberry Pi
+    \item SJ-GU-TF-Luna un capteur de distance lidar pour détecter les obstacles, ce capteur est plus précis que le capteur de distance à ultrasons.
+    \item Une batterie externe pour alimenter notre Raspberry Pi
+    \item Une batterie pour alimenter nos moteurs
+    \item Un amplificateur audio pour pouvoir jouer des sons sur notre robot
+    \item Un haut-parleur pour émettre des sons
+    \item Caméra pour repérer la position de la ligne
+\end{itemize}
+
 \subsection{Cablâge des composants}
 \subsection{Schéma EasyEDA}
 % A detailed section of your code: approach, structure, etc.
