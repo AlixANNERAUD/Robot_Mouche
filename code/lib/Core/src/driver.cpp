@@ -70,6 +70,7 @@ std::array<char, 640> DriverClass::readLinePositionFile()
     if (!file.is_open())
     {
         LOG_ERROR("Driver", "Failed to open line_position.bin");
+        // Return 42 69 if file not found to prevent client bug
         values[0] = 42;
         values[1] = 69;
         return values;
@@ -102,57 +103,6 @@ std::array<bool, 5> DriverClass::computeLinePosition(std::array<char, 640> value
     return linePosition;
 }
 
-int DriverClass::takeDecision(int mask)
-{
-    int decision = 0;
-    switch (mask)
-    {
-    // Gauche
-    case 0b10000:
-    case 0b11000:
-    case 0b11100:
-    case 0b10100:
-    case 0b01000:
-    case 0b01100:
-    case 0b11110:
-        this->setMotorsSpeed(-0, this->settings.KS);
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        decision = 0b10000;
-        break;
-    // Droite
-    case 0b00001:
-    case 0b00011:
-    case 0b00111:
-    case 0b00101:
-    case 0b00010:
-    case 0b00110:
-    case 0b01111:
-        this->setMotorsSpeed(this->settings.KS, -0);
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        decision = 0b00001;
-        break;
-
-    // Arrière
-    case 0b00000:
-        this->setMotorsSpeed(-this->settings.KS, -this->settings.KS);
-        decision = 0b00000;
-        break;
-
-    // Avant
-    case 0b00100:
-    case 0b01110:
-    case 0b11111:
-        this->setMotorsSpeed(this->settings.KS, this->settings.KS);
-        decision = 0b11111;
-        break;
-
-    default:
-        // Doesn't mean we have to go forward
-        decision = this->lastDecision;
-    }
-
-    return decision;
-}
 
 void DriverClass::update()
 {
@@ -169,6 +119,7 @@ void DriverClass::update()
     auto values = readLinePositionFile();
     while (true)
     {
+        // Check if file is corrupted
         if (values[0] == 42 && values[1] == 69)
         {
             values = readLinePositionFile();
@@ -179,13 +130,16 @@ void DriverClass::update()
 
     static double failAngle = M_PI_2;
 
+    // Compute mean
     double mean = (640 * (640 + 1) / 2) / 2;
     bool found = false;
     for (int i = 0; i < (640); i++)
     {
+        // Check if value is above threshold
         if (values[i] > 130)
         {
             found = true;
+            // Check if value is on the left or right side
             if (i < 640 / 2)
             {
                 if (i < 50) {
@@ -211,12 +165,14 @@ void DriverClass::update()
 
     if (found)
     {
+        // Compute angle
         angle = M_PI - (mean * M_PI);
         failAngle = (failAngle * 0.9) + (angle * 0.1);
         angle = failAngle;
     }
     else
     {
+        // Compute angle if line not found
         angle = failAngle;
         if (failAngle < M_PI_2)
             angle = 0;
@@ -225,6 +181,7 @@ void DriverClass::update()
         LOG_WARNING("Driver", "Line not found");
     }
 
+    // Check if angle is valid
     if (angle <= 0)
     {
         //LOG_WARNING("Driver", "Angle < 0");
@@ -248,55 +205,6 @@ void DriverClass::update()
     this->setSpeedFromPolarCoordinates(magnitude, angle);
 
     return;
-
-    auto linePosition = this->computeLinePosition(values);
-
-    LOG_DEBUG("Driver", "Line position : %d %d %d %d %d", linePosition[0], linePosition[1], linePosition[2], linePosition[3], linePosition[4]);
-    int eq = 0;
-    if (linePosition[4])
-        eq += 1;
-    if (linePosition[3])
-        eq += 0b10;
-    if (linePosition[2])
-        eq += 0b100;
-    if (linePosition[1])
-        eq += 0b1000;
-    if (linePosition[0])
-        eq += 0b10000;
-
-    int decision = this->takeDecision(eq);
-
-    LOG_INFORMATION("Driver", "backwardCount: %d", this->backwardCount)
-    clock_t now = clock();
-    if (decision != this->lastDecision)
-    {
-        LOG_DEBUG("Driver", "%d clock: %d", this->cycleStart + CLOCKS_PER_SEC * 5, now)
-        if (decision == 0b00000)
-        {
-            if (this->lastBackward + CLOCKS_PER_SEC / 2 < now)
-            {
-                this->backwardCount++;
-                this->lastBackward = now;
-            }
-
-            if (this->cycleStart + CLOCKS_PER_SEC * 5 < now)
-            {
-                this->cycleStart = now;
-                this->backwardCount = 1;
-            }
-            else if (this->backwardCount >= 3)
-            {
-                this->backwardCount = 0;
-                int _ = this->takeDecision(this->lastDecision);
-                LOG_WARNING("Driver", "Replay best decision")
-                std::this_thread::sleep_for(std::chrono::milliseconds(500));
-            }
-        }
-    }
-
-    this->lastDecision = decision;
-
-    // LOG_DEBUG("Driver", "Line position : %f", this->linePosition);
 }
 
 void DriverClass::stop()
@@ -315,6 +223,7 @@ void DriverClass::setSpeedFromPolarCoordinates(float r, float theta)
     // theta = fmod(theta + 2 * M_PI, 2 * M_PI);
     float turnDamping = 1;
 
+    // Compute speed for each motor from polar coordinates (r, theta)
     float leftSpeed = r * (std::sin(theta) + std::cos(theta) / turnDamping);
     float rightSpeed = r * (std::sin(theta) - std::cos(theta) / turnDamping);
 

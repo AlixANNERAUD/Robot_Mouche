@@ -54,8 +54,6 @@ private:
     void run();
     void update();
 
-    int takeDecision(int mask);
-
     void setMotorsSpeed(float left, float right);
     void setSpeedFromCartesianPosition(float x, float y);
     void setSpeedFromPolarCoordinates(float r, float theta);
