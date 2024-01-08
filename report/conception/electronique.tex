@@ -30,8 +30,21 @@ Ces composants on été choisis en fonction de plusieurs critères :
 
 \subsection{Câblage des composants}
 
-\todo
+\subsubsection*{Optimisation de notre câblage}
+Nous avons porter une attention particulière à l'organisation interne de notre robot. Par exemple, nous avons 
+\begin{itemize}
+    \item surélevé notre Raspberry afin d'éviter des courts circuits avec les vis situées sur notre chassis
+    \item réfléchi à l'emplacement des différents composants
+    \item choisi les câbles les plus courts possibles pour limiter du mieux possible les emmêlements
+\end{itemize}
+Cependant, les gains de places notables ont été possibles grâce à :
+\begin{itemize}
+    \item l'utilisation d'une caméra, avec une nappe spécifique, en tant que capteur pour notre suiveur de ligne
+    \item l'utilisation d'une bread board pour connecter sur les mêmes GPIO notre capteur LIDAR et notre écran LCD, tous les deux fonctionnant avec le protocole I2C qui permet le multiplexage de plusieurs composants
+\end{itemize}
 
+\subsubsection*{Travail de soudure}
+Nous avons également réalisé un gros travail de soudure sur nos capteurs QTR qui ont été finalement remplacés. En effet, nous avions refait l'intégralité de leur cablâge à partir de connecteur Dupont et de gaines thermorétractables. Ceci nous permettait d'avoir un câble fixe, résistant à nos manipulations régulières et optimiser.
 \subsection{Schéma EasyEDA}
 
 \todo
