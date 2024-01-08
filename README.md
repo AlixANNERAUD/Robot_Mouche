@@ -20,9 +20,9 @@ For the "electronic for embedded systems" course at the [INSA Rouen](https://www
 
 Clone the repository on your Raspberry Pi, open the `code` folder in Platform IO and compile the project. Then launch the executable in sudo mode:
 ```bash
-sudo code/.pio/build/Raspberry_Pi_4_Release/robot_mouche
+sudo code/.pio/build/Raspberry_Pi_4_Release/program
 # or
-sudo code/.pio/build/Raspberry_Pi_4_Debug/robot_mouche
+sudo code/.pio/build/Raspberry_Pi_4_Debug/program
 ```
 
 # ℹ️ About
