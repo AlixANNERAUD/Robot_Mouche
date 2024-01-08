@@ -9,12 +9,14 @@
 
 LiDARClass::LiDARClass(PinClass& SDA, PinClass& SCL, unsigned char address) : i2c(SDA, SCL, address)
 {
+    // Check if address is valid
     if ((address < 0x08) || (address > 0x77))
     {
         LOG_ERROR("LiDAR", "Invalid address specified.");
         return;
     }
 
+    // Check if pins are valid
     if (!i2c.isValid())
     {
         LOG_ERROR("LiDAR", "Invalid I2C.");
@@ -26,6 +28,7 @@ LiDARClass::LiDARClass(PinClass& SDA, PinClass& SCL, unsigned char address) : i2
     LOG_VERBOSE("LiDAR", "Firmware version: %s", this->getFirmwareVersion().c_str());
     LOG_VERBOSE("LiDAR", "Temperature: %d", this->getChipTemperature());
 
+    // Get the lidar mode
     if (this->getMode() == LiDARMode::CONTINUOUS)
     {
         LOG_VERBOSE("LiDAR", "Mode: Continuous");
@@ -63,6 +66,7 @@ float LiDARClass::getChipTemperature() const
 
 std::string LiDARClass::getFirmwareVersion() const
 {
+    // Firmware version is stored in 3 registers
     return std::to_string(i2c.readRegister(static_cast<int>(LiDARRegister::VERSION_MAJOR), true)) + "." +
         std::to_string(i2c.readRegister(static_cast<int>(LiDARRegister::VERSION_MINOR), true)) + "." +
         std::to_string(i2c.readRegister(static_cast<int>(LiDARRegister::VERSION_REVISION), true));
@@ -126,6 +130,7 @@ void LiDARClass::setOutputFrequency(unsigned int frequency)
         return;
     }
 
+    // Check if frequency is a multiple of 500
     for (int i = 2; i < 500; i++)
     {
         if (frequency * i == 500)

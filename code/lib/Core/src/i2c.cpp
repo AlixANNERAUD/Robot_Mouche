@@ -9,6 +9,7 @@
 
 I2CClass::I2CClass(PinClass &SDA, PinClass &SCL, char address) : handle(-1), SDA(SDA), SCL(SCL)
 {
+    // Check if address is valid
     if (!SDA.isValid() || !SCL.isValid())
     {
         LOG_ERROR("I2C", "Invalid pin(s) specified.");
@@ -24,6 +25,7 @@ I2CClass::I2CClass(PinClass &SDA, PinClass &SCL, char address) : handle(-1), SDA
     this->handle = 0;
 #endif
 
+    // Check if handle is valid
     if (!this->isValid())
     {
         LOG_ERROR("I2C", "Failed to initialize I2C.");

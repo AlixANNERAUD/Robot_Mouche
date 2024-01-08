@@ -19,6 +19,7 @@ int main()
 {
     LOG_INFORMATION("Main", "Starting program.");
 
+    // Initialize the pin class
     if (!PinClass::initialize())
     {
         LOG_ERROR("Main", "Failed to initialize pin class.");
@@ -50,7 +51,10 @@ int main()
 
     DriverClass driver(lidar, leftMotor, rightMotor, lcd);
 
+    // Start the web server
     server(driver);
+
+    // Start the driver
     driver.start();
 
     while (true)

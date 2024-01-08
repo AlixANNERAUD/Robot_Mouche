@@ -37,6 +37,7 @@ PinClass::PinClass(unsigned int pin) : pin(pin)
 
 PinClass::~PinClass()
 {
+    // Remove pin from list of pins
     pins.erase(std::remove(pins.begin(), pins.end(), this), pins.end());
 }
 

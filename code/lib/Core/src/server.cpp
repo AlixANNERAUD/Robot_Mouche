@@ -8,6 +8,7 @@
 
 ServerClass::ServerClass()
 {
+    // Set default callbacks
     this->on_gamepad_direction = [](float, float)
     {
         LOG_WARNING("Server", "Unhandled gamepad direction!");
@@ -39,8 +40,10 @@ void ServerClass::listen()
     httplib::Headers headers = {
         {"Access-Control-Allow-Origin", "*"}};
 
+    // Serve files
     server.set_mount_point("/", Server_ressources_path, headers);
 
+    // Set up callback for gamepad direction
     server.Post("/gamepad-direction", [on_gamepad_direction](const httplib::Request &req, httplib::Response &res)
                 { 
         // Ensure body is the right length
@@ -101,12 +104,14 @@ void ServerClass::listen()
         res.set_header("Access-Control-Allow-Origin", "*");
         res.set_content("All good!", "text/plain"); });
 
+    // Set up callback for playing sound
     server.Post("/play-sound", [](const httplib::Request &req, httplib::Response &res)
                 {
         play_sound(req.body);
         res.set_header("Access-Control-Allow-Origin", "*");
         res.set_content("Playing!", "text/plain"); });
 
+    // Set up callback for reading line position
     server.Get("/info", [this](const httplib::Request &req, httplib::Response &res)
                {
         std::array<char, 640> values = DriverClass::readLinePositionFile();

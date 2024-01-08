@@ -14,6 +14,7 @@ MotorClass::MotorClass(PinClass &Enabled, PinClass &A1, PinClass &A2) : valid(fa
                                                                         A1(A1),
                                                                         A2(A2)
 {
+    // Check if pins are valid
     if (!Enabled.isValid() || !A1.isValid() || !A2.isValid())
     {
         LOG_ERROR("Motor", "Pins are is not valid.");
@@ -24,6 +25,7 @@ MotorClass::MotorClass(PinClass &Enabled, PinClass &A1, PinClass &A2) : valid(fa
 
     this->valid = true;
 
+    // Set pin modes
     Enabled.setMode(PinMode::PwmOutput);
     A1.setMode(PinMode::Output);
     A2.setMode(PinMode::Output);

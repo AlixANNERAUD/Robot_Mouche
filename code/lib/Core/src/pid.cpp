@@ -27,6 +27,7 @@ double PidControlClass::getSteering(double measuredValue, clock_t recordClock) {
     double proportional = error;
     double integral = this->integral + error * dt;
     double derivative = (error - this->previousError) / dt;
+    // output := Kp × proportional + Ki × integral + Kd × derivative
     double output = this->Kp * proportional + this->Ki * integral + this->Kd * derivative;
     this->previousError = error;
 

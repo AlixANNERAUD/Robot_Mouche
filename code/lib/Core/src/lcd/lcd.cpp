@@ -17,6 +17,7 @@ bool LCDClass::isValid() const
 
 void LCDClass::update()
 {
+    // Update the content
     for (uint8_t i = 0; i < 2; i++)
     {
         for (uint8_t j = 0; j < 16; j++)
@@ -35,6 +36,7 @@ void LCDClass::update()
 
 void LCDClass::print(unsigned int line, const char *text)
 {
+    // Set the new content
     memset(this->newContent[line], ' ', sizeof(this->newContent[0]));
     strncpy(this->newContent[line], text, sizeof(this->newContent[0]));
     this->update();
