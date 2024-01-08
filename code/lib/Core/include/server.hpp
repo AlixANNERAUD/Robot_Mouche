@@ -1,5 +1,4 @@
-#ifndef SERVER_HPP_INCLUDED
-#define SERVER_HPP_INCLUDED
+#pragma once
 
 #include "server.hpp"
 #include "settings.hpp"
@@ -17,4 +16,3 @@ public:
     std::function<void(SettingsClass)> on_settings_change;
 };
 
-#endif // SERVER_HPP_INCLUDED

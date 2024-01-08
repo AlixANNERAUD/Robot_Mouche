@@ -1,5 +1,4 @@
-#ifndef LOG_HPP_INCLUDED
-#define LOG_HPP_INCLUDED
+#pragma once
 
 #include <stdio.h>
 
@@ -15,7 +14,6 @@
 #define LOG_MAGENTA "\033[35m"
 #define LOG_CYAN "\033[36m"
 #define LOG_WHITE "\033[37m"
-
 
 #define LOG_RESET "\033[0m"
 
@@ -69,6 +67,4 @@
 #define LOG_VERBOSE(Module_Name, Format, ...) LOG_ALL(Module_Name, LOG_WHITE, "Verbose", Format, ##__VA_ARGS__)
 #else
 #define LOG_VERBOSE(Module_Name, Format, ...)
-#endif
-
 #endif

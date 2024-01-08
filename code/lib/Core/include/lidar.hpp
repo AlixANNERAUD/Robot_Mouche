@@ -1,5 +1,4 @@
-#ifndef LIDAR_HPP_INCLUDED
-#define LIDAR_HPP_INCLUDED
+#pragma once
 
 #include "pin.hpp"
 #include "i2c.hpp"
@@ -92,5 +91,3 @@ private:
 
     unsigned char address;
 };
-
-#endif // LIDAR_HPP_INCLUDED

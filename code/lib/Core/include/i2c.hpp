@@ -1,5 +1,4 @@
-#ifndef I2C_HPP_INCLUDED
-#define I2C_HPP_INCLUDED
+#pragma once
 
 #include "pin.hpp"
 
@@ -24,5 +23,3 @@ private:
     PinClass &SDA;
     PinClass &SCL;
 };
-
-#endif // I2C_HPP_INCLUDED

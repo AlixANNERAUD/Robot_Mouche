@@ -1,5 +1,4 @@
-#ifndef MOTOR_HPP_INCLUDED
-#define MOTOR_HPP_INCLUDED
+#pragma once
 
 #include "pin.hpp"
 
@@ -33,5 +32,3 @@ private:
 #endif
 
 };
-
-#endif // MOTOR_HPP_INCLUDED

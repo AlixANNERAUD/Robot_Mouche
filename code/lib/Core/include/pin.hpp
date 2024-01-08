@@ -1,5 +1,4 @@
-#ifndef Abstraction_Hpp_Included
-#define Abstraction_Hpp_Included
+#pragma once
 
 #include <vector>
 
@@ -52,5 +51,3 @@ class PinClass {
 
         static std::vector<PinClass*> pins;
 };
-
-#endif
