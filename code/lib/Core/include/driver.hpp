@@ -24,8 +24,7 @@ public:
     void updateSettings(SettingsClass settings);
     void updateGamepad(float direction, float speed);
 
-    static std::array<bool, 5> computeLinePosition(std::array<char, 640> values);
-    static std::array<char, 640> readLinePositionFile();
+    // static std::array<bool, 5> computeLinePosition(std::array<char, 640> values);
 
 private:
     std::atomic_bool running;
@@ -51,9 +50,14 @@ private:
     pid_t camera_program_pid;
 
     void run();
-    void update();
+    void followLine();
 
     void setMotorsSpeed(float left, float right);
-    void setSpeedFromCartesianPosition(float x, float y);
+    void setSpeedFromCartesianCoordinates(float x, float y);
     void setSpeedFromPolarCoordinates(float r, float theta);
+
+    static float findLinePosition();
+    static bool readLinePositionFile(std::array<uint8_t, 640>& values);
+
+    friend class ServerClass;
 };

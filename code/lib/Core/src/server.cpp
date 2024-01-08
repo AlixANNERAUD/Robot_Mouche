@@ -114,19 +114,16 @@ void ServerClass::listen()
     // Set up callback for reading line position
     server.Get("/info", [this](const httplib::Request &req, httplib::Response &res)
                {
-        std::array<char, 640> values = DriverClass::readLinePositionFile();
-        std::array<bool, 5> line_position = DriverClass::computeLinePosition(values);
-
-        std::array<char, 645> body;
-        memcpy(body.data(), values.data(), 640);
-        memcpy(body.data() + 640, &line_position, 5);
-
-        if (sizeof(bool) != 1) {
-            LOG_ERROR("Server", "sizeof(bool) != 1");
-        }
+                std::array<uint8_t, 640> values;
+        
+        if (!DriverClass::readLinePositionFile(values))
+        {
+            res.status = 500;
+            return;
+        }   
 
         res.set_header("Access-Control-Allow-Origin", "*");
-        res.set_content(body.data(), body.size(), "application/octet-stream"); });
+        res.set_content((const char*)values.data(), values.size(), "application/octet-stream"); });
 
     server.listen("0.0.0.0", 80);
     LOG_INFORMATION("Server", "Server stopped");
