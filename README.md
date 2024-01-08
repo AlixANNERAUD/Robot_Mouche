@@ -25,21 +25,21 @@ sudo code/.pio/build/Raspberry_Pi_4_Release/program
 sudo code/.pio/build/Raspberry_Pi_4_Debug/program
 ```
 
-# ℹ️ About
+## ℹ️ About
 
-## 📃 Credits
+### 📃 Credits
 
 This project uses the following resources :
 - [cpp-httplib](https://github.com/yhirose/cpp-httplib) : C++ HTTP client and server library.
 - [WiringPi](http://wiringpi.com/) : GPIO access library for the Raspberry Pi.
 
-## 👤 Authors
+### 👤 Authors
 
 - Alix ANNERAUD
 - Dimitri TIMOZ
 - Simon GIRARD
 - Mathis SAUNIER
 
-## ⚖️ Licence
+### ⚖️ Licence
 
 This project is under the [MIT License](License).
