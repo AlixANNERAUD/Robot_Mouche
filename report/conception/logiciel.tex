@@ -37,14 +37,12 @@ Afin de pouvoir déboguer notre programme aisément, nous avons développé un s
 Ainsi, nous pouvons afficher des messages de logs sur la sortie standard de notre programme avec des couleurs différentes en fonction du niveau de criticité du message (erreur, avertissement, information, débogage et trace).
 De plus, l'affichage peut être réglé à la compilation en modifiant une macro (\texttt{LOG\_LEVEL}).
 
-\subsubsection{Contrôle des moteurs}
+\subsubsection{Gestion des Moteurs}
+La classe Moteur a été spécialement conçue pour la gestion des moteurs du robot. Cette classe est cruciale pour ajuster précisément la vitesse et la direction de chaque moteur. Au cœur de ce système, nous utilisons un pont en H, qui agit comme un intermédiaire efficace, recevant nos instructions et les transmettant directement aux moteurs. Cette méthode assure une réponse rapide et précise aux commandes de mouvement.
 
-Une classe Moteur a été créée afin de contrôler les moteurs de notre robot. Cette classe permet de contrôler la vitesse et la direction de nos moteurs.
-Nous envoyons simplement des commandes au pont en H qui lui se charge de contrôler les moteurs.
+\subsubsection*{Interface avec l'Écran LCD}
+Pour l'interaction avec l'écran LCD du robot, la classe LCD a été développée. Cette interface permet un affichage dynamique et clair des informations sur l'écran LCD. Grâce au contrôleur PCF8574T, nos commandes sont transformées en affichages visuels sur l'écran. Cette fonctionnalité est essentielle pour le monitoring en temps réel du statut et des performances du robot, offrant une interaction utilisateur intuitive et informative.
 
-\subsubsection*{Contrôle de l'écran LCD}
-Une classe LCD a été créée afin de contrôler l'écran LCD de notre robot. Cette classe permet d'afficher des informations sur l'écran LCD de notre robot.
-Nous envoyons des simples commandes au PCF8574T qui lui se charge de contrôler l'écran LCD.
 
 \subsubsection*{Capteur de distance lidar}
 
