@@ -71,7 +71,7 @@ void ServerClass::listen()
 
         long unsigned int expected_body_length = 1+4*8;
         if (req.body.length() != expected_body_length) {
-            LOG_ERROR("Server", "Settings request body wrong length! (got %d, expected %d)", req.body.length(), expected_body_length);
+            LOG_ERROR("Server", "Settings request body wrong length! (got %ld, expected %ld)", req.body.length(), expected_body_length);
             res.set_content("Settings request body wrong length!", "text/plain");
             return;
         }
