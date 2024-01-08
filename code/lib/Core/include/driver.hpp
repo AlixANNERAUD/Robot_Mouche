@@ -30,11 +30,9 @@ private:
     std::atomic_bool running;
     MotorClass &left;
     MotorClass &right;
+    SettingsClass settings;
     LiDARClass &lidar;
     LCDClass &lcd;
-    SettingsClass settings;
-
-    PidControlClass pid;
 
     float speed;
     float steering;

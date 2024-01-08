@@ -14,7 +14,7 @@
 // Je suis libertin!
 
 DriverClass::DriverClass(LiDARClass &lidar, MotorClass &left, MotorClass &right, LCDClass &lcd)
-    : running(false), left(left), right(right), settings(settings), pid(settings.KP, settings.KI, settings.KD, M_PI_2), lidar(lidar), lcd(lcd)
+    : running(false), left(left), right(right), settings(settings), lidar(lidar), lcd(lcd)
 {
     this->speed = 0.0f;
     this->steering = 0.0f;
@@ -210,5 +210,5 @@ void DriverClass::updateSettings(SettingsClass settings)
         }
     }
     this->settings = settings;
-    this->pid.updateConstants(settings.KP, settings.KI, settings.KD);
+    // this->pid.updateConstants(settings.KP, settings.KI, settings.KD);  Rest in peace PID
 }

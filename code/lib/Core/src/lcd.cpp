@@ -91,12 +91,11 @@ void LCDClass::clear()
 #endif
 }
 
-LCDClass::LCDClass(PinClass &SDA, PinClass &SCL) : SDA(SDA), SCL(SCL), valid(true)
+LCDClass::LCDClass(PinClass &SDA, PinClass &SCL) :  valid(false), SDA(SDA), SCL(SCL)
 {
     if (!SDA.isValid() || !SCL.isValid())
     {
         LOG_ERROR("LCD", "SDA or SCL pin is not valid.");
-        this->valid = false;
         return;
     }
 
@@ -104,7 +103,6 @@ LCDClass::LCDClass(PinClass &SDA, PinClass &SCL) : SDA(SDA), SCL(SCL), valid(tru
     if (pcf8574Setup(AF_BASE, 0x27) == -1)
     {
         LOG_ERROR("LCD", "Failed to setup PCF8574.");
-        this->valid = false;
         return;
     }
 
@@ -113,7 +111,6 @@ LCDClass::LCDClass(PinClass &SDA, PinClass &SCL) : SDA(SDA), SCL(SCL), valid(tru
     if (this->handle < 0)
     {
         LOG_ERROR("LCD", "Failed to initialize LCD.");
-        this->valid = false;
         return;
     }
 
@@ -132,6 +129,7 @@ LCDClass::LCDClass(PinClass &SDA, PinClass &SCL) : SDA(SDA), SCL(SCL), valid(tru
 #ifdef NATIVE
     LOG_INFORMATION("LCD", "Initialized LCD.");
 #endif
+    this->valid = true;
 }
 
 void LCDClass::print(char text)

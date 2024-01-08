@@ -24,7 +24,7 @@ public:
 private:
     bool valid;
 
-    PinClass& A1, A2, Enabled;
+    PinClass& Enabled, A1, A2;
 
 #ifdef NATIVE
     unsigned int speed;
