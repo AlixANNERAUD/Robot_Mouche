@@ -2,7 +2,23 @@
 \chapter{Introduction}
 
 \section{Contexte}
-Dans le cadre de notre projet d'électronique pour système embarqué, nous avons réalisé un robot suiveur de ligne et télécommandé.
-Ce robot doit être capable de suivre une ligne noire au sol et de se déplacer de manière autonome.
-Il doit également être possible de le contrôler à distance grâce à une interface web ceci afin de réaliser des match de foot entre robots.
+
+Dans le cadre du cours d'électronique pour système embarqué,
+nous avons eu pour projet de réaliser un robot télécommandé et suiveur de ligne.
 Ce rapport présente notre robot, les différentes étapes de sa conception ainsi que les difficultés que nous avons rencontrées.
+
+
+\subsection{Cahier des charges}
+
+Le robot possède deux modes de fonctionnement :
+
+\subsubsection{Mode télécommandé}
+
+Le robot est contrôlé par un utilisateur à l'aide d'une télécommande.
+Il peut se déplacer dans les quatre directions (avant, arrière, gauche, droite)
+
+\subsubsection{Mode suiveur de ligne}
+
+Le robot est capable de suivre une ligne noire au sol sur un fond blanc.
+Cette ligne peut être droite, courbé ou être interrompue par des intersections.
+Le robot dans ce mode doit également détecter les obstacles et s'arrêter et émettre un signal sonore ou lumineux.
