@@ -53,7 +53,7 @@ void ServerClass::listen()
         // Read game pad direction from body which is 4 bytes for x and 4 bytes for y as LE
         float x = *(float *)req.body.substr(0, 4).c_str();
         float y = *(float *)req.body.substr(4, 4).c_str();
-        LOG_DEBUG("Server", "Gamepad direction received: %f %f", x, y);
+        //LOG_DEBUG("Server", "Gamepad direction received: %f %f", x, y);
 
         // Call callback
         on_gamepad_direction(x, y);

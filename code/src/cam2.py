@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def to_line(img):
-    layer = 255 - np.mean(np.mean(img[:10], axis=2).T, axis=1).T
+    layer = 255 - np.mean(np.mean(img[:40], axis=2).T, axis=1).T
     return layer.astype(np.uint8).reshape(640)
 
 picam2 = Picamera2()

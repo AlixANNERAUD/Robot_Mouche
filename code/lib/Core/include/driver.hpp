@@ -16,13 +16,10 @@ class DriverClass
 {
 public:
     DriverClass() = delete;
-    DriverClass(LiDARClass& lidar, MotorClass &left, MotorClass &right, LCDClass& lcd);
-    
+    DriverClass(LiDARClass &lidar, MotorClass &left, MotorClass &right, LCDClass &lcd);
+
     void start();
     void stop();
-
-    void setMotorsSpeed(float left, float right);
-    void setSpeedFromCartesianPosition(float x, float y);
 
     // - Callbacks
     void updateSettings(SettingsClass settings);
@@ -31,7 +28,7 @@ public:
     static std::array<bool, 5> computeLinePosition(std::array<char, 640> values);
     static std::array<char, 640> readLinePositionFile();
 
-private:    
+private:
     std::atomic_bool running;
     MotorClass &left;
     MotorClass &right;
@@ -45,7 +42,7 @@ private:
     float steering;
     float linePosition;
     float lastPositionKnown;
-    
+
     int lastDecision = 0;
 
     clock_t cycleStart = 0;
@@ -58,6 +55,10 @@ private:
     void update();
 
     int takeDecision(int mask);
+
+    void setMotorsSpeed(float left, float right);
+    void setSpeedFromCartesianPosition(float x, float y);
+    void setSpeedFromPolarCoordinates(float r, float theta);
 };
 
 #endif

@@ -30,6 +30,8 @@ double PidControlClass::getSteering(double measuredValue, clock_t recordClock) {
     double output = this->Kp * proportional + this->Ki * integral + this->Kd * derivative;
     this->previousError = error;
 
+    LOG_DEBUG("Pid", "Kp: %f - Ki: %f - Kd: %f", this->Kp, this->Ki, this->Kd);
+
     return output;
 }
 

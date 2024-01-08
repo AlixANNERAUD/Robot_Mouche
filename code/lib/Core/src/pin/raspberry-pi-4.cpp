@@ -67,7 +67,9 @@ void PinClass::writeAnalog(unsigned int value)
         LOG_ERROR("Pin", "Pin instance %i is not valid.", this->pin);
         return;
     }
+#ifdef NATIVE
     LOG_VERBOSE("Pin", "Analog write %i on pin %i (%i)", value, this->pin, this->wiringPiPin);
+#endif
     pwmWrite(this->wiringPiPin, value);
 }
 

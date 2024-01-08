@@ -14,7 +14,7 @@
 // Je suis libertin!
 
 DriverClass::DriverClass(LiDARClass &lidar, MotorClass &left, MotorClass &right, LCDClass &lcd)
-    : running(false), left(left), right(right), settings(settings), pid(settings.KP, settings.KI, settings.KD, 0.0), lidar(lidar), lcd(lcd)
+    : running(false), left(left), right(right), settings(settings), pid(settings.KP, settings.KI, settings.KD, M_PI_2), lidar(lidar), lcd(lcd)
 {
     this->speed = 0.0f;
     this->steering = 0.0f;
@@ -35,22 +35,24 @@ void DriverClass::run()
     bool soundPlayed = false;
     while (this->running)
     {
-        // - Remember last distance to avoid to much lcd update
-        if (this->lidar.getDistance() < 5)
+        if (this->lidar.getDistance() > 0)
         {
-            this->lcd.print(1, "   Obstacle!    ");
-            if (!soundPlayed)
+            // - Remember last distance to avoid to much lcd update
+            if (this->lidar.getDistance() < 5)
             {
-                SoundClass::play("pig3.mp3");
-                soundPlayed = true;
+                this->lcd.print(1, "   Obstacle!    ");
+                if (!soundPlayed)
+                {
+                    SoundClass::play("pig3.mp3");
+                    soundPlayed = true;
+                }
+            }
+            else
+            {
+                this->lcd.printFormatted(1, "D: %d cm  ", this->lidar.getDistance());
+                soundPlayed = false;
             }
         }
-        else
-        {
-            this->lcd.printFormatted(1, "D: %d cm  ", this->lidar.getDistance());
-            soundPlayed = false;
-        }
-
         this->update();
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
@@ -157,18 +159,97 @@ void DriverClass::update()
     if (this->settings.mode != RobotMode::LineFollower)
         return;
 
-    if (this->lidar.getDistance() < 5)
+    if (this->lidar.getDistance() < 5 && this->lidar.getDistance() > 0)
     {
         this->setMotorsSpeed(0, 0);
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
         return;
     }
 
     auto values = readLinePositionFile();
-    if (values[0] == 42 && values[1] == 69)
+    while (true)
     {
-        return;
+        if (values[0] == 42 && values[1] == 69)
+        {
+            values = readLinePositionFile();
+        } else {
+            break;
+        }
     }
-    std::array<bool, 5> linePosition = this->computeLinePosition(values);
+
+    static double failAngle = M_PI_2;
+
+    double mean = (640 * (640 + 1) / 2) / 2;
+    bool found = false;
+    for (int i = 0; i < (640); i++)
+    {
+        if (values[i] > 130)
+        {
+            found = true;
+            if (i < 640 / 2)
+            {
+                if (i < 50) {
+                    mean -= i;
+                } else {
+                    mean -= i;
+                }
+            }
+            else
+            {
+                if (i > 590) {
+                    mean += i;
+                } else {
+                    mean += i;
+                }
+
+            }
+        }
+    }
+    mean /= 640 * (640 + 1) / 2;
+
+    double angle;
+
+    if (found)
+    {
+        angle = M_PI - (mean * M_PI);
+        failAngle = (failAngle * 0.9) + (angle * 0.1);
+        angle = failAngle;
+    }
+    else
+    {
+        angle = failAngle;
+        if (failAngle < M_PI_2)
+            angle = 0;
+        else
+            angle = M_PI;
+        LOG_WARNING("Driver", "Line not found");
+    }
+
+    if (angle <= 0)
+    {
+        //LOG_WARNING("Driver", "Angle < 0");
+        angle = 0 + (M_PI_4 / 2);
+    }
+    else if (angle >= M_PI)
+    {
+        //LOG_WARNING("Driver", "Angle > PI");
+        angle = M_PI - (M_PI_4 / 2);
+    }
+
+    //LOG_INFORMATION("Driver", "Mean: %f -> Angle: %f", mean, angle);
+
+    // std::array<bool, 5> linePosition = this->computeLinePosition(values);
+
+    float magnitude = 0.15;
+
+    //  float angle = -j * M_PI_4 + M_PI;
+
+    // LOG_INFORMATION("Driver", "j : %i - Driving angle: %f", j, angle);
+    this->setSpeedFromPolarCoordinates(magnitude, angle);
+
+    return;
+
+    auto linePosition = this->computeLinePosition(values);
 
     LOG_DEBUG("Driver", "Line position : %d %d %d %d %d", linePosition[0], linePosition[1], linePosition[2], linePosition[3], linePosition[4]);
     int eq = 0;
@@ -229,12 +310,21 @@ void DriverClass::setMotorsSpeed(float left, float right)
     this->right.set(right);
 }
 
+void DriverClass::setSpeedFromPolarCoordinates(float r, float theta)
+{
+    // theta = fmod(theta + 2 * M_PI, 2 * M_PI);
+    float turnDamping = 1;
+
+    float leftSpeed = r * (std::sin(theta) + std::cos(theta) / turnDamping);
+    float rightSpeed = r * (std::sin(theta) - std::cos(theta) / turnDamping);
+
+    this->setMotorsSpeed(leftSpeed, rightSpeed);
+}
+
 void DriverClass::setSpeedFromCartesianPosition(float x, float y)
 {
     float r = sqrt(x * x + y * y);
     float theta = atan2(y, x);
-
-    // theta = fmod(theta + 2 * M_PI, 2 * M_PI);
 
     float maxR = 1;
 
@@ -247,14 +337,9 @@ void DriverClass::setSpeedFromCartesianPosition(float x, float y)
         maxR = std::abs(r / y);
     }
 
-    float magnitude = r / maxR;
+    r = r / maxR;
 
-    float turnDamping = 1;
-
-    float leftSpeed = magnitude * (std::sin(theta) + std::cos(theta) / turnDamping);
-    float rightSpeed = magnitude * (std::sin(theta) - std::cos(theta) / turnDamping);
-
-    this->setMotorsSpeed(leftSpeed, rightSpeed);
+    this->setSpeedFromPolarCoordinates(r, theta);
 }
 
 void DriverClass::updateGamepad(float direction, float speed)
