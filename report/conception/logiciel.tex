@@ -38,6 +38,7 @@ Ainsi, nous pouvons afficher des messages de logs sur la sortie standard de notr
 De plus, l'affichage peut être réglé à la compilation en modifiant une macro (\texttt{LOG\_LEVEL}).
 
 \subsubsection{Contrôle des moteurs}
+
 Une classe Moteur a été créée afin de contrôler les moteurs de notre robot. Cette classe permet de contrôler la vitesse et la direction de nos moteurs.
 Nous envoyons simplement des commandes au pont en H qui lui se charge de contrôler les moteurs.
 
@@ -45,8 +46,11 @@ Nous envoyons simplement des commandes au pont en H qui lui se charge de contrô
 Une classe LCD a été créée afin de contrôler l'écran LCD de notre robot. Cette classe permet d'afficher des informations sur l'écran LCD de notre robot.
 Nous envoyons des simples commandes au PCF8574T qui lui se charge de contrôler l'écran LCD.
 
-\subsubsection*{Contrôle du capteur de distance lidar}
-\todo
+\subsubsection*{Capteur de distance lidar}
+
+Une classe Lidar a été créée afin de contrôler le capteur de distance lidar de notre robot.
+Cette classe permet de récupérer la distance mesurée par le capteur de distance lidar en lisant et écrivant les registres du capteur avec le protocole I2C.
+
 \subsubsection*{Contrôle du haut-parleur}
 
 Pour envoyer des sons sur notre haut-parleur nous lançons simplement des commandes systèmes qui permettent de jouer des sons sur notre Raspberry Pi qui sont ensuite envoyés sur notre haut-parleur.
