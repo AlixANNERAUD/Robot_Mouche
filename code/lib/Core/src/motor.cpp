@@ -41,10 +41,10 @@ void MotorClass::setSpeed(unsigned int speed)
         LOG_ERROR("Motor", "Motor instance is not valid.");
         return;
     }
-    LOG_INFORMATION("Motor", "Speed : %u", speed);
 
     this->Enabled.writeAnalog(speed);
 #ifdef NATIVE
+    LOG_INFORMATION("Motor", "Speed : %u", speed);
     this->speed = speed;
 #endif
 }
@@ -60,12 +60,16 @@ void MotorClass::setDirection(MotorDirection direction)
     switch (direction)
     {
     case MotorDirection::Forward:
+#ifdef NATIVE
         LOG_DEBUG("Motor", "Direction : Forward");
+#endif
         this->A1.writeDigital(DigitalState::High);
         this->A2.writeDigital(DigitalState::Low);
         break;
     case MotorDirection::Backward:
+#ifdef NATIVE
         LOG_DEBUG("Motor", "Direction : Backward");
+#endif
         this->A1.writeDigital(DigitalState::Low);
         this->A2.writeDigital(DigitalState::High);
         break;
@@ -86,7 +90,9 @@ void MotorClass::set(float relativeSpeed)
 
     relativeSpeed = std::clamp(relativeSpeed, -1.0f, 1.0f);
 
+#ifdef NATIVE
     LOG_DEBUG("Motor", "Set direction and speed.");
+#endif
     if (relativeSpeed > 0)
         this->setDirection(MotorDirection::Forward);
     else

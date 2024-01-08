@@ -218,7 +218,7 @@ function update_info() {
                 return;
             }
             camera_data = camera_data_tmp;
-            line_position = new Float64Array(data.slice(640, 648))[0];
+            line_position = new Uint8Array(data.slice(640, 645));
             console.log(line_position);
             update_info_display();
         })
@@ -303,23 +303,23 @@ loop();
 
 document.addEventListener("keydown", (e) => {
     if (e.key == "ArrowLeft") {
-        gpx = -1;
-        gpy = 0;
+        let gpx = -1;
+        let gpy = 0;
         update_gamepad_display(gpx, gpy);
         postGamepadDirection(-1, 0);
     } else if (e.key == "ArrowRight") {
-        gpx = 1;
-        gpy = 0;
+        let gpx = 1;
+        let gpy = 0;
         update_gamepad_display(gpx, gpy);
         postGamepadDirection(1, 0);
     } else if (e.key == "ArrowUp") {
-        gpx = 0;
-        gpy = -1;
+        let gpx = 0;
+        let gpy = -1;
         update_gamepad_display(gpx, gpy);
         postGamepadDirection(0, -1);
     } else if (e.key == "ArrowDown") {
-        gpx = 0;
-        gpy = 1;
+        let gpx = 0;
+        let gpy = 1;
         update_gamepad_display(gpx, gpy);
         postGamepadDirection(0, 1);
     } else if (e.key == "w") {

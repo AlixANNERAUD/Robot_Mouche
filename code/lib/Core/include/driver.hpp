@@ -6,6 +6,7 @@
 #include "settings.hpp"
 #include "pin.hpp"
 #include "pid.hpp"
+#include "lcd.hpp"
 
 #include <array>
 #include <unistd.h>
@@ -15,19 +16,16 @@ class DriverClass
 {
 public:
     DriverClass() = delete;
-    DriverClass(LiDARClass& lidar, MotorClass &left, MotorClass &right);
-    
+    DriverClass(LiDARClass &lidar, MotorClass &left, MotorClass &right, LCDClass &lcd);
+
     void start();
     void stop();
-
-    void setMotorsSpeed(float left, float right);
-    void setSpeedFromCartesianPosition(float x, float y);
 
     // - Callbacks
     void updateSettings(SettingsClass settings);
     void updateGamepad(float direction, float speed);
 
-    static double computeLinePosition(std::array<char, 640> values);
+    static std::array<bool, 5> computeLinePosition(std::array<char, 640> values);
     static std::array<char, 640> readLinePositionFile();
 
 private:
@@ -35,6 +33,7 @@ private:
     MotorClass &left;
     MotorClass &right;
     LiDARClass &lidar;
+    LCDClass &lcd;
     SettingsClass settings;
 
     PidControlClass pid;
@@ -44,10 +43,22 @@ private:
     float linePosition;
     float lastPositionKnown;
 
+    int lastDecision = 0;
+
+    clock_t cycleStart = 0;
+    clock_t lastBackward = 0;
+    int backwardCount = 0;
+
     pid_t camera_program_pid;
 
     void run();
     void update();
+
+    int takeDecision(int mask);
+
+    void setMotorsSpeed(float left, float right);
+    void setSpeedFromCartesianPosition(float x, float y);
+    void setSpeedFromPolarCoordinates(float r, float theta);
 };
 
 #endif

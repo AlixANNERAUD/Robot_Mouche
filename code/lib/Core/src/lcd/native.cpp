@@ -16,17 +16,6 @@ LCDClass::LCDClass(PinClass& SDA, PinClass& SCL) : SDA(SDA), SCL(SCL), valid(tru
     }
 }
 
-void LCDClass::clear()
-{
-    if (!this->isValid())
-    {
-        LOG_ERROR("LCD", "LCD instance is not valid.");
-        return;
-    }
-
-    LOG_INFORMATION("LCD", "Cleared LCD.");
-}
-
 void LCDClass::setCursor(unsigned int x, unsigned int y)
 {
     if (!this->isValid())

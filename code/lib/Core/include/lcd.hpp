@@ -16,22 +16,24 @@ public:
     LCDClass& operator=(const LCDClass&) = delete;
 
     void clear();
-    void setCursor(unsigned int x, unsigned int y);
-    void print(const char* text);
-    void printFormatted(const char* format, ...);
-
+    void print(unsigned int line, const char* text);
+    void printFormatted(unsigned int line, const char* format, ...);
     bool isValid() const;
 private:
     bool valid;
     int handle;
+
+    
+    char content[2][17], newContent[2][17];
+
+    void setCursor(unsigned int x, unsigned int y);
+    void print(char text);
+    void update();
     
     PinClass& SDA;
     PinClass& SCL;
 
 #ifdef NATIVE
-    unsigned int x;
-    unsigned int y;
-
     char buffer[32];
 #endif
 };
