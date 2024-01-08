@@ -1,6 +1,6 @@
-# 🪰 Robot mouche 🤖
+<h1 align="center">🪰 Robot mouche 🤖</h1>
 
-## Introduction
+## 🪧 Introduction
 
 For the "electronic for embedded systems" course at the [INSA Rouen](https://www.insa-rouen.fr/), we had to make a robot that can either move freely thanks to a remote control over WiFi or follow a line and avoid obstacles using a LiDAR sensor and a camera.
 
