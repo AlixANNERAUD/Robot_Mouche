@@ -6,11 +6,11 @@
 Le développement des fonctions métiers du robot a été une étape importante dans la réalisation de notre robot.
 En effet, nous avons dû développer des fonctions permettant de contrôler les différents composants de notre robot pour atteindre nos objectifs.
 
-Pour garder le développement structuré, nous avons décidé de découper notre programme en plusieurs parties, généralement concrétisés par des classes.
+Pour garder le développement structuré, nous avons décidé de découper notre programme en plusieurs parties, généralement concrétisées par des classes.
 
 Voici les différentes fonctions que nous avons développées :
 \begin{itemize}
-    \item Une couche d'abstraction matériel.
+    \item Une couche d'abstraction matérielle.
     \item Journalisation des événements.
     \item Fonction permettant de contrôler les moteurs
     \item Fonction permettant de contrôler l'écran LCD
@@ -26,15 +26,15 @@ Voici les différentes fonctions que nous avons développées :
 La couche d'abstraction matériel permettant de tester notre programme en intégration continue / machine locale ou sur le Raspberry Pi. 
 Elle est basée sur des macros du préprocesseur C++.
 Dans le cas d'une compilation sur le Raspberry Pi, les fonctions de la couche d'abstraction matériel sont remplacées par des fonctions permettant de contrôler les composants de notre robot.
-Tandis que dans le cas d'une compilation en machine locale, les fonctions de la couche d'abstraction matériel sont remplacées des messages de logs.
-Ainsi, à la précompilation, le code est adapté à la plateforme cible (natif ou Raspberry Pi).
+Tandis que dans le cas d'une compilation en machine locale, les fonctions de la couche d'abstraction matérielle sont remplacées des messages de logs.
+Ainsi, à la précompilation, le code est adapté à la plateforme cible (natif ou Raspberry Pi), et peut être testé sans avoir besoin d'un Raspberry Pi.
 
-Les fichiers concerné sont \texttt{src/pin.h} et \texttt{src/pin.cpp}.
+Les fichiers concernés sont \texttt{src/pin.h} et \texttt{src/pin.cpp}.
 
 \subsubsection{Journalisation des événements}
 
 Afin de pouvoir déboguer notre programme aisément, nous avons développé un système de journalisation des événements.
-Ainsi, nous pouvons afficher des messages de logs sur la sortie standard de notre programme avec des couleurs différente en fonction du niveau de criticité du message (Erreur, avertissement, information, débogage et trace).
+Ainsi, nous pouvons afficher des messages de logs sur la sortie standard de notre programme avec des couleurs différentes en fonction du niveau de criticité du message (erreur, avertissement, information, débogage et trace).
 De plus, l'affichage peut être réglé aisément à la compilation en modifiant une macro (\texttt{LOG\_LEVEL}).
 
 \subsubsection{Contrôle des moteurs}
@@ -49,12 +49,12 @@ Nous envoyons des simples commandes au PCF8574T qui lui se charge de contrôler 
 \todo
 \subsubsection*{Contrôle du haut-parleur}
 
-Pour envoyer des sons sur notre haut-parleur nous lançons simplement des commandes système qui permettent de jouer des sons sur notre raspberry pi qui sont ensuite envoyés sur notre haut-parleur.
+Pour envoyer des sons sur notre haut-parleur nous lançons simplement des commandes système qui permettent de jouer des sons sur notre Raspberry Pi qui sont ensuite envoyés sur notre haut-parleur.
 \\
 L'interface web est capable d'envoyer des commandes au robot pour jouer des sons.
 
 \subsubsection*{Récupération de la position de la ligne}
-Pour récupérer la position de la ligne nous utilisons une caméra. La caméra est en mode noire et blanc nous avons séparé l'image en 5 zones.
+Pour récupérer la position de la ligne nous utilisons une caméra. La caméra est en mode noir et blanc nous avons séparé l'image en 5 zones.
 Nous faisons la moyenne des pixels de chaque zone et si cette moyenne est supérieure à un certain seuil alors nous considérons que la ligne est dans cette zone.
 
 
@@ -66,7 +66,7 @@ Néanmoins, le réseau de l'INSA nous faire subir quelques instabilités. Si la 
 L'interface web nous a été très utile pour piloter le robot, mais aussi pour expérimenter avec différents paramètres, ainsi que pour visualiser l'état de certains capteurs. La plupart des paramètres et affichages des entrées ont été supprimées aujourd'hui.
 
 \subsubsection*{Contrôle du robot à distance}
+L'interface web envoie continuellement la position du joystick de la manette au robot. A partir de cette information, le robot calcule par une simple formule la vitesse de chaque moteur. Afin de réduire les problèmes de latence, l'interface web s'assure de ne pas envoyer les commandes plus rapidement que le robot ne les traite.
 
-\todo
 \subsubsection*{Contrôle automatique du robot}
 \todo
