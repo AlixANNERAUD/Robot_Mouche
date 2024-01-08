@@ -1,0 +1,11 @@
+\section{Mécanique}
+\subsection{Choix de la taille des roues}
+
+\todo
+
+\subsection{Emplacement des roues et des capteurs}
+Notre robot a connu beaucoup d'évolution tout au long du projet que cela soit au niveau du code ou de l'organisation des composants.
+
+Initialement, nous avions placé les roues à "l'arrière du chassis" (à l'opposé de l'emplacement du capteur de distance) avec une roue folle vers l'avant. Cette disposition des roues convenait très bien à la conduite manuelle du robot car elle permettait une rotation rapide de l'avant. Cependant, nous avons également eu beaucoup de changement concernant le choix de nos capteurs de lignes (cf 3.1.1 et 5.1.3) et nous avons remplacé des capteurs placés sous le chassis par un autre placé tout à l'avant. La rotation rapide de notre robot est ainsi devenue un problème, pertubant les données captées par notre capteur à l'avant. De plus, la position reculée des roues faisait que le centre de pivot de notre robot était également reculé, et par conséquent, éloigné de notre capteur suiveur de ligne. C'est pour l'ensemble de ces raisons que nous avons finalement adapté la position de nos roues en les plaçant à l'avant, avec notre capteur.
+
+Ce changement nous a permis de meilleurs résultats sur l'algorithme du suiveur de ligne tout en gardant une maniabilité sensiblement inchangée pour le mode manuel.

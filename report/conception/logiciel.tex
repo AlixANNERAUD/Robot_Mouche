@@ -1,0 +1,49 @@
+% A detailed section of your code: approach, structure, etc.
+\section{Logiciel}
+\subsection{Architecture du programme}
+\subsection{Développement des fonctions métiers du robot}
+Le développement des fonctions métiers du robot a été une étape importante dans la réalisation de notre robot. En effet, nous avons dû développer des fonctions permettant de contrôler les différents composants de notre robo pour atteindre nos objectifs.
+\\
+Afin de faciliter le développement de notre robot, nous avons décidé de développer une encapsulation des différents composants de notre robot. Ainsi, nous avons créé une classe par composant de notre robot. Ceci nous a permis de pouvoir faire tourner notre programme à la fois sur le robot et sur notre ordinateur. Lorsque nous faisions tourner notre programme sur notre ordinateur, nous réalisons des log dans la console de ce qu'il se passerait sur le robot.
+\\
+Voici les différentes fonctions que nous avons développées :
+\begin{itemize}
+    \item Fonction permettant de contrôler les moteurs
+    \item Fonction permettant de contrôler l'écran LCD
+    \item Fonction permettant de contrôler le capteur de distance lidar
+    \item Fonction permettant de contrôler le haut-parleur
+    \item Fonction permettant de récupérer la position de la ligne
+    \item Fonction permettant de contrôler le robot à distance à l'aide d'une interface de contrôle
+    \item Fonction permettant de contrôler le robot automatiquement
+\end{itemize}
+
+\subsubsection{Contrôle des moteurs}
+Une classe Moteur a été créée afin de contrôler les moteurs de notre robot. Cette classe permet de contrôler la vitesse et la direction de nos moteurs.
+Nous envoyons simplement des commandes au pont en H qui lui se charge de contrôler les moteurs.
+
+\subsubsection*{Contrôle de l'écran LCD}
+Une classe LCD a été créée afin de contrôler l'écran LCD de notre robot. Cette classe permet d'afficher des informations sur l'écran LCD de notre robot.
+Nous envoyons des simples commandes au PCF8574T qui lui se charge de contrôler l'écran LCD.
+
+\subsubsection*{Contrôle du capteur de distance lidar}
+\lipsum[1-2]
+\subsubsection*{Contrôle du haut-parleur}
+Pour envoyer des sons sur notre haut-parleur nous lançons simplement des commandes système qui permettent de jouer des sons sur notre raspberry pi qui sont ensuite envoyés sur notre haut-parleur.
+\\
+L'interface web est capable d'envoyer des commandes au robot pour jouer des sons.
+
+\subsubsection*{Récupération de la position de la ligne}
+Pour récupérer la position de la ligne nous utilisons une caméra. La caméra est en mode noire et blanc nous avons séparé l'image en 5 zones.
+Nous faisons la moyenne des pixels de chaque zone et si cette moyenne est supérieure à un certain seuil alors nous considérons que la ligne est dans cette zone.
+
+
+
+\subsubsection{Développement de l'interface de contrôle}
+Nous avons décidé de nous tourner vers les technologies web pour développer l'interface de contrôle de notre robot. Celles-ci, par leur simplicité, nous ont permis d'avancer rapidement, et de nous concentrer plutôt sur le développement des fonctionnalités de notre robot. Les navigateurs offrent notamment un large support des manettes de jeux, et son intégration a donc été très simple.
+Le robot fait tourner un serveur HTTP afin de recevoir les commandes du client. Internet étant accessible à travers le wifi de l'INSA, le robot peut donc être controlé à distance dans tout le périmètre de l'école. Disposant d'une caméra, il est possible de s'aider du flux vidéo pour contrôler le robot.
+Néanmoins, le réseau de l'INSA nous faire subir quelques instabilités. Si la latence est très satisfaisante le plus souvent, il arrive au robot de perdre la connexion avec le client pendant quelques secondes. Ces problèmes de perte de contrôle du véhicule peuvent se révéler très problématiques. Nous désignons la DSI comme responsable d'éventuels accidents.
+L'interface web nous a été très utile pour piloter le robot, mais aussi pour expérimenter avec différents paramètres, ainsi que pour visualiser l'état de certains capteurs. La plupart des paramètres et affichages des entrées ont été supprimées aujourd'hui.
+
+\subsubsection*{Contrôle du robot à distance}
+
+\subsubsection*{Contrôle automatique du robot}
