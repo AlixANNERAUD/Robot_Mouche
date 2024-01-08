@@ -1,5 +1,4 @@
-#ifndef SETTINGS_HPP_INCLUDED
-#define SETTINGS_HPP_INCLUDED
+#pragma once
 
 #include "settings.hpp"
 
@@ -19,5 +18,3 @@ public:
     double KP, KI, KD, KS;
     short int irs_threshold;
 };
-
-#endif // SETTINGS_HPP_INCLUDED

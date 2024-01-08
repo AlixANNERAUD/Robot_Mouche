@@ -1,5 +1,4 @@
-#ifndef PID_CONTROL
-#define PID_CONTROL
+#pragma once
 
 #include "time.h"
 
@@ -56,5 +55,3 @@ loop:
     wait(dt)
     goto loop
 */
-
-#endif // !PID_CONTROL

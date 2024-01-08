@@ -1,5 +1,4 @@
-#ifndef DISPLAY_HPP_INCLUDED
-#define DISPLAY_HPP_INCLUDED
+#pragma once
 
 #include "pin.hpp"
 
@@ -37,5 +36,3 @@ private:
     char buffer[32];
 #endif
 };
-
-#endif // DISPLAY_HPP_INCLUDED

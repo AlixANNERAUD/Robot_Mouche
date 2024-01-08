@@ -1,5 +1,4 @@
-#ifndef DRIVER_HPP_INCLUDED
-#define DRIVER_HPP_INCLUDED
+#pragma once
 
 #include "lidar.hpp"
 #include "motor.hpp"
@@ -58,5 +57,3 @@ private:
     void setSpeedFromCartesianPosition(float x, float y);
     void setSpeedFromPolarCoordinates(float r, float theta);
 };
-
-#endif
