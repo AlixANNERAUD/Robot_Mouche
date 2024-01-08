@@ -1,54 +1,45 @@
-# Robot_Mouche
+# 🪰 Robot mouche 🤖
 
-## Hardware
+## Introduction
 
-### Components
+For the "electronic for embedded systems" course at the [INSA Rouen](https://www.insa-rouen.fr/), we had to make a robot that can either move freely thanks to a remote control over WiFi or follow a line and avoid obstacles using a LiDAR sensor and a camera.
 
-- Raspberry Pi 4
-- 1620A : 16x2 LCD Display
+## 🚀 Getting started
+
+### 🔩 Bill of materials
+
+- Raspberry Pi 4.
+- 1620A : 16x2 LCD Display.
 - PCF8574T : I2C to 8-bit GPIO expander (for 1620A).
 - [Benewake SJ-GU-TF-Luna](https://www.gotronic.fr/pj2-sj-pm-tf-luna-a03-product-manual-2195.pdf) : Short-range LiDAR distance sensor.
 - [ST Microelectronics L293D](https://www.st.com/resource/en/datasheet/l293d.pdf) : Push-pull four channel driver with diodes. Used here as a motor driver.
 - [MAX 98357A](https://cdn-learn.adafruit.com/downloads/pdf/adafruit-max98357-i2s-class-d-mono-amp.pdf) : I2S 3W Class D Amplifier. Used here as a speaker driver.
+- [Joy-it RB Camera](https://joy-it.net/en/products/rb-camera_JT) : Raspberry Pi camera module based on the OV5647 sensor.
 
-### Wiring
+### 📦 Installation
 
-- L293D :
-    - 1 (Enable 1) -> GPIO 19
-    - 2 (Input 1) -> GPIO 17
-    - 3 (Output 1) -> Left motor phase 1
-    - 4, 5, 12 and 13 (Ground and heat sink) -> Ground
-    - 6 (Output 2) -> Left motor phase 2
-    - 7 (Input 2) -> GPIO 27
-    - 8 (Logic supply) -> 5V
-    - 9 (Enable 2) -> GPIO 13
-    - 10 (Input 3) -> GPIO 23
-    - 11 (Output 3) -> Left motor phase 1
-    - 14 (Output 4) -> Left motor phase 2
-    - 15 (Input 4) -> GPIO 24
-    - 16 (Motor supply) -> External power supply (0-36V)
+Clone the repository on your Raspberry Pi, open the `code` folder in Platform IO and compile the project. Then launch the executable in sudo mode:
+```bash
+sudo code/.pio/build/Raspberry_Pi_4_Release/robot_mouche
+# or
+sudo code/.pio/build/Raspberry_Pi_4_Debug/robot_mouche
+```
 
-- PCF8574T : 
-    - VCC -> 5V
-    - Ground -> Ground
-    - SDA -> GPIO 2
-    - SCL -> GPIO 3
+# ℹ️ About
 
-- 1602A : Connected directly to PCF8574T.
+## 📃 Credits
 
-- SJ-GU-TF-Luna :
-    - 1 (VCC) -> 5V
-    - 2 (SDA) -> GPIO 2
-    - 3 (SCL) -> GPIO 3 
-    - 4 (GND) -> Ground
-    - 5 (Configuration) -> Ground (for I2C)
-    - 6 (Multiplexing) -> Not connected
+This project uses the following resources :
+- [cpp-httplib](https://github.com/yhirose/cpp-httplib) : C++ HTTP client and server library.
+- [WiringPi](http://wiringpi.com/) : GPIO access library for the Raspberry Pi.
 
-- MAX 98357A :
-    - Vin -> 5V
-    - GND -> Ground
-    - SD -> Not connected
-    - GAIN -> Not connected
-    - DIN -> GPIO 21 (I2S DOUT)
-    - BCLK -> GPIO 18 (I2S CLK)
-    - LRCLK -> GPIO 19 (I2S FS)
+## 👤 Authors
+
+- Alix ANNERAUD
+- Dimitri TIMOZ
+- Simon GIRARD
+- Mathis SAUNIER
+
+## ⚖️ Licence
+
+This project is under the [MIT License](License).
